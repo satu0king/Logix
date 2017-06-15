@@ -89,6 +89,7 @@ function Scope(name = "localScope") {
     this.multiplexers = [];
     this.sevenseg = [];
     this.clocks = [];
+    this.bitSelectors = [];
     this.flipflops = [];
     this.subCircuits = [];
     this.orGates = [];
@@ -100,7 +101,7 @@ function Scope(name = "localScope") {
     this.allNodes = [];
     this.wires = [];
     this.powers = [];
-    this.objects = [this.wires, this.inputs, this.splitters, this.hexdis, this.adders, this.rams, this.clocks, this.flipflops, this.subCircuits, this.grounds, this.powers, this.andGates, this.multiplexers, this.sevenseg, this.orGates, this.triStates, this.notGates, this.outputs, this.nodes];
+    this.objects = [this.wires, this.inputs, this.bitSelectors,this.splitters, this.hexdis, this.adders, this.rams, this.clocks, this.flipflops, this.subCircuits, this.grounds, this.powers, this.andGates, this.multiplexers, this.sevenseg, this.orGates, this.triStates, this.notGates, this.outputs, this.nodes];
     // this.selectibleObjects = [this.wires, this.inputs, this.splitters, this.hexdis, this.adders, this.rams, this.clocks, this.flipflops, this.subCircuits, this.grounds, this.powers, this.andGates, this.multiplexers, this.sevenseg, this.orGates, this.triStates, this.notGates, this.outputs, this.nodes];
 
 }
@@ -281,7 +282,7 @@ var simulationArea = {
                 }
             }
             //change direction fns
-            if (e.keyCode == 37 && simulationArea.lastSelecúed != undefined) {
+            if (e.keyCode == 37 && simulationArea.lastSelected != undefined) {
                 newDirection(simulationArea.lastSelected, 'right');
             }
             if (e.key.charCodeAt(0) == 122){ // detect the special CTRL-Z code
