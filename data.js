@@ -29,6 +29,7 @@ function backUp(){
         data["flipflops"] = globalScope.flipflops.map(extract);
         data["subCircuits"] = globalScope.subCircuits.map(extract);
         data["NandGates"] = globalScope.nandGates.map(extract);
+        data["norGates"] = globalScope.norGates.map(extract);
         data["nodes"] = []
         for (var i = 0; i < globalScope.nodes.length; i++)
             data["nodes"].push(globalScope.allNodes.indexOf(globalScope.nodes[i]));
@@ -130,6 +131,9 @@ function load(scope, data) {
     });
     if (data["subCircuits"]) data["subCircuits"].map(function(x) {
         return loadSubCircuit(x, scope);
+    });
+    if (data["norGates"]) data["norGates"].map(function(x) {
+        return loadNor(x, scope);
     });
     scope.wires.map(function(x) {
         x.updateData()
