@@ -110,6 +110,121 @@ function AndGate(x, y, scope, inputLength, dir, bitWidth = undefined) {
         this.scope.andGates.clean(this);
     }
 }
+function loadNand(data, scope) {
+    var v = new NandGate(data["x"], data["y"], scope, data["inputs"], data["dir"], data["bitWidth"]);
+    v.output1 = replace(v.output1, data["output1"]);
+    for (var i = 0; i < data["inputs"]; i++) v.inp[i] = replace(v.inp[i], data["inp"][i]);
+}
+function NandGate(x, y, scope, inputLength, dir, bitWidth = undefined) {
+    this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
+    this.scope = scope;
+    this.id = 'nand' + uniqueIdCounter;
+    uniqueIdCounter++;
+    this.element = new Element(x, y, "nand", 25, this);
+    this.inp = [];
+    this.direction = dir;
+    this.nodeList = [];
+    this.inputs = inputLength;
+
+    //variable inputLength , node creation
+    if (inputLength % 2 == 1) {
+          for (var i = 0; i < inputLength / 2 - 1; i++) {
+              var a = new Node(-10, -10 * (i + 1), 0, this);
+              this.inp.push(a);
+          }
+          var a = new Node(-10, 0, 0, this);
+          this.inp.push(a);
+          for (var i = inputLength / 2 + 1; i < inputLength; i++) {
+              var a = new Node(-10, 10 * (i + 1 - inputLength / 2 - 1), 0, this);
+              this.inp.push(a);
+          }
+      } else {
+          for (var i = 0; i < inputLength / 2; i++) {
+              var a = new Node(-10, -10 * (i + 1), 0, this);
+              this.inp.push(a);
+          }
+          for (var i = inputLength / 2; i < inputLength; i++) {
+              var a = new Node(-10, 10 * (i + 1 - inputLength / 2), 0, this);
+              this.inp.push(a);
+          }
+      }
+
+    this.output1 = new Node(30, 0, 1, this);
+    scope.nandGates.push(this);
+
+    //fn to create save Json Data of object
+    this.saveObject = function() {
+        var data = {
+            x: this.element.x,
+            y: this.element.y,
+            inputs: this.inputs,
+            inp: this.inp.map(findNode),
+            output1: findNode(this.output1),
+            dir: this.direction,
+            bitWidth: this.bitWidth,
+        }
+        return data;
+    }
+
+    // checks if the module has enough information to resolve
+    this.isResolvable = function() {
+
+        for (var i = 0; i < inputLength; i++)
+            if (this.inp[i].value == undefined) return false;
+        return true;
+    }
+
+    //resolve output values based on inputData
+    this.resolve = function() {
+        var result = this.inp[0].value;
+        if (this.isResolvable() == false) {
+            return;
+        }
+        for (var i = 1; i < inputLength; i++)
+            result = result & (this.inp[i].value);
+        result = ((~result >>> 0) << (32 - this.bitWidth)) >>> (32 - this.bitWidth);
+        // console.log("NAND %d\n",result);
+        this.output1.value = result;
+        this.scope.stack.push(this.output1);
+    }
+
+    //fn to draw
+    this.draw = function() {
+
+        ctx = simulationArea.context;
+
+        ctx.beginPath();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "black"; //("rgba(0,0,0,1)");
+        ctx.fillStyle = "white";
+        var xx = this.element.x;
+        var yy = this.element.y;
+
+        moveTo(ctx, -10, -20, xx, yy, this.direction);
+        lineTo(ctx, 0, -20, xx, yy, this.direction);
+        arc(ctx, 0, 0, 20, (-Math.PI / 2), (Math.PI / 2), xx, yy, this.direction);
+        lineTo(ctx, -10, 20, xx, yy, this.direction);
+        lineTo(ctx, -10, -20, xx, yy, this.direction);
+        ctx.closePath();
+
+        if ((this.element.b.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))ctx.fillStyle = "rgba(255, 255, 32,0.5)" ;
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        arc(ctx, 25, 0, 5, 0,  2 * (Math.PI), xx, yy, this.direction);
+        ctx.stroke();
+        //for debugging
+        if (this.element.b.hover)
+            console.log(this, this.id);
+    }
+
+    //fn to delete object
+    this.delete = function() {
+        simulationArea.lastSelected = undefined;
+        this.scope.nandGates.clean(this);
+    }
+}
+
 
 function loadMultiplexer(data, scope) {
     var v = new Multiplexer(data["x"], data["y"], scope, data["dir"], data["bitWidth"], data["controlSignalSize"]);
@@ -204,7 +319,207 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
         this.scope.multiplexers.clean(this);
     }
 }
+function loadXor(data, scope) {
+    var v = new XorGate(data["x"], data["y"], scope, data["inputs"], data["dir"], data["bitWidth"]);
+    v.output1 = replace(v.output1, data["output1"]);
+    for (var i = 0; i < data["inputs"]; i++) v.inp[i] = replace(v.inp[i], data["inp"][i]);
+}
+function XorGate(x, y, scope = globalScope, inputs = 2, dir = 'left', bitWidth = undefined) {
+    this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
 
+    this.id = 'xor' + uniqueIdCounter;
+    uniqueIdCounter++;
+    this.scope = scope;
+    this.direction = dir;
+    this.element = new Element(x, y, "xor", 25, this);
+    this.nodeList = [];
+    this.inp = [];
+    this.inputs = inputs;
+    if (inputs % 2 == 1) {
+        for (var i = 0; i < inputs / 2 - 1; i++) {
+            var a = new Node(-20, -10 * (i + 1), 0, this);
+            this.inp.push(a);
+        }
+        var a = new Node(-20, 0, 0, this);
+        this.inp.push(a);
+        for (var i = inputs / 2 + 1; i < inputs; i++) {
+            var a = new Node(-20, 10 * (i + 1 - inputs / 2 - 1), 0, this);
+            this.inp.push(a);
+        }
+    } else {
+        for (var i = 0; i < inputs / 2; i++) {
+            var a = new Node(-20, -10 * (i + 1), 0, this);
+            this.inp.push(a);
+        }
+        for (var i = inputs / 2; i < inputs; i++) {
+            var a = new Node(-20, 10 * (i + 1 - inputs / 2), 0, this);
+            this.inp.push(a);
+        }
+    }
+    this.output1 = new Node(20, 0, 1, this);
+    scope.xorGates.push(this);
+
+    this.saveObject = function() {
+        // console.log(this.scope.allNodes);
+        var data = {
+            x: this.element.x,
+            y: this.element.y,
+            inputs: this.inputs,
+            inp: this.inp.map(findNode),
+            output1: findNode(this.output1),
+            dir: this.direction,
+            bitWidth: this.bitWidth,
+        }
+        return data;
+    }
+    this.isResolvable = function() {
+
+        for (var i = 0; i < this.inputs; i++)
+            if (this.inp[i].value == undefined) return false;
+        return true;
+    }
+    this.resolve = function() {
+        var result = this.inp[0].value;
+        if (this.isResolvable() == false) {
+            return;
+        }
+        for (var i = 1; i < this.inputs; i++)
+            result = result ^ (this.inp[i].value);
+
+        this.output1.value = result;
+        this.scope.stack.push(this.output1);
+    }
+    this.draw = function() {
+
+        ctx = simulationArea.context;
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.lineWidth = 3;
+
+        var xx = this.element.x;
+        var yy = this.element.y;
+        ctx.beginPath();
+        ctx.fillStyle = "white";
+        moveTo(ctx, -10, -20, xx, yy, this.direction);
+        bezierCurveTo(0, -20, +15, -10, 20, 0, xx, yy, this.direction);
+        bezierCurveTo(0 + 15, 0 + 10, 0, 0 + 20, -10, +20, xx, yy, this.direction);
+        bezierCurveTo(0, 0, 0, 0, -10, -20, xx, yy, this.direction);
+        // arc(ctx, 0, 0, -20, (-Math.PI / 2), (Math.PI / 2), xx, yy, this.direction);
+        ctx.closePath();
+        if ((this.element.b.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        arc(ctx, -35, 0, 25,1.70*(Math.PI), 0.30*(Math.PI), xx, yy, this.direction);
+        ctx.stroke();
+        if (this.element.b.isHover())
+            console.log(this, this.id);
+    }
+    this.delete = function() {
+        simulationArea.lastSelected = undefined;
+        scope.xorGates.clean(this);
+    }
+}
+function loadXnor(data, scope) {
+    var v = new XnorGate(data["x"], data["y"], scope, data["inputs"], data["dir"], data["bitWidth"]);
+    v.output1 = replace(v.output1, data["output1"]);
+    for (var i = 0; i < data["inputs"]; i++) v.inp[i] = replace(v.inp[i], data["inp"][i]);
+}
+function XnorGate(x, y, scope = globalScope, inputs = 2, dir = 'left', bitWidth = undefined) {
+    this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
+
+    this.id = 'xnor' + uniqueIdCounter;
+    uniqueIdCounter++;
+    this.scope = scope;
+    this.direction = dir;
+    this.element = new Element(x, y, "xnor", 25, this);
+    this.nodeList = [];
+    this.inp = [];
+    this.inputs = inputs;
+    if (inputs % 2 == 1) {
+        for (var i = 0; i < inputs / 2 - 1; i++) {
+            var a = new Node(-20, -10 * (i + 1), 0, this);
+            this.inp.push(a);
+        }
+        var a = new Node(-20, 0, 0, this);
+        this.inp.push(a);
+        for (var i = inputs / 2 + 1; i < inputs; i++) {
+            var a = new Node(-20, 10 * (i + 1 - inputs / 2 - 1), 0, this);
+            this.inp.push(a);
+        }
+    } else {
+        for (var i = 0; i < inputs / 2; i++) {
+            var a = new Node(-20, -10 * (i + 1), 0, this);
+            this.inp.push(a);
+        }
+        for (var i = inputs / 2; i < inputs; i++) {
+            var a = new Node(-20, 10 * (i + 1 - inputs / 2), 0, this);
+            this.inp.push(a);
+        }
+    }
+    this.output1 = new Node(30, 0, 1, this);
+    scope.xnorGates.push(this);
+
+    this.saveObject = function() {
+        // console.log(this.scope.allNodes);
+        var data = {
+            x: this.element.x,
+            y: this.element.y,
+            inputs: this.inputs,
+            inp: this.inp.map(findNode),
+            output1: findNode(this.output1),
+            dir: this.direction,
+            bitWidth: this.bitWidth,
+        }
+        return data;
+    }
+    this.isResolvable = function() {
+
+        for (var i = 0; i < this.inputs; i++)
+            if (this.inp[i].value == undefined) return false;
+        return true;
+    }
+    this.resolve = function() {
+        var result = this.inp[0].value;
+        if (this.isResolvable() == false) {
+            return;
+        }
+        for (var i = 1; i < this.inputs; i++)
+            result = result ^ (this.inp[i].value);
+        result = ((~result >>> 0) << (32 - this.bitWidth)) >>> (32 - this.bitWidth);
+        this.output1.value = result;
+        this.scope.stack.push(this.output1);
+    }
+    this.draw = function() {
+
+        ctx = simulationArea.context;
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.lineWidth = 3;
+
+        var xx = this.element.x;
+        var yy = this.element.y;
+        ctx.beginPath();
+        ctx.fillStyle = "white";
+        moveTo(ctx, -10, -20, xx, yy, this.direction);
+        bezierCurveTo(0, -20, +15, -10, 20, 0, xx, yy, this.direction);
+        bezierCurveTo(0 + 15, 0 + 10, 0, 0 + 20, -10, +20, xx, yy, this.direction);
+        bezierCurveTo(0, 0, 0, 0, -10, -20, xx, yy, this.direction);
+        // arc(ctx, 0, 0, -20, (-Math.PI / 2), (Math.PI / 2), xx, yy, this.direction);
+        ctx.closePath();
+        if ((this.element.b.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        arc(ctx, -35, 0, 25,1.70*(Math.PI), 0.30*(Math.PI), xx, yy, this.direction);
+        ctx.stroke();
+        ctx.beginPath();
+        arc(ctx, 25, 0, 5, 0,  2 * (Math.PI), xx, yy, this.direction);
+        ctx.stroke();
+        if (this.element.b.isHover())
+            console.log(this, this.id);
+    }
+    this.delete = function() {
+        simulationArea.lastSelected = undefined;
+        scope.xnorGates.clean(this);
+    }
+}
 function loadSevenSegmentDisplay(data, scope) {
     var v = new SevenSegDisplay(data["x"], data["y"], scope);
     v.a = replace(v.a, data["a"]);
@@ -1618,4 +1933,107 @@ function ConstantVal(x, y, scope, dir, bitWidth = undefined,state=undefined) {
     // this.findPos = function() {
     //     return Math.round((simulationArea.mouseX - this.element.x + 10 * this.bitWidth) / 20.0);
     // }
+}
+
+function loadNor(data, scope) {
+    var v = new NorGate(data["x"], data["y"], scope, data["inputs"], data["dir"], data["bitWidth"]);
+    v.output1 = replace(v.output1, data["output1"]);
+    for (var i = 0; i < data["inputs"]; i++) v.inp[i] = replace(v.inp[i], data["inp"][i]);
+}
+
+function NorGate(x, y, scope = globalScope, inputs = 2, dir = 'left', bitWidth = undefined) {
+    this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
+
+    this.id = 'nor' + uniqueIdCounter;
+    uniqueIdCounter++;
+    this.scope = scope;
+    this.direction = dir;
+    this.element = new Element(x, y, "nor", 25, this);
+    this.nodeList = [];
+    this.inp = [];
+    this.inputs = inputs;
+    if (inputs % 2 == 1) {
+        for (var i = 0; i < inputs / 2 - 1; i++) {
+            var a = new Node(-10, -10 * (i + 1), 0, this);
+            this.inp.push(a);
+        }
+        var a = new Node(-10, 0, 0, this);
+        this.inp.push(a);
+        for (var i = inputs / 2 + 1; i < inputs; i++) {
+            var a = new Node(-10, 10 * (i + 1 - inputs / 2 - 1), 0, this);
+            this.inp.push(a);
+        }
+    } else {
+        for (var i = 0; i < inputs / 2; i++) {
+            var a = new Node(-10, -10 * (i + 1), 0, this);
+            this.inp.push(a);
+        }
+        for (var i = inputs / 2; i < inputs; i++) {
+            var a = new Node(-10, 10 * (i + 1 - inputs / 2), 0, this);
+            this.inp.push(a);
+        }
+    }
+    this.output1 = new Node(30, 0, 1, this);
+    scope.norGates.push(this);
+
+    this.saveObject = function() {
+        // console.log(this.scope.allNodes);
+        var data = {
+            x: this.element.x,
+            y: this.element.y,
+            inputs: this.inputs,
+            inp: this.inp.map(findNode),
+            output1: findNode(this.output1),
+            dir: this.direction,
+            bitWidth: this.bitWidth,
+        }
+        return data;
+    }
+    this.isResolvable = function() {
+
+        for (var i = 0; i < this.inputs; i++)
+            if (this.inp[i].value == undefined) return false;
+        return true;
+    }
+    this.resolve = function() {
+        var result = this.inp[0].value;
+        if (this.isResolvable() == false) {
+            return;
+        }
+        for (var i = 1; i < this.inputs; i++)
+            result = result | (this.inp[i].value);
+        result = ((~result >>> 0) << (32 - this.bitWidth)) >>> (32 - this.bitWidth);
+        this.output1.value=result
+        this.scope.stack.push(this.output1);
+    }
+    this.draw = function() {
+
+        ctx = simulationArea.context;
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.lineWidth = 3;
+
+        var xx = this.element.x;
+        var yy = this.element.y;
+        ctx.beginPath();
+        ctx.fillStyle = "white";
+
+        moveTo(ctx, -10, -20, xx, yy, this.direction);
+        bezierCurveTo(0, -20, +15, -10, 20, 0, xx, yy, this.direction);
+        bezierCurveTo(0 + 15, 0 + 10, 0, 0 + 20, -10, +20, xx, yy, this.direction);
+        bezierCurveTo(0, 0, 0, 0, -10, -20, xx, yy, this.direction);
+        ctx.closePath();
+        if ((this.element.b.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))ctx.fillStyle = "rgba(255, 255, 32,0.5)" ;
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        arc(ctx, 25, 0, 5, 0,  2 * (Math.PI), xx, yy, this.direction);
+        ctx.stroke();
+        //for debugging
+        if (this.element.b.hover)
+            console.log(this, this.id);
+    }
+    this.delete = function() {
+        simulationArea.lastSelected = undefined;
+        scope.norGates.clean(this);
+    }
 }

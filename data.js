@@ -9,6 +9,7 @@ function backUp(){
         data["inputs"] = globalScope.inputs.map(extract);
         data["constants"] = globalScope.constants.map(extract);
         data["TTYs"] = globalScope.TTYs.map(extract);
+        data["keyboards"] = globalScope.keyboards.map(extract);
         data["bitSelectors"] = globalScope.bitSelectors.map(extract);
         data["outputs"] = globalScope.outputs.map(extract);
         data["allNodes"] = globalScope.allNodes.map(extract);
@@ -27,6 +28,15 @@ function backUp(){
         data["clocks"] = globalScope.clocks.map(extract);
         data["flipflops"] = globalScope.flipflops.map(extract);
         data["subCircuits"] = globalScope.subCircuits.map(extract);
+        data["NandGates"] = globalScope.nandGates.map(extract);
+
+        data["norGates"] = globalScope.norGates.map(extract);
+
+
+        data["XorGates"]=globalScope.xorGates.map(extract);
+        data["XnorGates"]=globalScope.xnorGates.map(extract);
+
+
         data["nodes"] = []
         for (var i = 0; i < globalScope.nodes.length; i++)
             data["nodes"].push(globalScope.allNodes.indexOf(globalScope.nodes[i]));
@@ -37,6 +47,7 @@ function backUp(){
 function Save() {
     var data=backUp();
     data["title"]=prompt("EnterName:");
+    data["timePeriod"]=simulationArea.timePeriod;
 
     //covnvert to text
     data = JSON.stringify(data)
@@ -70,11 +81,17 @@ function load(scope, data) {
     if (data["TTYs"]) data["TTYs"].map(function(x) {
         return loadTTY(x, scope);
     });
+    if (data["keyboards"]) data["keyboards"].map(function(x) {
+        return loadKeyboard(x, scope);
+    });
     if (data["bitSelectors"]) data["bitSelectors"].map(function(x) {
         return loadBitSelector(x, scope);
     });
     if (data["outputs"]) data["outputs"].map(function(x) {
         return loadOutput(x, scope);
+    });
+    if (data["NandGates"]) data["NandGates"].map(function(x) {
+        return loadNand(x, scope);
     });
     if (data["andGates"]) data["andGates"].map(function(x) {
         return loadAnd(x, scope);
@@ -121,6 +138,17 @@ function load(scope, data) {
     });
     if (data["subCircuits"]) data["subCircuits"].map(function(x) {
         return loadSubCircuit(x, scope);
+    });
+
+    if (data["norGates"]) data["norGates"].map(function(x) {
+        return loadNor(x, scope);
+    });
+    if (data["XorGates"]) data["XorGates"].map(function(x) {
+        return loadXor(x, scope);
+    });
+    if (data["XnorGates"]) data["XnorGates"].map(function(x) {
+        return loadXnor(x, scope);
+
     });
     scope.wires.map(function(x) {
         x.updateData()
