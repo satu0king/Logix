@@ -97,6 +97,11 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     this.refresh();
 
+    this.updateScope=function(scope){
+        this.scope=scope;
+        
+    }
+
     this.startDragging=function(){
         this.oldx = this.x;
         this.oldy = this.y;

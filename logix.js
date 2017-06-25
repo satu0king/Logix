@@ -206,7 +206,9 @@ var simulationArea = {
     oldy: 0,
     scale: 1,
     multipleObjectSelections: [],
+    copyList: [],
     shiftDown: false,
+    controlDown: false,
     timePeriod: 500,
     clickCount: 0, //double click
     lock: "unlocked",
@@ -215,7 +217,6 @@ var simulationArea = {
             simulationArea.clickCount = 0;
         }, 600);
     },
-
 
     setup: function() {
         this.canvas.width = width;
@@ -245,13 +246,29 @@ var simulationArea = {
                 // simulationArea.lastSelected.delete(); // delete key
                 simulationArea.shiftDown = false;
             }
+            if (e.key == "Meta"||e.key=="Control") {
+                simulationArea.controlDown = false;
+            }
         });
         window.addEventListener('keydown', function(e) {
             scheduleUpdate(1);
             updateCanvas = true;
             wireToBeChecked = 1;
             // e.preventDefault();
-            //    console.log("KEY:"+e.key);
+               console.log("KEY:"+e.key);
+           if (e.key == "Meta"||e.key=="Control") {
+               simulationArea.controlDown = true;
+           }
+
+           if(simulationArea.controlDown&&(e.key=="C"||e.key=="c")){
+               simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
+               if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
+                   simulationArea.copyList.push(simulationArea.lastSelected);
+               }
+           }
+           if(simulationArea.controlDown&&(e.key=="V"||e.key=="v")){
+               copyPaste(simulationArea.copyList);
+           }
             if (simulationArea.lastSelected && simulationArea.lastSelected.keyDown) {
                 if (e.key.toString().length == 1) {
                     simulationArea.lastSelected.keyDown(e.key);
@@ -260,26 +277,20 @@ var simulationArea = {
                 if (e.key == "Shift") return;
             }
             if (e.keyCode == 8) {
-                // simulationArea.lastSelected.delete(); // delete key
                 if (simulationArea.lastSelected) simulationArea.lastSelected.delete();
                 for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
                     simulationArea.multipleObjectSelections[i].delete();
-                    // console.log("SD",simulationArea.multipleObjectSelections[i]);
                 }
             }
             if (e.keyCode == 16) {
-                // simulationArea.lastSelected.delete(); // delete key
                 simulationArea.shiftDown = true;
                 if (simulationArea.lastSelected) {
                     simulationArea.multipleObjectSelections.push(simulationArea.lastSelected);
                     simulationArea.lastSelected = undefined;
                 }
             }
-            //change direction fns
-            if (e.keyCode == 37 && simulationArea.lastSelected != undefined) {
-                simulationArea.lastSelected.newDirection("LEFT");
-            }
-            if (e.key.charCodeAt(0) == 122) { // detect the special CTRL-Z code
+
+            if (simulationArea.controlDown&&e.key.charCodeAt(0) == 122) { // detect the special CTRL-Z code
                 if (backups.length == 0) return;
                 var backupOx = simulationArea.ox;
                 var backupOy = simulationArea.oy;
@@ -293,7 +304,10 @@ var simulationArea = {
                 simulationArea.ox = backupOx;
                 simulationArea.oy = backupOy;
             }
-
+            //change direction fns
+            if (e.keyCode == 37 && simulationArea.lastSelected != undefined) {
+                simulationArea.lastSelected.newDirection("LEFT");
+            }
             if (e.keyCode == 38 && simulationArea.lastSelected != undefined) {
                 simulationArea.lastSelected.newDirection("UP");
             }
@@ -307,7 +321,7 @@ var simulationArea = {
                 if (simulationArea.lastSelected.bitWidth !== undefined)
                     simulationArea.lastSelected.newBitWidth(parseInt(prompt("Enter new bitWidth"), 10));
             }
-            if ((e.keyCode == 67 || e.keyCode == 99)) {
+            if (!simulationArea.controlDown&&(e.keyCode == 67 || e.keyCode == 99)) {
                 simulationArea.changeClockTime(prompt("Enter Time:"));
             }
             if ((e.keyCode == 108 || e.keyCode == 76) && simulationArea.lastSelected != undefined) {
@@ -316,12 +330,13 @@ var simulationArea = {
             }
 
             // zoom in (+)
-            if (e.keyCode == 187 && simulationArea.scale < 4) {
+            if (simulationArea.controlDown&&e.keyCode == 187 && simulationArea.scale < 4) {
+                e.preventDefault();
                 changeScale(.1);
             }
             // zoom out (-)
-            if (e.keyCode == 189 && simulationArea.scale > 0.5) {
-
+            if (simulationArea.controlDown&&e.keyCode == 189 && simulationArea.scale > 0.5) {
+                e.preventDefault();
                 changeScale(-.1);
             }
             // console.log()
@@ -445,6 +460,31 @@ var simulationArea = {
     clear: function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
+}
+
+function copyPaste(copyList){
+    tempScope=new Scope("globalScope");
+    d=backUp();
+    load(tempScope,d);
+    for (var i = 0; i < globalScope.objects.length; i++)
+        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++)
+            if(!copyList.contains(globalScope[globalScope.objects[i]][j]))globalScope[globalScope.objects[i]][j].delete()
+
+    for(var i=0;i<copyList.length;i++){
+        console.log(copyList[i]);
+        copyList[i].x+=10;
+        copyList[i].y+=10;
+        copyList[i].updateScope(tempScope);
+    }
+
+    for(l in globalScope){
+        if(globalScope[l] instanceof Array){
+            tempScope[l].extend(globalScope[l]);
+        }
+    }
+
+    globalScope=tempScope;
+
 }
 
 // fn that calls update on everything else. If any change is there, it resolves the circuit and draws it again
@@ -643,6 +683,12 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     */
 
     // Method definitions
+
+    this.updateScope=function(scope){
+        this.scope=scope;
+        for(var i=0;i<this.nodeList.length;i++)
+            this.nodeList[i].scope=scope;
+    }
 
     this.saveObject = function() {
         var data = {
