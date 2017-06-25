@@ -985,7 +985,7 @@ function Input(x, y, scope, dir, bitWidth) {
         var pos = this.findPos();
         if (pos == 0) pos = 1; // minor correction
         if (pos < 1 || pos > this.bitWidth) return;
-        this.state ^= (1 << (this.bitWidth - pos));
+        this.state =((this.state>>>0)^(1 << (this.bitWidth - pos)))>>>0;
     }
 
     // Not sure if its okay to remove commented code...VERIFY!
