@@ -781,11 +781,11 @@ function ControlledInverter(x, y, scope, dir, bitWidth = undefined) {
         if (this.isResolvable() == false) {
             return;
         }
-        if (this.state.value == 0) {
-            this.output1.value = 0; //>>>0)<<(32-this.bitWidth))>>>(32-this.bitWidth);
+        if (this.state.value == 1) {
+            this.output1.value = ((~this.inp1.value>>>0)<<(32-this.bitWidth))>>>(32-this.bitWidth);
             this.scope.stack.push(this.output1);
         }
-        if (this.state.value == 1 )
+        if (this.state.value == 0 )
          {
             this.output1.value = undefined;
         }
