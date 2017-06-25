@@ -1,0 +1,62 @@
+<meta name="viewport" content="user-scalable=no"/>
+<html>
+<body onload="setup()">
+<link rel="stylesheet" href="./logix.css">
+
+<div class="logix" style="position: relative;">
+
+ <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+
+ <div style="position: relative; left: 0; top: 10; z-index: 2;">
+   <div style="position: relative;">
+     <div class="toolbar" id="toolbar"  >
+        <button class="button" id="inputButton">Input</button>
+        <button class="button" id="constantValButton">Constant Value</button>
+        <button class="button" id="outputButton">Output</button>
+        <button class="button" id="multiplexerButton">Multiplexer</button>
+        <button class="button" id="powerButton">Power</button>
+        <button class="button" id="groundButton">Ground</button>
+        <button class="button" id="splitterButton">Splitter</button>
+        <button class="button" id="bitSelectorButton">Bit Selector</button>
+
+        <button class="button" id="clockButton">Clock</button>
+        <button class="button" id="flipflopButton">FlipFlop</button>
+        <button class="button" id="TTYButton">TTY</button>
+        <button class="button" id="keyboardButton">Keyboard</button>
+        <button class="button" id="andButton">And</button>
+        <button class="button" id="adderButton">Adder</button>
+        <button class="button" id="ramButton">Ram</button>
+        <button class="button" id="orButton">Or</button>
+        <button class="button" id="notButton">Not</button>
+        <button class="button" id="triStateButton">TriState</button>
+        <button class="button" id="sevenSegButton">7 Segment</button>
+        <button class="button" id="hexButton">Hex</button>
+        <button class="button" id="subCircuitButton">SubCircuit</button>
+        <button class="button" id="saveButton">Save</button>
+        <button class="button" id="saveButtonimg" onclick="saveasimg();">SaveAsImage</button>
+        <button class="button" id="NAND">Nand</button>
+        <button class="button" id="norButton">Nor</button>
+        <button class="button" id="xorButton">Xor</button>
+        <button class="button" id="xnorButton">Xnor</button>
+        <button class="button" id="digitalledButton">DigitalLed</button>
+     </div>
+   </div>
+
+ </div>
+
+
+</div>
+<script src="./logix.js"></script>
+<script src="./Node.js"></script>
+<script src="./wire.js"></script>
+<script src="./subcircuit.js"></script>
+<script src="./modules.js"></script>
+<script src="./sequential.js"></script>
+<script src="./canvasApi.js"></script>
+<script src="./data.js"></script>
+<script src="./UI.js"></script>
+
+</body>
+
+
+</html>
