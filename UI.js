@@ -22,6 +22,10 @@ function addNor() {
     var a = new NorGate(200, 150, globalScope, "RIGHT", prompt("No of inputs:"));
 }
 
+function addControlledInverter() {
+    var a = new ControlledInverter(200, 150, globalScope, "RIGHT");
+}
+
 function addTriState() {
     var a = new TriState(200, 150, globalScope, "RIGHT");
 }
@@ -97,10 +101,6 @@ function addXor() {
 function addXnor() {
     var or = new XnorGate(200, 150, globalScope, "RIGHT", prompt("No of inputs:"));
 }
-
-function addDigitalLed(){
-    var or = new DigitalLed(200, 150, globalScope, "UP");
-}
 document.getElementById("powerButton").addEventListener("click", addPower);
 document.getElementById("bitSelectorButton").addEventListener("click", addBitSelector);
 document.getElementById("groundButton").addEventListener("click", addGround);
@@ -109,6 +109,7 @@ document.getElementById("multiplexerButton").addEventListener("click", addMultip
 document.getElementById("orButton").addEventListener("click", addOr);
 document.getElementById("notButton").addEventListener("click", addNot);
 document.getElementById("triStateButton").addEventListener("click", addTriState);
+document.getElementById("ControlledInverterButton").addEventListener("click", addControlledInverter);
 document.getElementById("inputButton").addEventListener("click", addInput);
 document.getElementById("outputButton").addEventListener("click", addOutput);
 document.getElementById("adderButton").addEventListener("click", addAdder);
@@ -128,4 +129,3 @@ document.getElementById("xorButton").addEventListener("click", addXor);
 document.getElementById("xnorButton").addEventListener("click", addXnor);
 document.getElementById("keyboardButton").addEventListener("click", addKeyboard);
 document.getElementById("norButton").addEventListener("click", addNor);
-document.getElementById("digitalledButton").addEventListener("click", addDigitalLed);
