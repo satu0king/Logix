@@ -15,6 +15,10 @@ function Wire(node1, node2, scope) {
         if (this.x1 == this.x2) this.type = "vertical";
     }
 
+    this.updateScope=function(scope){
+        this.scope=scope;
+    }
+
     this.updateData();
     this.scope.wires.push(this);
 

@@ -467,21 +467,41 @@ function copyPaste(copyList){
     d=backUp();
     load(tempScope,d);
     for (var i = 0; i < globalScope.objects.length; i++)
-        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++)
-            if(!copyList.contains(globalScope[globalScope.objects[i]][j]))globalScope[globalScope.objects[i]][j].delete()
-
+        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++){
+            var obj=globalScope[globalScope.objects[i]][j];
+            if(obj.objectType!='Wire'){//}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
+                if(!copyList.contains(globalScope[globalScope.objects[i]][j])){
+                    console.log("DELETE:",globalScope[globalScope.objects[i]][j]);
+                    globalScope[globalScope.objects[i]][j].delete()
+                }
+            }
+        }
+    toBeUpdated=true;
+    console.log(globalScope.wires.length)
+    // update(globalScope);
+    // console.log(globalScope.wires.length)
     for(var i=0;i<copyList.length;i++){
-        console.log(copyList[i]);
+        // console.log(copyList[i]);
         copyList[i].x+=10;
         copyList[i].y+=10;
         copyList[i].updateScope(tempScope);
     }
+    for(var i=0;i<globalScope.wires.length;i++){
+        // console.log(copyList[i]);
+
+        globalScope.wires[i].updateScope(tempScope);
+    }
+
+
+    toBeUpdated=true;
+    update(tempScope);
 
     for(l in globalScope){
-        if(globalScope[l] instanceof Array){
+        if(globalScope[l] instanceof Array&&l!="objects"){
             tempScope[l].extend(globalScope[l]);
         }
     }
+    simulationArea.multipleObjectSelections=copyList.slice();
 
     globalScope=tempScope;
 
@@ -490,7 +510,7 @@ function copyPaste(copyList){
 // fn that calls update on everything else. If any change is there, it resolves the circuit and draws it again
 // fn to change scale (zoom) - It also shifts origin so that the position
 //of the object in focus doent changeB
-function update() {
+function update(scope=globalScope) {
 
     if (loading == true) return;
     // console.log("UPDATE");
@@ -502,13 +522,13 @@ function update() {
         if (wireToBeChecked == 2) wireToBeChecked = 0; // this required due to timing issues
         else wireToBeChecked++;
         // WHY IS THIS REQUIRED ???? we are checking inside wire ALSO
-        for (var i = 0; i < globalScope.wires.length; i++)
-            globalScope.wires[i].checkConnections();
+        for (var i = 0; i < scope.wires.length; i++)
+            scope.wires[i].checkConnections();
     }
 
-    for (var i = 0; i < globalScope.objects.length; i++)
-        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++)
-            updated |= globalScope[globalScope.objects[i]][j].update();
+    for (var i = 0; i < scope.objects.length; i++)
+        for (var j = 0; j < scope[scope.objects[i]].length; j++)
+            updated |= scope[scope.objects[i]][j].update();
     toBeUpdated |= updated;
 
     if (toBeUpdated) {
@@ -520,13 +540,13 @@ function update() {
     if (!simulationArea.selected && simulationArea.mouseDown) {
         //mouse click NOT on object
         simulationArea.selected = true;
-        simulationArea.lastSelected = globalScope.root;
+        simulationArea.lastSelected = scope.root;
         simulationArea.hover = true;
 
         if (simulationArea.shiftDown) {
             objectSelection = true;
         }
-    } else if (simulationArea.lastSelected == globalScope.root && simulationArea.mouseDown) {
+    } else if (simulationArea.lastSelected == scope.root && simulationArea.mouseDown) {
         //pane canvas
         if (!objectSelection) {
             simulationArea.ox = (simulationArea.mouseRawX - simulationArea.mouseDownRawX) + simulationArea.oldx;
@@ -535,7 +555,7 @@ function update() {
             simulationArea.oy = Math.round(simulationArea.oy);
         }
 
-    } else if (simulationArea.lastSelected == globalScope.root) {
+    } else if (simulationArea.lastSelected == scope.root) {
         simulationArea.lastSelected = undefined;
         simulationArea.selected = false;
         simulationArea.hover = false;
@@ -560,9 +580,9 @@ function update() {
                 y2 = temp;
             }
             // console.log(x1,x2,y1,y2);
-            for (var i = 0; i < globalScope.objects.length; i++) {
-                for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
-                    var obj = globalScope[globalScope.objects[i]][j];
+            for (var i = 0; i < scope.objects.length; i++) {
+                for (var j = 0; j < scope[scope.objects[i]].length; j++) {
+                    var obj = scope[scope.objects[i]][j];
                     // console.log(obj);
                     var x, y;
                     if (obj.objectType == "Node") {
@@ -587,9 +607,9 @@ function update() {
     if (toBeUpdated || updateCanvas) {
         simulationArea.clear();
         dots(); // draw dots
-        for (var i = 0; i < globalScope.objects.length; i++)
-            for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++)
-                updated |= globalScope[globalScope.objects[i]][j].draw();
+        for (var i = 0; i < scope.objects.length; i++)
+            for (var j = 0; j < scope[scope.objects[i]].length; j++)
+                updated |= scope[scope.objects[i]][j].draw();
         if (objectSelection) {
             ctx = simulationArea.context;
             ctx.beginPath();
