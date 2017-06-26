@@ -11,11 +11,10 @@ objectSelection = false;
 var backups = []
 loading = false
 //Exact same name as object constructor
-moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "SubCircuit", "DigitalLed"];
-
+moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "SubCircuit"];
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
-inputList = ["Ground", "Power", "ConstantVal", "Input", "Clock"];
+inputList = ["Stepper","Ground", "Power", "ConstantVal", "Input", "Clock"];
 
 function showError(error) {
     console.log("ERROR: " + error);
@@ -685,7 +684,6 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.scope = scope;
     this.scope[this.objectType].push(this); // CHECK IF THIS IS VALID
     this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
-
     this.direction = dir;
     this.directionFixed = false;
     this.labelDirection = dir;

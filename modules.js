@@ -641,6 +641,45 @@ function OrGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth) 
 
 }
 
+function Stepper(x, y, scope, dir) {
+
+    CircuitElement.call(this, x, y, scope, dir, 8);
+    this.setDimensions(20, 20);
+
+    this.output1 = new Node(20, 0, 1, this,8);
+    this.state=0;
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.direction],
+            nodes: {
+                output1: findNode(this.output1),
+            },
+            values:{state:this.state}
+        }
+        return data;
+    }
+    this.customDraw=function(){
+        ctx = simulationArea.context;
+
+        ctx.beginPath();
+        ctx.font = "20px Georgia";
+        ctx.fillStyle = "green";
+        ctx.textAlign = "center";
+        fillText(ctx, this.state.toString(16), this.x, this.y + 5);
+        ctx.stroke();;
+    }
+
+    this.resolve = function() {
+        this.output1.value = this.state;
+        this.scope.stack.push(this.output1);
+    }
+    this.keyDown=function(key){
+        console.log(key);
+        if(this.state<255&&(key=="+"||key=="="))this.state++;
+        if(this.state>0&&(key=="_"||key=="-"))this.state--;
+    }
+}
+
 function NotGate(x, y, scope, dir, bitWidth = undefined) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
@@ -746,6 +785,70 @@ function TriState(x, y, scope, dir, bitWidth = undefined) {
         ctx.closePath();
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
+        ctx.stroke();
+
+    }
+
+}
+
+function ControlledInverter(x, y, scope, dir, bitWidth = undefined) {
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.rectangleObject = false;
+    this.setDimensions(15, 15);
+
+    this.inp1 = new Node(-10, 0, 0, this);
+    this.output1 = new Node(30, 0, 1, this);
+    this.state = new Node(0, 0, 0, this, 1);
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.direction, this.bitWidth],
+            nodes: {
+                output1: findNode(this.output1),
+                inp1: findNode(this.inp1),
+                state: findNode(this.state)
+            },
+        }
+        return data;
+    }
+    this.newBitWidth = function(bitWidth) {
+        this.inp1.bitWidth = bitWidth;
+        this.output1.bitWidth = bitWidth;
+        this.bitWidth = bitWidth;
+    }
+
+    this.resolve = function() {
+        if (this.isResolvable() == false) {
+            return;
+        }
+        if (this.state.value == 1) {
+            this.output1.value = ((~this.inp1.value>>>0)<<(32-this.bitWidth))>>>(32-this.bitWidth);
+            this.scope.stack.push(this.output1);
+        }
+        if (this.state.value == 0 )
+         {
+            this.output1.value = undefined;
+        }
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.lineWidth = 3;
+
+        var xx = this.x;
+        var yy = this.y;
+        ctx.beginPath();
+        ctx.fillStyle = "white";
+        moveTo(ctx, -10, -15, xx, yy, this.direction);
+        lineTo(ctx, 20, 0, xx, yy, this.direction);
+        lineTo(ctx, -10, 15, xx, yy, this.direction);
+        ctx.closePath();
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        arc(ctx, 25, 0, 5, 2 * (Math.PI), 0, xx, yy, this.direction);
         ctx.stroke();
 
     }
@@ -984,7 +1087,7 @@ function Input(x, y, scope, dir, bitWidth) {
         var pos = this.findPos();
         if (pos == 0) pos = 1; // minor correction
         if (pos < 1 || pos > this.bitWidth) return;
-        this.state ^= (1 << (this.bitWidth - pos));
+        this.state =((this.state>>>0)^(1 << (this.bitWidth - pos)))>>>0;
     }
 
     // Not sure if its okay to remove commented code...VERIFY!
@@ -1489,6 +1592,60 @@ function DigitalLed(x, y, scope) {
         lineTo(ctx,-18,12,xx,yy,this.direction);
         arc(ctx,0,0,Math.sqrt(468),((Math.PI/2) + Math.acos(12/Math.sqrt(468))),((-Math.PI/2) - Math.asin(18/Math.sqrt(468))),xx,yy,this.direction);
         lineTo(ctx, -15, -9, xx, yy, this.direction);
+        ctx.stroke();
+        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+
+    }
+}
+
+function VariableLed(x, y, scope) {
+    // Calling base class constructor
+
+    CircuitElement.call(this, x, y, scope, "UP",8);
+    this.rectangleObject=false;
+    this.setDimensions(10,10);
+    this.inp1 = new Node(-40, 0, 0, this,8);
+    this.directionFixed=true;
+    this.fixedBitWidth=true;
+
+    this.customSave = function() {
+        var data = {
+            nodes:{inp1: scope.allNodes.indexOf(this.inp1)},
+        }
+        return data;
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+
+        var xx = this.x;
+        var yy = this.y;
+
+        ctx.strokeStyle = "#353535";
+        ctx.lineWidth=3;
+        ctx.beginPath();
+        moveTo(ctx, -20, 0, xx, yy, this.direction);
+        lineTo(ctx, -40, 0, xx, yy, this.direction);
+        ctx.stroke();
+        var c = this.inp1.value;
+        var alpha = c/255;
+        ctx.strokeStyle = "#090a0a";
+        ctx.fillStyle = ["rgba(255,29,43,"+ alpha + ")","rgba(227, 228, 229, 0.8)"][(c === undefined || c == 0) + 0];
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+
+        moveTo(ctx, -20, -9, xx, yy, this.direction);
+        lineTo(ctx, 0, -9, xx, yy, this.direction);
+        arc(ctx, 0, 0, 9, (-Math.PI / 2), (Math.PI / 2), xx, yy, this.direction);
+        lineTo(ctx, -20, 9, xx, yy, this.direction);
+        /*lineTo(ctx,-18,12,xx,yy,this.direction);
+        arc(ctx,0,0,Math.sqrt(468),((Math.PI/2) + Math.acos(12/Math.sqrt(468))),((-Math.PI/2) - Math.asin(18/Math.sqrt(468))),xx,yy,this.direction);
+
+        */
+        lineTo(ctx, -20, -9, xx, yy, this.direction);
         ctx.stroke();
         if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
