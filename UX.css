@@ -1,6 +1,7 @@
 .side{
 display: inline-block;
-width:200px;
+position: relative;
+width:260px;
 height:100%;
 border: 2px solid;
 border-color: rgba(0, 0, 0, 0.5);
@@ -17,6 +18,17 @@ body, html {
 body {
     overflow: hidden
 }
+
+.moduleProperty{
+    margin: 5px;
+
+height:300px;
+padding: 5px;
+padding-bottom:10px;
+overflow: scroll;
+/*border: 2px solid black;*/
+}
+
 
 .canvasArea{
     position: relative;
@@ -45,7 +57,8 @@ body {
     border-color: black;
     border: 2px solid;
     text-align: center;
-    font-size: 9px;
+    font-size: 8px;
+
 }
 
 .icon:hover{
@@ -57,12 +70,12 @@ body {
 
 }
 .modules{
-
 margin:5px;
-
 height:400px;
 /*background-color: green;*/
 }
+
+
 .bottom {
     position: absolute;
     bottom: 0;
@@ -92,7 +105,8 @@ div.panel {
     padding: 10 18px;
     background-color: white;
     display: none;
-    max-height: 300px;
+
+    max-height: 200px;
 }
 
 .moduleButton {

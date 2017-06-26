@@ -15,7 +15,7 @@ function loadFlipFlop(data, scope) {
     v.en = replace(v.en, data["en"]);
 }
 
-function FlipFlop(x, y, scope, dir, bitWidth) {
+function FlipFlop(x, y, scope=globalScope, dir="RIGHT", bitWidth=1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     // this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
     // this.direction = dir;
@@ -138,8 +138,8 @@ function loadTTY(data, scope) {
     v.en = replace(v.en, data["en"]);
 }
 
-function TTY(x, y, scope, dir,rows,cols) {
-    CircuitElement.call(this, x, y, scope, dir, 1);
+function TTY(x, y, scope=globalScope,rows=3,cols=32) {
+    CircuitElement.call(this, x, y, scope, "RIGHT", 1);
     this.directionFixed=true;
     this.fixedBitWidth=true;
     this.cols=cols||parseInt(prompt("Enter cols:"));
@@ -256,17 +256,9 @@ function TTY(x, y, scope, dir,rows,cols) {
     // }
 }
 
-function loadKeyboard(data, scope) {
-    var v = new Keyboard(data["x"], data["y"], scope, data["dir"], data["bufferSize"]);
-    v.clockInp = replace(v.clockInp, data["clockInp"]);
-    v.asciiOutput = replace(v.asciiOutput, data["asciiOutput"]);
-    v.reset = replace(v.reset, data["reset"]);
-    v.en = replace(v.en, data["en"]);
-    v.available = replace(v.available, data["available"]);
-}
 
-function Keyboard(x, y, scope, dir,bufferSize) {
-    CircuitElement.call(this, x, y, scope, dir, 1);
+function Keyboard(x, y, scope=globalScope,bufferSize=32) {
+    CircuitElement.call(this, x, y, scope,"RIGHT", 1);
     this.directionFixed=true;
     this.fixedBitWidth=true;
 
@@ -390,13 +382,8 @@ function Keyboard(x, y, scope, dir,bufferSize) {
     }
 }
 
-function loadClock(data, scope) {
-    var v = new Clock(data["x"], data["y"], scope, data["dir"]);
-    v.output1 = replace(v.output1, data["output1"]);
 
-}
-
-function Clock(x, y, scope, dir) {
+function Clock(x, y, scope=globalScope, dir="RIGHT") {
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.fixedBitWidth=true;
     this.output1 = new Node(10, 0, 1, this, 1);
@@ -408,7 +395,6 @@ function Clock(x, y, scope, dir) {
         var data = {
             nodes:{output1: findNode(this.output1)},
             constructorParamaters:[this.direction],
-
         }
         return data;
     }

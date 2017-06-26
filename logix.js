@@ -228,6 +228,7 @@ var simulationArea = {
         // this.shiftDown=false;
 
         window.addEventListener('mousemove', function(e) {
+            // if(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height)simulationArea.mouseDown=false;
             // return;
             scheduleUpdate();
             // toBeUpdated=true;
@@ -251,14 +252,42 @@ var simulationArea = {
             }
         });
         window.addEventListener('keydown', function(e) {
+
+
+            // zoom in (+)
+            if (e.key == "Meta"||e.key=="Control") {
+                simulationArea.controlDown = true;
+            }
+
+
+            if (simulationArea.controlDown&&e.keyCode == 187 && simulationArea.scale < 4) {
+                e.preventDefault();
+                changeScale(.1);
+            }
+            // zoom out (-)
+            if (simulationArea.controlDown&&e.keyCode == 189 && simulationArea.scale > 0.5) {
+                e.preventDefault();
+                changeScale(-.1);
+            }
+
+
+            if(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height)return;
+
+
+            if (e.keyCode == 16) {
+                simulationArea.shiftDown = true;
+                if (simulationArea.lastSelected&&simulationArea.lastSelected.objectType!="Wire") {
+                    simulationArea.multipleObjectSelections.push(simulationArea.lastSelected);
+                    // simulationArea.lastSelected = undefined;
+                }
+            }
+
+
             scheduleUpdate(1);
             updateCanvas = true;
             wireToBeChecked = 1;
             // e.preventDefault();
                console.log("KEY:"+e.key);
-           if (e.key == "Meta"||e.key=="Control") {
-               simulationArea.controlDown = true;
-           }
 
            if(simulationArea.controlDown&&(e.key=="C"||e.key=="c")){
                simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
@@ -282,13 +311,7 @@ var simulationArea = {
                     simulationArea.multipleObjectSelections[i].delete();
                 }
             }
-            if (e.keyCode == 16) {
-                simulationArea.shiftDown = true;
-                if (simulationArea.lastSelected) {
-                    simulationArea.multipleObjectSelections.push(simulationArea.lastSelected);
-                    simulationArea.lastSelected = undefined;
-                }
-            }
+
 
             if (simulationArea.controlDown&&e.key.charCodeAt(0) == 122) { // detect the special CTRL-Z code
                 if (backups.length == 0) return;
@@ -329,20 +352,10 @@ var simulationArea = {
                     simulationArea.lastSelected.setLabel();
             }
 
-            // zoom in (+)
-            if (simulationArea.controlDown&&e.keyCode == 187 && simulationArea.scale < 4) {
-                e.preventDefault();
-                changeScale(.1);
-            }
-            // zoom out (-)
-            if (simulationArea.controlDown&&e.keyCode == 189 && simulationArea.scale > 0.5) {
-                e.preventDefault();
-                changeScale(-.1);
-            }
             // console.log()
             // update();
         })
-        window.addEventListener('dblclick', function(e) {
+        document.getElementById("simulationArea").addEventListener('dblclick', function(e) {
             scheduleUpdate(2);
             if (simulationArea.lastSelected&&simulationArea.lastSelected.dblclick !== undefined) {
                 simulationArea.lastSelected.dblclick();
@@ -352,14 +365,7 @@ var simulationArea = {
             }
             // console.log(simulationArea.mouseDown, "mouseDOn");
         });
-        // window.addEventListener('click', function(e) {
-        //     // console.log("click");
-        //     // if(simulationArea.lastSelected.click!==undefined){
-        //     //     simulationArea.lastSelected.click();
-        //     // }
-        //     // scheduleUpdate(1);
-        // });
-        window.addEventListener('mousedown', function(e) {
+        document.getElementById("simulationArea").addEventListener('mousedown', function(e) {
             // return;
             scheduleBackup();
             update();
@@ -535,7 +541,12 @@ function update(scope=globalScope) {
         // toBeUpdated = false;
         play();
     }
-
+    if(simulationArea.lastSelected!==undefined&&simulationArea.lastSelected.objectType!=="Wire"&&simulationArea.lastSelected.objectType!=="CircuitElement"){
+        showProperties(simulationArea.lastSelected);
+    }
+    else{
+        hideProperties();
+    }
 
     if (!simulationArea.selected && simulationArea.mouseDown) {
         //mouse click NOT on object
@@ -871,8 +882,8 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         return false;
     };
 
-    this.setLabel = function() {
-        this.label = prompt("Enter Label:");
+    this.setLabel = function(label) {
+        this.label = label;
         // console.log(this.label);
     }
 
@@ -965,7 +976,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     //method to change direction
     //OVERRIDE WITH CAUTION
     this.newDirection = function(dir) {
-        console.log(dir)
+        if(this.direction==dir)return;
         // Leave this for now
         if (this.directionFixed && this.orientationFixed) return;
         else if (this.directionFixed) {
@@ -979,6 +990,9 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             this.nodeList[i].refresh();
         }
 
+    }
+    this.newLabelDirection = function(dir) {
+        this.labelDirection=dir;
     }
 
     //Method to check if object can be resolved
