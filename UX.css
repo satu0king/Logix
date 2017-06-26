@@ -51,6 +51,7 @@ overflow: scroll;
     position: relative;
     height:50px;
     width: 50px;
+    margin: 1px;
     display: inline-block;
     background-color: #cce5ff;
     border-radius:6px;
@@ -105,7 +106,7 @@ div.panel {
     padding: 10 18px;
     background-color: white;
     display: none;
-
+    height:auto;
     max-height: 200px;
 }
 

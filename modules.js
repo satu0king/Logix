@@ -6,6 +6,7 @@ function changeInputSize(size){
     var obj=new window[this.objectType](this.x,this.y,this.scope,this.direction,size,this.bitWidth);
     this.delete();
     simulationArea.lastSelected=obj;
+    return obj;
     // showProperties(obj);
 
 }

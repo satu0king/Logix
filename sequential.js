@@ -6,14 +6,6 @@ function clockTick() {
     scheduleUpdate();
 }
 
-function loadFlipFlop(data, scope) {
-    var v = new FlipFlop(data["x"], data["y"], scope, data["dir"], data["bitWidth"]);
-    v.clockInp = replace(v.clockInp, data["clockInp"]);
-    v.dInp = replace(v.dInp, data["dInp"]);
-    v.qOutput = replace(v.qOutput, data["qOutput"]);
-    v.reset = replace(v.reset, data["reset"]);
-    v.en = replace(v.en, data["en"]);
-}
 
 function FlipFlop(x, y, scope=globalScope, dir="RIGHT", bitWidth=1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
@@ -130,13 +122,6 @@ function FlipFlop(x, y, scope=globalScope, dir="RIGHT", bitWidth=1) {
     }
 }
 
-function loadTTY(data, scope) {
-    var v = new TTY(data["x"], data["y"], scope, data["dir"], data["rows"],data["cols"]);
-    v.clockInp = replace(v.clockInp, data["clockInp"]);
-    v.asciiInp = replace(v.asciiInp, data["asciiInp"]);
-    v.reset = replace(v.reset, data["reset"]);
-    v.en = replace(v.en, data["en"]);
-}
 
 function TTY(x, y, scope=globalScope,rows=3,cols=32) {
     CircuitElement.call(this, x, y, scope, "RIGHT", 1);
@@ -162,6 +147,40 @@ function TTY(x, y, scope=globalScope,rows=3,cols=32) {
 
     this.data="";
     this.buffer="";
+
+    this.changeRowSize=function(size){
+        if(size==undefined||size<1||size>10)return;
+        if(this.rows==size)return;
+        var obj=new window[this.objectType](this.x,this.y,this.scope,size,this.cols);
+        this.delete();
+        simulationArea.lastSelected=obj;
+        return obj;
+    }
+    this.changeColSize=function(size){
+        if(size==undefined||size<20||size>100)return;
+        if(this.cols==size)return;
+        var obj=new window[this.objectType](this.x,this.y,this.scope,this.rows,size);
+        this.delete();
+        simulationArea.lastSelected=obj;
+        return obj;
+    }
+    this.mutableProperties={
+        "cols":{
+            name:"Columns",
+            type:"int",
+            max:"100",
+            min:"20",
+            func:"changeColSize",
+        },
+        "rows":{
+            name:"Rows",
+            type:"int",
+            max:"10",
+            min:"1",
+            func:"changeRowSize",
+        }
+    }
+
     // this.newBitWidth = function(bitWidth) {
     //
     // }
@@ -258,6 +277,7 @@ function TTY(x, y, scope=globalScope,rows=3,cols=32) {
 
 
 function Keyboard(x, y, scope=globalScope,bufferSize=32) {
+
     CircuitElement.call(this, x, y, scope,"RIGHT", 1);
     this.directionFixed=true;
     this.fixedBitWidth=true;
@@ -276,12 +296,25 @@ function Keyboard(x, y, scope=globalScope,bufferSize=32) {
     this.prevClockState = 0;
     this.buffer="";
     this.bufferOutValue=undefined;
-    // this.newBitWidth = function(bitWidth) {
-    //
-    // }
-    // this.dblclick=function(){
-    //
-    // }
+
+    this.changeBufferSize=function(size){
+        if(size==undefined||size<20||size>100)return;
+        if(this.bufferSize==size)return;
+        var obj=new window[this.objectType](this.x,this.y,this.scope,size);
+        this.delete();
+        simulationArea.lastSelected=obj;
+        return obj;
+    }
+    this.mutableProperties={
+        "bufferSize":{
+            name:"Buffer Size",
+            type:"int",
+            max:"100",
+            min:"20",
+            func:"changeBufferSize",
+        }
+    }
+
     this.keyDown=function(key){
         this.buffer+=key;
         if(this.buffer.length>this.bufferSize)

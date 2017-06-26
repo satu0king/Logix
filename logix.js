@@ -129,8 +129,8 @@ function setup() {
     }
 
     toBeUpdated = true;
-    width = document.getElementById("canvasArea").clientWidth;
-    height = document.getElementById("canvasArea").clientHeight;
+    width = window.innerWidth;//document.getElementById("canvasArea").clientWidth;
+    height = window.innerHeight;//document.getElementById("canvasArea").clientHeight;
     // console.log(width);
     //setup simulationArea
     simulationArea.setup();
@@ -542,10 +542,10 @@ function update(scope=globalScope) {
         play();
     }
     if(simulationArea.lastSelected!==undefined&&simulationArea.lastSelected.objectType!=="Wire"&&simulationArea.lastSelected.objectType!=="CircuitElement"){
-        showProperties(simulationArea.lastSelected);
+        // showProperties(simulationArea.lastSelected);
     }
     else{
-        hideProperties();
+        // hideProperties();
     }
 
     if (!simulationArea.selected && simulationArea.mouseDown) {

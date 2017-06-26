@@ -12,8 +12,6 @@ $(document).ready(function() {
         obj = new window[this.id](smartDropX,smartDropY);
     });
 
-
-
 }); // accordion
 
 var prevPropertyObj=undefined;
@@ -57,15 +55,26 @@ function showProperties(obj){
         $('#moduleProperty').append(s);
     }
 
+    if(obj.mutableProperties){
+        for( attr in obj.mutableProperties){
+            var prop=obj.mutableProperties[attr];
+            if(obj.mutableProperties[attr].type=="int"){
+                var s="<p>" +prop.name+ "<input class='objectPropertyAttribute' type='number'  name='"+prop.func+"' min='"+(prop.min||0)+"' max='"+(prop.max||200)+"' value="+obj[attr]+"></p>";
+                console.log(s);
+                $('#moduleProperty').append(s);
+            }
+        }
+    }
 
 
 
     $(".objectPropertyAttribute").on("change keyup paste click", function(){
+        // return;
         console.log(this.name,this.value);
-        scheduleUpdate(1);
+        scheduleUpdate();
         updateCanvas = true;
         wireToBeChecked = 1;
-        simulationArea.lastSelected[this.name](this.value);
+        prevPropertyObj=simulationArea.lastSelected[this.name](this.value)||prevPropertyObj;
     })
 }
 
