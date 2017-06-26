@@ -65,7 +65,7 @@ function AndGate(x, y, scope=globalScope, dir="RIGHT", inputLength=2, bitWidth =
         if (this.isResolvable() == false) {
             return;
         }
-        for (var i = 1; i < inputLength; i++)
+        for (var i = 1; i < this.inputSize; i++)
             result = result & (this.inp[i].value);
         this.output1.value = result;
         this.scope.stack.push(this.output1);
@@ -284,7 +284,7 @@ function XorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
         if (this.isResolvable() == false) {
             return;
         }
-        for (var i = 1; i < this.inputs; i++)
+        for (var i = 1; i < this.inputSize; i++)
             result = result ^ (this.inp[i].value);
 
         this.output1.value = result;
@@ -362,7 +362,7 @@ function XnorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth
         if (this.isResolvable() == false) {
             return;
         }
-        for (var i = 1; i < this.inputs; i++)
+        for (var i = 1; i < this.inputSize; i++)
             result = result ^ (this.inp[i].value);
         result = ((~result >>> 0) << (32 - this.bitWidth)) >>> (32 - this.bitWidth);
         this.output1.value = result;
@@ -624,7 +624,7 @@ function OrGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth=1
         if (this.isResolvable() == false) {
             return;
         }
-        for (var i = 1; i < this.inputs; i++)
+        for (var i = 1; i < this.inputSize; i++)
             result = result | (this.inp[i].value);
         this.output1.value = result;
         this.scope.stack.push(this.output1);
@@ -1539,7 +1539,7 @@ function NorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
         if (this.isResolvable() == false) {
             return;
         }
-        for (var i = 1; i < this.inputs; i++)
+        for (var i = 1; i < this.inputSize; i++)
             result = result | (this.inp[i].value);
         result = ((~result >>> 0) << (32 - this.bitWidth)) >>> (32 - this.bitWidth);
         this.output1.value = result
