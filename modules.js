@@ -1624,7 +1624,7 @@ function VariableLed(x, y, scope) {
         var xx = this.x;
         var yy = this.y;
 
-        ctx.strokeStyle = "#e3e4e5";
+        ctx.strokeStyle = "#353535";
         ctx.lineWidth=3;
         ctx.beginPath();
         moveTo(ctx, -20, 0, xx, yy, this.direction);
@@ -1632,19 +1632,21 @@ function VariableLed(x, y, scope) {
         ctx.stroke();
         var c = this.inp1.value;
         var alpha = c/255;
-        ctx.strokeStyle = "#d3d4d5";
-        ctx.fillStyle = ["rgba(255,29,43,"+ alpha + ")","rgba(227,228,229,0.8)"][(c === undefined || c == 0) + 0];
+        ctx.strokeStyle = "#090a0a";
+        ctx.fillStyle = ["rgba(255,29,43,"+ alpha + ")","rgba(227, 228, 229, 0.8)"][(c === undefined || c == 0) + 0];
         ctx.lineWidth = 1;
 
         ctx.beginPath();
 
-        moveTo(ctx, -15, -9, xx, yy, this.direction);
+        moveTo(ctx, -20, -9, xx, yy, this.direction);
         lineTo(ctx, 0, -9, xx, yy, this.direction);
         arc(ctx, 0, 0, 9, (-Math.PI / 2), (Math.PI / 2), xx, yy, this.direction);
-        lineTo(ctx, -15, 9, xx, yy, this.direction);
-        lineTo(ctx,-18,12,xx,yy,this.direction);
+        lineTo(ctx, -20, 9, xx, yy, this.direction);
+        /*lineTo(ctx,-18,12,xx,yy,this.direction);
         arc(ctx,0,0,Math.sqrt(468),((Math.PI/2) + Math.acos(12/Math.sqrt(468))),((-Math.PI/2) - Math.asin(18/Math.sqrt(468))),xx,yy,this.direction);
-        lineTo(ctx, -15, -9, xx, yy, this.direction);
+
+        */
+        lineTo(ctx, -20, -9, xx, yy, this.direction);
         ctx.stroke();
         if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
