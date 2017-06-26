@@ -641,6 +641,45 @@ function OrGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth) 
 
 }
 
+function Stepper(x, y, scope, dir) {
+
+    CircuitElement.call(this, x, y, scope, dir, 8);
+    this.setDimensions(20, 20);
+
+    this.output1 = new Node(20, 0, 1, this,8);
+    this.state=0;
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.direction],
+            nodes: {
+                output1: findNode(this.output1),
+            },
+            values:{state:this.state}
+        }
+        return data;
+    }
+    this.customDraw=function(){
+        ctx = simulationArea.context;
+
+        ctx.beginPath();
+        ctx.font = "20px Georgia";
+        ctx.fillStyle = "green";
+        ctx.textAlign = "center";
+        fillText(ctx, this.state.toString(16), this.x, this.y + 5);
+        ctx.stroke();;
+    }
+
+    this.resolve = function() {
+        this.output1.value = this.state;
+        this.scope.stack.push(this.output1);
+    }
+    this.keyDown=function(key){
+        console.log(key);
+        if(this.state<255&&(key=="+"||key=="="))this.state++;
+        if(this.state>0&&(key=="_"||key=="-"))this.state--;
+    }
+}
+
 function NotGate(x, y, scope, dir, bitWidth = undefined) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
