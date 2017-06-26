@@ -8,11 +8,15 @@ function Wire(node1, node2, scope) {
         this.scope = scope;
         this.node2 = node2;
         this.type = "horizontal";
-        this.x1 = node1.absX();
-        this.y1 = node1.absY();
-        this.x2 = node2.absX();
-        this.y2 = node2.absY();
+        this.x1 = this.node1.absX();
+        this.y1 = this.node1.absY();
+        this.x2 = this.node2.absX();
+        this.y2 = this.node2.absY();
         if (this.x1 == this.x2) this.type = "vertical";
+    }
+
+    this.updateScope=function(scope){
+        this.scope=scope;
     }
 
     this.updateData();
@@ -28,12 +32,21 @@ function Wire(node1, node2, scope) {
 
     this.update = function() {
 
+        if(this.node1.absX()==this.node2.absX()){
+            this.x1=this.x2=this.node1.absX();
+            this.type="vertical";
+        }
+        else if(this.node1.absY()==this.node2.absY()){
+            this.y1=this.y2=this.node1.absY();
+            this.type="horizontal";
+        }
+
         var updated = false;
         if (wireToBeChecked && this.checkConnections()) {
             this.delete();
             return;
         } // SLOW , REMOVE
-        if (simulationArea.mouseDown == true && simulationArea.selected == false && this.checkWithin(simulationArea.mouseDownX, simulationArea.mouseDownY)) {
+        if (simulationArea.shiftDown==false&&simulationArea.mouseDown == true && simulationArea.selected == false && this.checkWithin(simulationArea.mouseDownX, simulationArea.mouseDownY)) {
             simulationArea.selected = true;
             simulationArea.lastSelected = this;
             var n = new Node(simulationArea.mouseDownX, simulationArea.mouseDownY, 2, this.scope.root);
