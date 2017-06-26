@@ -16,9 +16,8 @@
         <div class="menu" id="menu">
             <button class="accordion">Input/Output</button>
             <div class="panel">
-              <div class="icon logixModules" id="Input" >
-                 Input
-              </div>
+              <div class="icon logixModules" id="Input" >Input</div>
+              <div class="icon logixModules" id="Output" >Output</div>
             </div>
 
             <button class="accordion">Gates</button>
@@ -38,37 +37,7 @@
 
  <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
  <div class="toolbar" id="toolbar"  >
-    <button class="moduleButton" id="inputButton">Input</button>
-    <button class="moduleButton" id="constantValButton">Constant Value</button>
-    <button class="moduleButton" id="outputButton">Output</button>
-    <button class="moduleButton" id="multiplexerButton">Multiplexer</button>
-    <button class="moduleButton" id="powerButton">Power</button>
-    <button class="moduleButton" id="groundButton">Ground</button>
-    <button class="moduleButton" id="splitterButton">Splitter</button>
-    <button class="moduleButton" id="bitSelectorButton">Bit Selector</button>
 
-    <button class="moduleButton" id="clockButton">Clock</button>
-    <button class="moduleButton" id="flipflopButton">FlipFlop</button>
-    <button class="moduleButton" id="TTYButton">TTY</button>
-    <button class="moduleButton" id="keyboardButton">Keyboard</button>
-    <button class="moduleButton" id="andButton">And</button>
-    <button class="moduleButton" id="adderButton">Adder</button>
-    <button class="moduleButton" id="ramButton">Ram</button>
-    <button class="moduleButton" id="ControlledInverterButton">ControlledInverter</button>
-    <button class="moduleButton" id="orButton">Or</button>
-    <button class="moduleButton" id="notButton">Not</button>
-    <button class="moduleButton" id="triStateButton">TriState</button>
-    <button class="moduleButton" id="sevenSegButton">7 Segment</button>
-    <button class="moduleButton" id="hexButton">Hex</button>
-    <button class="moduleButton" id="subCircuitButton">SubCircuit</button>
-    <button class="moduleButton" id="saveButton">Save</button>
-    <button class="moduleButton" id="saveButtonimg" onclick="saveasimg();">SaveAsImage</button>
-    <button class="moduleButton" id="NAND">Nand</button>
-    <button class="moduleButton" id="norButton">Nor</button>
-    <button class="moduleButton" id="xorButton">Xor</button>
-    <button class="moduleButton" id="xnorButton">Xnor</button>
-    <button class="moduleButton" id="digitalledButton">DigitalLed</button>
-    <button class="moduleButton" id="stepperButton">Stepper</button>
  </div>
 
  <script src="./logix.js"></script>
@@ -79,7 +48,7 @@
  <script src="./sequential.js"></script>
  <script src="./canvasApi.js"></script>
  <script src="./data.js"></script>
- <script src="./UI.js"></script>
+ <!-- <script src="./UI.js"></script> -->
 </div>
 </body>
 

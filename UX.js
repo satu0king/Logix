@@ -1,3 +1,6 @@
+
+var smartDropX=200;
+var smartDropY=200;
 $(document).ready(function() {
     $("#menu").accordion({collapsible: true, active: false});
     $( "#sideBar" ).resizable({
@@ -6,17 +9,8 @@ $(document).ready(function() {
     });
 
     $('.logixModules').click(function(){
-        console.log(this.id);
+        obj = new window[this.id](smartDropX,smartDropY);
     });
 
-    // $( "#sideBar" ).resizable({
-    //     autoHide: true
-    // });
-    // $( "#sideBar" ).resizable({
-    //     minHeight: window.innerHeight
-    // });
-    // $( "#sideBar" ).resizable({
-    //     maxHeight: window.innerHeight
-    // });
 
 }); // accordion

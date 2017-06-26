@@ -1039,7 +1039,7 @@ function Splitter(x, y, scope, dir, bitWidth = undefined, bitWidthSplit = undefi
 
 }
 
-function Input(x, y, scope, dir, bitWidth) {
+function Input(x, y, scope=globalScope, dir="RIGHT", bitWidth=1) {
 
     // Call base class constructor
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
@@ -1230,7 +1230,7 @@ function Power(x, y, scope = globalScope, bitWidth = undefined) {
     }
 }
 
-function Output(x, y, scope, dir, bitWidth) {
+function Output(x, y, scope=globalScope, dir="LEFT", bitWidth=1) {
     // Calling base class constructor
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
