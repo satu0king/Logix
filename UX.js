@@ -5,6 +5,10 @@ $(document).ready(function() {
         minWidth:200,
     });
 
+    $('.logixModules').click(function(){
+        console.log(this.id);
+    });
+
     // $( "#sideBar" ).resizable({
     //     autoHide: true
     // });

@@ -130,8 +130,9 @@ function setup() {
     }
 
     toBeUpdated = true;
-    width = window.innerWidth;
-    height = window.innerHeight;
+    width = document.getElementById("canvasArea").clientWidth;
+    height = document.getElementById("canvasArea").clientHeight;
+    // console.log(width);
     //setup simulationArea
     simulationArea.setup();
     scheduleUpdate();
@@ -141,8 +142,8 @@ function setup() {
 
 //to resize window
 function resetup() {
-    width = window.innerWidth;
-    height = window.innerHeight;
+    width = document.getElementById("canvasArea").clientWidth;
+    height = document.getElementById("canvasArea").clientHeight;
     simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
     // simulationArea.setup();
@@ -387,7 +388,7 @@ var simulationArea = {
             // simulationArea.mouseDownY = Math.round((simulationArea.mouseDownY - simulationArea.oy / simulationArea.scale) / unit) * unit;
 
             simulationArea.mouseDown = false;
-            console.log(simulationArea.mouseDown);
+            // console.log(simulationArea.mouseDown);
         });
         window.addEventListener('touchmove', function(e) {
             scheduleUpdate();

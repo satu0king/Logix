@@ -31,6 +31,7 @@ function addControlledInverter() {
 }
 
 function addInput() {
+    // console.log("hello?");
     var a = new Input(200, 150, globalScope, "RIGHT");
 }
 
