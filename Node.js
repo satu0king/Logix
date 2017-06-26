@@ -97,6 +97,20 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     this.refresh();
 
+    this.updateScope=function(scope){
+        this.scope=scope;
+        
+    }
+
+    this.startDragging=function(){
+        this.oldx = this.x;
+        this.oldy = this.y;
+    }
+    this.drag=function(){
+        this.x = this.oldx + simulationArea.mouseX - simulationArea.mouseDownX;
+        this.y = this.oldy + simulationArea.mouseY - simulationArea.mouseDownY;
+    }
+
     this.saveObject = function() {
 
         if (this.type == 2) {
@@ -246,6 +260,12 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
         if (simulationArea.mouseDown && (this.clicked)) {
 
+            if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
+                for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+                    simulationArea.multipleObjectSelections[i].drag();
+                }
+            }
+
             if (this.type == 2) {
                 //console.log(this.absY(),simulationArea.mouseDownY,simulationArea.mouseDownX-this.parent.x);
                 if (this.absX() == simulationArea.mouseX && this.absY() == simulationArea.mouseY) {
@@ -290,6 +310,13 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
         if (this.clicked && !this.wasClicked) {
             this.wasClicked = true;
+            // this.drag();
+            if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
+                for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+                    simulationArea.multipleObjectSelections[i].startDragging();
+                }
+            }
+
             if (this.type == 2) {
                 if (simulationArea.shiftDown) {
                     simulationArea.lastSelected = undefined;

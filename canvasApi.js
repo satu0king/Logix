@@ -2,8 +2,8 @@ function changeScale(delta) {
     var xx, yy;
 
     if (simulationArea.lastSelected) { // selected object
-        xx = simulationArea.lastSelected.element.x;
-        yy = simulationArea.lastSelected.element.y;
+        xx = simulationArea.lastSelected.x;
+        yy = simulationArea.lastSelected.y;
     } else { //mouse location
         xx = simulationArea.mouseX;
         yy = simulationArea.mouseY;
