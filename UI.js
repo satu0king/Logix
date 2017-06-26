@@ -105,6 +105,9 @@ function addXnor() {
 function addDigitalLed(){
     var or = new DigitalLed(200, 150, globalScope, "UP");
 }
+function addStepper(){
+    var or = new Stepper(200, 150, globalScope,"RIGHT");
+}
 document.getElementById("powerButton").addEventListener("click", addPower);
 document.getElementById("bitSelectorButton").addEventListener("click", addBitSelector);
 document.getElementById("groundButton").addEventListener("click", addGround);
@@ -128,9 +131,9 @@ document.getElementById("saveButton").addEventListener("click", Save);
 document.getElementById("splitterButton").addEventListener("click", addSplitter);
 document.getElementById("constantValButton").addEventListener("click", addConstantVal);
 document.getElementById("NAND").addEventListener("click", addNand);
-
 document.getElementById("xorButton").addEventListener("click", addXor);
 document.getElementById("xnorButton").addEventListener("click", addXnor);
 document.getElementById("keyboardButton").addEventListener("click", addKeyboard);
 document.getElementById("norButton").addEventListener("click", addNor);
 document.getElementById("digitalledButton").addEventListener("click", addDigitalLed);
+document.getElementById("stepperButton").addEventListener("click", addStepper);
