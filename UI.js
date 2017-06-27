@@ -114,7 +114,7 @@ function addStepper(){
     var a = new Stepper(200, 150, globalScope,"RIGHT");
 }
 function addButton(){
-    var a = new VariableLed(200, 150, globalScope, "UP");
+    var a = new Button(200, 150, globalScope, "RIGHT");
 }
 document.getElementById("powerButton").addEventListener("click", addPower);
 document.getElementById("bitSelectorButton").addEventListener("click", addBitSelector);

@@ -1654,7 +1654,7 @@ function VariableLed(x, y, scope) {
 }
 
 function Button(x, y, scope, dir) {
-    CircuitElement.call(this, x, y, scope, dir,1);
+    CircuitElement.call(this, x, y, scope, dir, 1);
     this.state = 0;
     this.output1 = new Node(this.bitWidth * 10, 0, 1, this);
     this.wasClicked = false;
@@ -1674,23 +1674,22 @@ function Button(x, y, scope, dir) {
         }
         return data;
     }
-
     this.resolve = function() {
         if(this.wasClicked)
         {
             this.state=1;
             this.output1.value=this.state;
-            console.log('output:',this.output1.value);
         }
-        else
+        else 
         {
             this.state=0;
-            this.output1.value=this.state;
-            console.log('output:',this.output1.value);
+            this.output1.value=this.state;   
         }
+        this.scope.stack.push(this.output1);
     }
-
     this.customDraw = function() {
+
+        // ctx = simulationArea.context;
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.lineWidth = 3;
@@ -1705,7 +1704,6 @@ function Button(x, y, scope, dir) {
             fillText(ctx, bin[k], xx - 10 * this.bitWidth + 10 + (k) * 20, yy + 5);
         ctx.fill();
     }
-
     this.newDirection = function(dir) {
         if (dir == this.direction) return;
         this.direction = dir;
@@ -1721,5 +1719,4 @@ function Button(x, y, scope, dir) {
         this.output1.refresh();
         this.labelDirection = oppositeDirection[this.direction];
     }
-
 }
