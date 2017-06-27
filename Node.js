@@ -99,7 +99,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     this.updateScope=function(scope){
         this.scope=scope;
-        
+
     }
 
     this.startDragging=function(){
@@ -194,8 +194,8 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     }
 
     this.draw = function() {
-        if (this.isHover())
-            console.log(this, this.id);
+        // if (this.isHover())
+        //     console.log(this, this.id);
 
         var ctx = simulationArea.context;
 

@@ -20,9 +20,15 @@ $(document).ready(function() {
             smartDropYY+=80;
         }
     });
+    $('#newCircuit').click(function(){
+        newCircuit();
+        $('.circuits').click(function(){switchCircuit(this.id)});
+    });
     // $('#moduleProperty').draggable();
 
 }); // accordion
+
+
 
 var prevPropertyObj=undefined;
 function showProperties(obj){
@@ -73,7 +79,7 @@ function showProperties(obj){
             var prop=obj.mutableProperties[attr];
             if(obj.mutableProperties[attr].type=="int"){
                 var s="<p>" +prop.name+ "<input class='objectPropertyAttribute' type='number'  name='"+prop.func+"' min='"+(prop.min||0)+"' max='"+(prop.max||200)+"' value="+obj[attr]+"></p>";
-                console.log(s);
+                // console.log(s);
                 $('#moduleProperty').append(s);
             }
         }

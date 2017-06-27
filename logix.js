@@ -8,13 +8,16 @@ updateCanvas = true;
 wireToBeChecked = 0; // when node disconnects from another node
 willBeUpdated = false;
 objectSelection = false;
-var backups = []
+// var backups = []
 loading = false
 //Exact same name as object constructor
 moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "SubCircuit"];
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
 inputList = ["Stepper","Ground", "Power", "ConstantVal", "Input", "Clock"];
+
+scopeList=[];
+globalScope=undefined;
 
 function showError(error) {
     console.log("ERROR: " + error);
@@ -41,15 +44,7 @@ function scheduleUpdate(count = 0) {
 
 }
 
-function scheduleBackup() {
-    // return;
-    // setTimeout(function(){
-    var backup = backUp();
-    // if(backups.length==0||backups[backups.length-1]!=backup){
-    backups.push(backup);
-    // }
-    // }, 1000);
-}
+
 //fn to remove elem in array
 Array.prototype.clean = function(deleteValue) {
     for (var i = 0; i < this.length; i++) {
@@ -78,8 +73,10 @@ Array.prototype.contains = function(value) {
 //Scope object for each circuit level, globalScope for outer level
 function Scope(name = "localScope") {
     //root object for referring to main canvas - intermediate node uses this
+    this.id=Math.floor((Math.random() * 100000000000) + 1);
     this.CircuitElement = [];
     this.root = new CircuitElement(0, 0, this, "RIGHT", 1);
+    this.backups=[];
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)
@@ -101,8 +98,9 @@ function Scope(name = "localScope") {
 
 //fn to setup environment
 function setup() {
-    globalScope = new Scope("globalScope"); //enabling scope
-
+    // globalScope = new Scope("globalScope"); //enabling scope
+    // scopeList.push(globalScope);
+    newCircuit("Main");
     data = {};
     //retrieving data
     if (parent.location.hash.length > 1) {
@@ -122,7 +120,7 @@ function setup() {
                 console.log(data);
                 load(globalScope, data);
                 simulationArea.changeClockTime(data["timePeriod"] || 500);
-                backups.push(backUp())
+                globalScope.backups.push(backUp())
             }
         }
 
@@ -164,7 +162,7 @@ function play(scope = globalScope, resetNodes = true) {
         for (var i = 0; i < scope.allNodes.length; i++)
             scope.allNodes[i].reset();
         for (var i = 0; i < scope.SubCircuit.length; i++) {
-            scope.SubCircuit[i].resetNodes();
+            scope.SubCircuit[i].reset();
         }
     }
     for (var i = 0; i < scope.SubCircuit.length; i++) {
@@ -314,18 +312,7 @@ var simulationArea = {
 
 
             if (simulationArea.controlDown&&e.key.charCodeAt(0) == 122) { // detect the special CTRL-Z code
-                if (backups.length == 0) return;
-                var backupOx = simulationArea.ox;
-                var backupOy = simulationArea.oy;
-                simulationArea.ox = 0;
-                simulationArea.oy = 0;
-                globalScope = new Scope("globalScope");
-                loading = true;
-                load(globalScope, backups.pop());
-                console.log("UNDO");
-                loading = false;
-                simulationArea.ox = backupOx;
-                simulationArea.oy = backupOy;
+                undo();
             }
             //change direction fns
             if (e.keyCode == 37 && simulationArea.lastSelected != undefined) {
@@ -416,7 +403,7 @@ var simulationArea = {
             {
                 smartDropXX=simulationArea.mouseX+100;//Math.round(((simulationArea.mouseRawX - simulationArea.ox+100) / simulationArea.scale) / unit) * unit;
                 smartDropYY=simulationArea.mouseY-50;//Math.round(((simulationArea.mouseRawY - simulationArea.oy+100) / simulationArea.scale) / unit) * unit;
-                console.log(smartDropXX,smartDropYY);
+                // console.log(smartDropXX,smartDropYY);
             }
 
             // console.log(simulationArea.mouseDown);
@@ -803,8 +790,9 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             this.y=simulationArea.mouseY;
             if(simulationArea.mouseDown){
                 this.newElement=false;
+                simulationArea.lastSelected=this;
             }
-            return;
+            else return;
         }
         // console.log(this.nodeList)
         for (var i = 0; i < this.nodeList.length; i++) {

@@ -53,11 +53,11 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT", savedData = undefi
             this.parent.buildCircuit();
         }
     }
-    this.resetNodes = function() {
+    this.reset = function() {
         for (var i = 0; i < this.localScope.allNodes.length; i++)
             this.localScope.allNodes[i].reset();
         for (var i = 0; i < this.localScope.SubCircuit.length; i++) {
-            this.localScope.SubCircuit[i].resetNodes();
+            this.localScope.SubCircuit[i].reset();
         }
 
     }

@@ -20,37 +20,63 @@ body {
 }
 
 .toolbar{
-    height:30px;
+    padding: 8px;
+    height:26px;
+    display: block;
+    /*width: 1000px;*/
     background-color: #eee;
 }
 
+
+
+.toolbarButton {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    background-color: #0099ff;
+    color: white;
+    height: 12;
+    width: 100px;
+    margin-left: 5px;
+    margin-right: 5px;
+    text-decoration: none;
+    padding: 5px 5px;
+    float: left;
+    border: 1px solid #0055bb;
+    border-radius: 5px;
+    text-align: center;
+    display: inline;
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.7s;
+    /* Safari */
+    transition-duration: 0.7s;
+    box-shadow: 0 8px 6px -6px #777;
+}
+.toolbarButton:hover {
+    background-color: #0066cc;
+    /*color: black;*/
+}
+
+
+
 .moduleProperty{
-background-color: #f8f8f8;
-margin: 0px;
-height:300px;
-padding-left: 5px;
-padding-right: 5px;
-padding-bottom:10px;
-overflow: scroll;
-border-top: 1px solid black;
-border-bottom: 1px solid black;
+    background-color: #f8f8f8;
+    margin: 0px;
+    height:300px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom:10px;
+    overflow: scroll;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
 
 }
-
-/*.box h3{
-	text-align:center;
-	position:relative;
-	top:80px;
-}
-.box {
-	width:70%;
-	height:200px;
-	background:#FFF;
-	margin:40px auto;
-}*/
 
 .effect1{
-     box-shadow: 0 10px 6px -6px #777;
+     box-shadow: 0 8px 4px -4px #777;
 }
 
 
@@ -91,15 +117,12 @@ border-bottom: 1px solid black;
     /*border-color: blue;*/
     background-color: #bbd4ee;
 }
-.icon:active{
-
-}
 
 .menu{
-margin:5px;
-height:400px;
-/*overflow: scroll;*/
-/*background-color: green;*/
+    margin:5px;
+    height:400px;
+    /*overflow: scroll;*/
+    /*background-color: green;*/
 }
 
 
@@ -137,34 +160,6 @@ button.accordion.active, button.accordion:hover {
     overflow: scroll;
 }
 
-.moduleButton {
-    -webkit-user-select: none;
-    /* Chrome/Safari */
-    -moz-user-select: none;
-    /* Firefox */
-    -ms-user-select: none;
-    /* IE10+ */
-    /* Rules below not implemented in browsers yet */
-    -o-user-select: none;
-    user-select: none;
-    background-color: #333;
-    color: white;
-    height: auto;
-    width: 100px;
-    margin: 0px;
-    text-decoration: none;
-    padding: 5px 5px;
-    float: left;
-    border: 1px solid black;
-    text-align: center;
-    display: inline;
-    font-size: 12px;
-    cursor: pointer;
-    -webkit-transition-duration: 0.7s;
-    /* Safari */
-    transition-duration: 0.7s;
-}
-
 .logix {
     width: 100%;
     height: 100%;
@@ -173,9 +168,4 @@ button.accordion.active, button.accordion:hover {
 
 #simulationArea {
     /*background-color: #111;*/
-}
-
-.moduleButton:hover {
-    background-color: #fff;
-    color: black;
 }
