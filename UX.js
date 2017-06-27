@@ -1,6 +1,7 @@
+var smartDropXX=50;
+var smartDropYY=80;
 
-var smartDropX=200;
-var smartDropY=200;
+
 $(document).ready(function() {
     $("#menu").accordion({collapsible: true, active: false});
     $( "#sideBar" ).resizable({
@@ -9,7 +10,15 @@ $(document).ready(function() {
     });
 
     $('.logixModules').click(function(){
-        obj = new window[this.id](smartDropX,smartDropY);
+        console.log(smartDropXX,smartDropYY)
+        obj = new window[this.id]();//(simulationArea.mouseX,simulationArea.mouseY);
+        // simulationArea.lastSelected=obj;
+        // simulationArea.mouseDown=true;
+        smartDropXX+=70;
+        if(smartDropXX/simulationArea.scale >width){
+            smartDropXX=50;
+            smartDropYY+=80;
+        }
     });
     // $('#moduleProperty').draggable();
 
@@ -24,7 +33,7 @@ function showProperties(obj){
     return;
     prevPropertyObj=obj;
     $('#moduleProperty').show();
-    
+
     $('#moduleProperty').append("<h3>"+obj.objectType+"</h3>");
     // $('#moduleProperty').append("<input type='range' name='points' min='1' max='32' value="+obj.bitWidth+">");
     if(!obj.fixedBitWidth)

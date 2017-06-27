@@ -381,6 +381,10 @@ var simulationArea = {
             simulationArea.mouseDown = true;
             simulationArea.oldx = simulationArea.ox;
             simulationArea.oldy = simulationArea.oy;
+
+
+
+
             if (simulationArea.clickCount === 0) {
                 simulationArea.clickCount++;
                 simulationArea.timer();
@@ -408,6 +412,13 @@ var simulationArea = {
             // simulationArea.mouseDownY = Math.round((simulationArea.mouseDownY - simulationArea.oy / simulationArea.scale) / unit) * unit;
 
             simulationArea.mouseDown = false;
+            if(!(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height))
+            {
+                smartDropXX=simulationArea.mouseX+100;//Math.round(((simulationArea.mouseRawX - simulationArea.ox+100) / simulationArea.scale) / unit) * unit;
+                smartDropYY=simulationArea.mouseY-50;//Math.round(((simulationArea.mouseRawY - simulationArea.oy+100) / simulationArea.scale) / unit) * unit;
+                console.log(smartDropXX,smartDropYY);
+            }
+
             // console.log(simulationArea.mouseDown);
         });
         window.addEventListener('touchmove', function(e) {
@@ -564,6 +575,8 @@ function update(scope=globalScope) {
             simulationArea.oy = (simulationArea.mouseRawY - simulationArea.mouseDownRawY) + simulationArea.oldy;
             simulationArea.ox = Math.round(simulationArea.ox);
             simulationArea.oy = Math.round(simulationArea.oy);
+            // smartDropX=Math.round(((200 - simulationArea.ox) / simulationArea.scale) / unit) * unit;
+            // smartDropY=Math.round(((30 - simulationArea.oy) / simulationArea.scale) / unit) * unit;
         }
 
     } else if (simulationArea.lastSelected == scope.root) {
@@ -680,11 +693,18 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.objectType = this.constructor.name; // CHECK IF THIS IS VALID
     this.x = x;
     this.y = y;
+    this.hover = false;
+    if(this.x==undefined||this.y==undefined){
+        this.x=simulationArea.mouseX;
+        this.y=simulationArea.mouseY;
+        this.newElement=true;
+        this.hover=true;
+    }
     this.parent = parent;
     this.nodeList = []
     this.isResolved = false;
     this.clicked = false;
-    this.hover = false;
+
     this.oldx = x;
     this.oldy = y;
     this.leftDimensionX = 10;
@@ -702,6 +722,9 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.orientationFixed = true; // should it be false?
     this.fixedBitWidth = false;
 
+
+
+    scheduleUpdate();
 
     /* Methods to be Implemented for derivedClass
         saveObject(); //To generate JSON-safe data that can be loaded
@@ -773,12 +796,23 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.update = function() {
 
         var update = false;
+
+        update|=this.newElement;
+        if(this.newElement){
+            this.x=simulationArea.mouseX;
+            this.y=simulationArea.mouseY;
+            if(simulationArea.mouseDown){
+                this.newElement=false;
+            }
+            return;
+        }
         // console.log(this.nodeList)
         for (var i = 0; i < this.nodeList.length; i++) {
             update |= this.nodeList[i].update();
         }
 
         if (!simulationArea.mouseDown) this.hover = false;
+
 
         if ((this.clicked || !simulationArea.hover) && this.isHover()) {
             this.hover = true;
