@@ -1653,56 +1653,73 @@ function VariableLed(x, y, scope) {
     }
 }
 
-function VariableLed(x, y, scope) {
-    // Calling base class constructor
-
-    CircuitElement.call(this, x, y, scope, "UP",8);
-    this.rectangleObject=false;
-    this.setDimensions(10,10);
-    this.inp1 = new Node(-40, 0, 0, this,8);
-    this.directionFixed=true;
-    this.fixedBitWidth=true;
+function Button(x, y, scope, dir) {
+    CircuitElement.call(this, x, y, scope, dir,1);
+    this.state = 0;
+    this.output1 = new Node(this.bitWidth * 10, 0, 1, this);
+    this.wasClicked = false;
+    this.directionFixed = true;
+    this.setWidth(this.bitWidth * 10);
+    this.rectangleObject = true; // Trying to make use of base class draw
 
     this.customSave = function() {
         var data = {
-            nodes:{inp1: scope.allNodes.indexOf(this.inp1)},
+            nodes: {
+                output1: findNode(this.output1)
+            },
+            values: {
+                state: this.state
+            },
+            constructorParamaters: [this.direction, this.bitWidth]
         }
         return data;
     }
 
+    this.resolve = function() {
+        if(this.wasClicked)
+        {
+            this.state=1;
+            this.output1.value=this.state;
+            console.log('output:',this.output1.value);
+        }
+        else
+        {
+            this.state=0;
+            this.output1.value=this.state;
+            console.log('output:',this.output1.value);
+        }
+    }
+
     this.customDraw = function() {
-
-        ctx = simulationArea.context;
-
+        ctx.beginPath();
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.lineWidth = 3;
         var xx = this.x;
         var yy = this.y;
 
-        ctx.strokeStyle = "#353535";
-        ctx.lineWidth=3;
         ctx.beginPath();
-        moveTo(ctx, -20, 0, xx, yy, this.direction);
-        lineTo(ctx, -40, 0, xx, yy, this.direction);
-        ctx.stroke();
-        var c = this.inp1.value;
-        var alpha = c/255;
-        ctx.strokeStyle = "#090a0a";
-        ctx.fillStyle = ["rgba(255,29,43,"+ alpha + ")","rgba(227, 228, 229, 0.8)"][(c === undefined || c == 0) + 0];
-        ctx.lineWidth = 1;
-
-        ctx.beginPath();
-
-        moveTo(ctx, -20, -9, xx, yy, this.direction);
-        lineTo(ctx, 0, -9, xx, yy, this.direction);
-        arc(ctx, 0, 0, 9, (-Math.PI / 2), (Math.PI / 2), xx, yy, this.direction);
-        lineTo(ctx, -20, 9, xx, yy, this.direction);
-        /*lineTo(ctx,-18,12,xx,yy,this.direction);
-        arc(ctx,0,0,Math.sqrt(468),((Math.PI/2) + Math.acos(12/Math.sqrt(468))),((-Math.PI/2) - Math.asin(18/Math.sqrt(468))),xx,yy,this.direction);
-
-        */
-        lineTo(ctx, -20, -9, xx, yy, this.direction);
-        ctx.stroke();
-        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fillStyle = "green";
+        ctx.textAlign = "center";
+        var bin = dec2bin(this.state, this.bitWidth);
+        for (var k = 0; k < this.bitWidth; k++)
+            fillText(ctx, bin[k], xx - 10 * this.bitWidth + 10 + (k) * 20, yy + 5);
         ctx.fill();
-
     }
+
+    this.newDirection = function(dir) {
+        if (dir == this.direction) return;
+        this.direction = dir;
+        this.output1.refresh();
+        if (dir == "RIGHT" || dir == "LEFT") {
+            this.output1.leftx = 10 * this.bitWidth;
+            this.output1.lefty = 0;
+        } else {
+            this.output1.leftx = 10; //10*this.bitWidth;
+            this.output1.lefty = 0;
+        }
+
+        this.output1.refresh();
+        this.labelDirection = oppositeDirection[this.direction];
+    }
+
 }
