@@ -31,7 +31,7 @@ function undo(scope=globalScope){
     var backupOy = simulationArea.oy;
     simulationArea.ox = 0;
     simulationArea.oy = 0;
-    tempScope = new Scope(globalScope.name);
+    tempScope = new Scope(scope.name);
     loading = true;
     load(tempScope, scope.backups.pop());
     tempScope.backups=scope.backups;
@@ -109,6 +109,7 @@ function loadModule(data, scope) {
             var n = data.customData["nodes"][node]
             if (n instanceof Array) {
                 for (var i = 0; i < n.length; i++) {
+                    // console.log(obj[node],obj[node][i],i);
                     obj[node][i] = replace(obj[node][i], n[i]);
                 }
             } else {

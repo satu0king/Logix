@@ -120,7 +120,7 @@ function setup() {
                 console.log(data);
                 load(globalScope, data);
                 simulationArea.changeClockTime(data["timePeriod"] || 500);
-                globalScope.backups.push(backUp())
+                globalScope.backups.push(backUp(globalScope));
             }
         }
 

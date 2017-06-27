@@ -49,7 +49,7 @@ function AndGate(x, y, scope=globalScope, dir="RIGHT", inputLength=2, bitWidth =
     //fn to create save Json Data of object
     this.customSave = function() {
         var data = {
-            constructorParamaters: [this.direction, this.inputs, this.bitWidth],
+            constructorParamaters: [this.direction, this.inputSize, this.bitWidth],
             nodes: {
                 inp: this.inp.map(findNode),
                 output1: findNode(this.output1)
@@ -136,7 +136,7 @@ function NandGate(x, y, scope=globalScope, dir="RIGHT", inputLength=2, bitWidth 
     this.customSave = function() {
         var data = {
 
-            constructorParamaters: [this.direction, this.inputs, this.bitWidth],
+            constructorParamaters: [this.direction, this.inputSize, this.bitWidth],
             nodes: {
                 inp: this.inp.map(findNode),
                 output1: findNode(this.output1)
@@ -188,8 +188,9 @@ function NandGate(x, y, scope=globalScope, dir="RIGHT", inputLength=2, bitWidth 
 }
 
 function Multiplexer(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, controlSignalSize = 1) {
-
-    CircuitElement.call(this, x, y, scope=globalScope, dir, bitWidth);
+    // console.log("HIT");
+    // console.log(x,y,scope,dir,bitWidth,controlSignalSize);
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
 
     this.controlSignalSize = controlSignalSize || parseInt(prompt("Enter control signal bitWidth"), 10);
     this.inputSize = 1 << this.controlSignalSize;
@@ -204,8 +205,6 @@ function Multiplexer(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, control
         var a = new Node(-20, +10 * (i - this.inputSize / 2), 0, this);
         this.inp.push(a);
     }
-
-
 
     this.output1 = new Node(20, 0, 1, this);
     this.controlSignalInput = new Node(0, 5 * this.inputSize, 0, this, this.controlSignalSize);
@@ -298,7 +297,7 @@ function XorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
     this.customSave = function() {
         // console.log(this.scope.allNodes);
         var data = {
-            constructorParamaters: [this.direction, this.inputs, this.bitWidth],
+            constructorParamaters: [this.direction, this.inputSize, this.bitWidth],
             nodes: {
                 inp: this.inp.map(findNode),
                 output1: findNode(this.output1)
@@ -376,7 +375,7 @@ function XnorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth
 
     this.customSave = function() {
         var data = {
-            constructorParamaters: [this.direction, this.inputs, this.bitWidth],
+            constructorParamaters: [this.direction, this.inputSize, this.bitWidth],
             nodes: {
                 inp: this.inp.map(findNode),
                 output1: findNode(this.output1)
@@ -636,11 +635,11 @@ function OrGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth=1
     this.customSave = function() {
         var data = {
 
-            constructorParamaters: [this.direction, this.inputs, this.bitWidth],
+            constructorParamaters: [this.direction, this.inputSize, this.bitWidth],
 
             nodes: {
                 inp: this.inp.map(findNode),
-                output1: findNode(this.output1)
+                output1: findNode(this.output1),
             },
         }
         return data;
@@ -1570,7 +1569,7 @@ function NorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
 
     this.customSave = function() {
         var data = {
-            constructorParamaters: [this.direction, this.inputs, this.bitWidth],
+            constructorParamaters: [this.direction, this.inputSize, this.bitWidth],
             nodes: {
                 inp: this.inp.map(findNode),
                 output1: findNode(this.output1)
