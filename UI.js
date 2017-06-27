@@ -110,6 +110,10 @@ function addVariableLed(){
     var or = new VariableLed(200, 150, globalScope, "UP");
 }
 
+function addRGBLed(){
+    var or = new RGBLed(200, 150, globalScope, "UP");
+}
+
 function addStepper(){
     var or = new Stepper(200, 150, globalScope,"RIGHT");
 }
@@ -143,3 +147,4 @@ document.getElementById("norButton").addEventListener("click", addNor);
 document.getElementById("digitalledButton").addEventListener("click", addDigitalLed);
 document.getElementById("variableledButton").addEventListener("click", addVariableLed);
 document.getElementById("stepperButton").addEventListener("click", addStepper);
+document.getElementById("rgbledButton").addEventListener("click", addRGBLed);
