@@ -927,6 +927,7 @@ function Adder(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1) {
     }
 
     this.newBitWidth=function(bitWidth){
+        this.bitWidth=bitWidth;
         this.inpA.bitWidth=bitWidth;
         this.inpB.bitWidth=bitWidth;
         this.sum.bitWidth=bitWidth;
@@ -940,7 +941,7 @@ function Adder(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1) {
         var sum = this.inpA.value + this.inpB.value + carryIn;
 
         this.sum.value = ((sum) << (32 - this.bitWidth)) >>> (32 - this.bitWidth);
-        this.carryOut.value = sum >>> (this.bitWidth);
+        this.carryOut.value = +((sum >>> (this.bitWidth))!==0);
         this.scope.stack.push(this.carryOut);
         this.scope.stack.push(this.sum);
     }
