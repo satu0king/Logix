@@ -118,6 +118,7 @@ function setup() {
             // console.log(http.responseText);
             if (http.responseText == "ERROR") alert("Error: could not load ");
             else {
+                console.log(http.responseText);
                 data = JSON.parse(http.responseText);
                 console.log(data);
                 load(globalScope, data);
@@ -127,6 +128,7 @@ function setup() {
         }
 
     }
+    // return;
 
     toBeUpdated = true;
     width = window.innerWidth;
