@@ -31,11 +31,9 @@ function undo(scope=globalScope){
     var backupOy = simulationArea.oy;
     simulationArea.ox = 0;
     simulationArea.oy = 0;
-    tempScope = new Scope("globalScope");
+    tempScope = new Scope(globalScope.name);
     loading = true;
     load(tempScope, scope.backups.pop());
-    // console.log("UNDO");
-    loading = false;
     tempScope.backups=scope.backups;
     tempScope.id=scope.id;
     scopeList.clean(globalScope);
@@ -43,6 +41,7 @@ function undo(scope=globalScope){
     globalScope=tempScope;
     simulationArea.ox = backupOx;
     simulationArea.oy = backupOy;
+    loading = false;
 }
 //helper fn
 function extract(obj) {

@@ -216,9 +216,12 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         }
         // if (this.type != 2) {
 
-        var color = (this.bitWidth != 1 || this.value == undefined) ? "black" : ["green", "lightgreen"][this.value];
-        if (this.type == 1 || this.type == 0) color = "green";
-        drawCircle(ctx, this.absX(), this.absY(), 3, color);
+        var color = "black";
+        if(this.bitWidth==1)color= ["green", "lightgreen"][this.value];
+        if(this.value==undefined)color="red";
+        if(this.type==2)
+        drawCircle(ctx, this.absX(), this.absY(), 2, color);
+        else drawCircle(ctx, this.absX(), this.absY(), 3, "green");
         // }
 
         if (this.highlighted || simulationArea.lastSelected == this || (this.isHover() && !simulationArea.selected && !simulationArea.shiftDown) || simulationArea.multipleObjectSelections.contains(this)) {

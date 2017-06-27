@@ -788,7 +788,7 @@ function TriState(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1) {
             nodes: {
                 output1: findNode(this.output1),
                 inp1: findNode(this.inp1),
-                state: findNode(this.state)
+                state: findNode(this.state),
             },
         }
         return data;
