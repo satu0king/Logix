@@ -16,7 +16,7 @@ moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "Nan
 //All the combinational modules which give rise to an value(independently)
 inputList = ["Stepper","Ground", "Power", "ConstantVal", "Input", "Clock"];
 
-scopeList=[];
+scopeList={};
 globalScope=undefined;
 
 function showError(error) {
@@ -71,19 +71,46 @@ Array.prototype.contains = function(value) {
 
 
 //Scope object for each circuit level, globalScope for outer level
+
+function uniq(a) {
+    var seen = {};
+    return a.filter(function(item) {
+        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+    });
+}
+
 function Scope(name = "localScope") {
     //root object for referring to main canvas - intermediate node uses this
     this.id=Math.floor((Math.random() * 100000000000) + 1);
     this.CircuitElement = [];
     this.root = new CircuitElement(0, 0, this, "RIGHT", 1);
     this.backups=[];
+    this.timeStamp=new Date().getTime();
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)
             this.Clock[i].toggleState(); //tick clock!
-        // for (var i = 0; i < this.subCircuits.length; i++)
-        //     this.subCircuits[i].localScope.clockTick(); //tick clock!
+        for (var i = 0; i < this.SubCircuit.length; i++)
+            this.SubCircuit[i].localScope.clockTick(); //tick clock!
     }
+
+    this.checkDependency=function(id){
+        for (var i = 0; i < this.SubCircuit.length; i++)
+            if(this.SubCircuit[i].id==id)return true;
+
+        for (var i = 0; i < this.SubCircuit.length; i++)
+            if(this.SubCircuit[i].localScope.checkDependency(id))return true;
+    }
+
+    this.getDependencies=function(){
+        var list=[]
+        for (var i = 0; i < this.SubCircuit.length; i++){
+            list.push(this.SubCircuit[i].id);
+            list.extend(this.SubCircuit[i].localScope.getDependencies());
+        }
+        return uniq(list);
+    }
+
     this.name = name;
     this.stack = [];
 
@@ -118,9 +145,9 @@ function setup() {
             else {
                 data = JSON.parse(http.responseText);
                 console.log(data);
-                load(globalScope, data);
+                load(data);
                 simulationArea.changeClockTime(data["timePeriod"] || 500);
-                globalScope.backups.push(backUp(globalScope));
+                // globalScope.backups.push(backUp(globalScope));
             }
         }
 
@@ -253,7 +280,7 @@ var simulationArea = {
 function copyPaste(copyList){
     tempScope=new Scope("globalScope");
     d=backUp();
-    load(tempScope,d);
+    loadScope(tempScope,d);
     for (var i = 0; i < globalScope.objects.length; i++)
         for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++){
             var obj=globalScope[globalScope.objects[i]][j];

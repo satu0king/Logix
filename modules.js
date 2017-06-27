@@ -1439,19 +1439,6 @@ function BitSelector(x, y, scope=globalScope, dir="RIGHT", bitWidth = 2, selecto
     }
 }
 
-function saveasimg() {
-    //window.open(simulationArea.canvas.toDataURL('image/png'));
-    var gh = simulationArea.canvas.toDataURL('image/png');
-    var name = prompt("Enter imagename");
-    if (name != null) {
-        var filename = name;
-        var anchor = document.createElement('a');
-        anchor.href = gh;
-        anchor.download = filename + '.png';
-    }
-    anchor.click()
-}
-
 function ConstantVal(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, state = "0") {
     this.state = state || prompt("Enter value");
     CircuitElement.call(this, x, y, scope, dir, this.state.length);

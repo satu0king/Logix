@@ -22,7 +22,13 @@ $(document).ready(function() {
     });
     $('#newCircuit').click(function(){
         newCircuit();
-        $('.circuits').click(function(){switchCircuit(this.id)});
+        
+    });
+    $('#saveAsImg').click(function(){
+        saveAsImg();
+    });
+    $('#Save').click(function(){
+        Save();
     });
     // $('#moduleProperty').draggable();
 
