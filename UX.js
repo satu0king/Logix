@@ -11,6 +11,7 @@ $(document).ready(function() {
     $('.logixModules').click(function(){
         obj = new window[this.id](smartDropX,smartDropY);
     });
+    // $('#moduleProperty').draggable();
 
 }); // accordion
 
@@ -18,9 +19,12 @@ var prevPropertyObj=undefined;
 function showProperties(obj){
     if(obj==prevPropertyObj)return;
     hideProperties();
+
     if(simulationArea.lastSelected===undefined||simulationArea.lastSelected.objectType=="Wire"&&simulationArea.lastSelected.objectType=="CircuitElement")
     return;
     prevPropertyObj=obj;
+    $('#moduleProperty').show();
+    
     $('#moduleProperty').append("<h3>"+obj.objectType+"</h3>");
     // $('#moduleProperty').append("<input type='range' name='points' min='1' max='32' value="+obj.bitWidth+">");
     if(!obj.fixedBitWidth)
@@ -81,6 +85,7 @@ function showProperties(obj){
 
 function hideProperties(){
     $('#moduleProperty').empty();
+    $('#moduleProperty').hide();
     prevPropertyObj=undefined;
     $(".objectPropertyAttribute").unbind("change keyup paste click");
 }

@@ -205,8 +205,35 @@ function Multiplexer(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, control
         this.inp.push(a);
     }
 
+
+
     this.output1 = new Node(20, 0, 1, this);
     this.controlSignalInput = new Node(0, 5 * this.inputSize, 0, this, this.controlSignalSize);
+
+    this.changeControlSignalSize=function(size){
+        if(size==undefined||size<1||size>32)return;
+        if(this.controlSignalSize==size)return;
+        var obj=new window[this.objectType](this.x,this.y,this.scope,this.direction,this.bitWidth,size);
+        this.delete();
+        simulationArea.lastSelected=obj;
+        return obj;
+    }
+    this.mutableProperties={
+        "controlSignalSize":{
+            name:"Control Signal Size",
+            type:"int",
+            max:"32",
+            min:"1",
+            func:"changeControlSignalSize",
+        },
+    }
+    this.newBitWidth=function(bitWidth){
+        this.bitWidth=bitWidth;
+        for (var i = 0; i < this.inputSize; i++) {
+            this.inp[i].bitWidth=bitWidth
+        }
+        this.output1.bitWidth=bitWidth;
+    }
 
     //fn to create save Json Data of object
     this.customSave = function() {
@@ -960,7 +987,7 @@ function Ram(x, y, scope=globalScope, dir="RIGHT", data = undefined) {
 
 }
 
-function Splitter(x, y, scope=globalScope, dir="RIGHT", bitWidth = 2, bitWidthSplit = [1,1]) {
+function Splitter(x, y, scope=globalScope, dir="RIGHT", bitWidth = undefined, bitWidthSplit = undefined) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.rectangleObject = false;
@@ -1336,7 +1363,7 @@ function Output(x, y, scope=globalScope, dir="LEFT", bitWidth=1) {
     }
 }
 
-function BitSelector(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, selectorBitWidth = 1) {
+function BitSelector(x, y, scope=globalScope, dir="RIGHT", bitWidth = 2, selectorBitWidth = 1) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.setDimensions(20, 20);
@@ -1346,6 +1373,21 @@ function BitSelector(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, selecto
     this.output1 = new Node(20, 0, 1, this, 1);
     this.bitSelectorInp = new Node(0, 20, 0, this, this.selectorBitWidth);
 
+
+    this.changeSelectorBitWidth=function(size){
+        if(size==undefined||size<1||size>32)return;
+        this.selectorBitWidth=size;
+        this.bitSelectorInp.bitWidth=size;
+    }
+    this.mutableProperties={
+        "selectorBitWidth":{
+            name:"Selector Bit Width: ",
+            type:"int",
+            max:"32",
+            min:"1",
+            func:"changeSelectorBitWidth",
+        }
+    }
     this.customSave = function() {
         var data = {
 
@@ -1361,6 +1403,7 @@ function BitSelector(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, selecto
 
     this.newBitWidth = function(bitWidth) {
         this.inp1.bitWidth = bitWidth;
+        this.bitWidth=bitWidth;
     }
 
     this.resolve = function() {

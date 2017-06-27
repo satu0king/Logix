@@ -20,13 +20,31 @@ body {
 }
 
 .moduleProperty{
-    margin: 5px;
-
+margin: 0px;
 height:300px;
-padding: 5px;
+padding-left: 5px;
+padding-right: 5px;
 padding-bottom:10px;
 overflow: scroll;
-/*border: 2px solid black;*/
+border-top: 1px solid black;
+border-bottom: 1px solid black;
+
+}
+
+/*.box h3{
+	text-align:center;
+	position:relative;
+	top:80px;
+}
+.box {
+	width:70%;
+	height:200px;
+	background:#FFF;
+	margin:40px auto;
+}*/
+
+.effect1{
+     box-shadow: 0 10px 6px -6px #777;
 }
 
 
@@ -70,9 +88,11 @@ overflow: scroll;
 .icon:active{
 
 }
-.modules{
+
+.menu{
 margin:5px;
 height:400px;
+/*overflow: scroll;*/
 /*background-color: green;*/
 }
 
@@ -102,12 +122,13 @@ button.accordion.active, button.accordion:hover {
 }
 
 /* Style the accordion panel. Note: hidden by default */
-div.panel {
+.panel {
     padding: 10 18px;
     background-color: white;
     display: none;
-    height:auto;
-    max-height: 200px;
+    /*height:auto;*/
+    max-height: 150px;
+    overflow: scroll;
 }
 
 .moduleButton {
