@@ -11,7 +11,8 @@ objectSelection = false;
 var backups = []
 loading = false
 //Exact same name as object constructor
-moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "SubCircuit","Button"];
+moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "RGBLed","Button", "SubCircuit"];
+
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
 inputList = ["Stepper","Ground", "Power", "ConstantVal", "Input", "Clock","Button"];
@@ -118,6 +119,7 @@ function setup() {
             // console.log(http.responseText);
             if (http.responseText == "ERROR") alert("Error: could not load ");
             else {
+                console.log(http.responseText);
                 data = JSON.parse(http.responseText);
                 console.log(data);
                 load(globalScope, data);
@@ -127,6 +129,7 @@ function setup() {
         }
 
     }
+    // return;
 
     toBeUpdated = true;
     width = window.innerWidth;

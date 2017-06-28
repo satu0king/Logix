@@ -1713,3 +1713,73 @@ function Button(x, y, scope, dir) {
         ctx.fill();
     }
 }
+function RGBLed(x, y, scope) {
+    // Calling base class constructor
+
+    CircuitElement.call(this, x, y, scope, "UP",8);
+    this.rectangleObject=false;
+    this.inp = [];
+    this.setDimensions(10,10);
+    this.inp1 = new Node(-40, -8, 0, this,8);
+    this.inp2 = new Node(-40, 0, 0, this,8);
+    this.inp3 = new Node(-40, 8, 0, this,8);
+    this.inp.push(this.inp1);
+    this.inp.push(this.inp2);
+    this.inp.push(this.inp3);
+    this.directionFixed=true;
+    this.fixedBitWidth=true;
+
+    this.customSave = function() {
+        var data = {
+            nodes:{inp: this.inp.map(findNode)},
+        }
+        return data;
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+
+        var xx = this.x;
+        var yy = this.y;
+
+        ctx.strokeStyle = "#e3e4e5";
+        ctx.lineWidth=3;
+        ctx.beginPath();
+        moveTo(ctx, -20, 0, xx, yy, this.direction);
+        lineTo(ctx, -40, 0, xx, yy, this.direction);
+        moveTo(ctx, -20, -8, xx, yy, this.direction);
+        lineTo(ctx, -40, -8, xx, yy, this.direction);
+        moveTo(ctx, -20, 8, xx, yy, this.direction);
+        lineTo(ctx, -40, 8, xx, yy, this.direction);
+        ctx.stroke();
+        var a = this.inp1.value;
+        var b = this.inp2.value;
+        var c = this.inp3.value;
+        var ch1 = "start";
+        var ch2 = "end";
+        console.log(ch1);
+        console.log(a);
+        console.log(b);
+        console.log(c);
+        console.log(ch2);
+        ctx.strokeStyle = "#d3d4d5";
+        ctx.fillStyle = ["rgba("+ a +", "+ b +", "+ c +", 0.5)","rgba(227, 228, 229, 0.8)"][((a === undefined || b === undefined || c === undefined) || (a == 0 && b == 0 && c == 0)) + 0]
+        //ctx.fillStyle = ["rgba(200, 200, 200, 0.3)","rgba(227, 228, 229, 0.8)"][((a === undefined || b === undefined || c === undefined) || (a == 0 && b == 0 && c == 0)) + 0];
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+
+        moveTo(ctx, -18, -11, xx, yy, this.direction);
+        lineTo(ctx, 0, -11, xx, yy, this.direction);
+        arc(ctx, 0, 0, 11, (-Math.PI / 2), (Math.PI / 2), xx, yy, this.direction);
+        lineTo(ctx, -18, 11, xx, yy, this.direction);
+        lineTo(ctx,-21,15,xx,yy,this.direction);
+        arc(ctx,0,0,Math.sqrt(666),((Math.PI/2) + Math.acos(15/Math.sqrt(666))),((-Math.PI/2) - Math.asin(21/Math.sqrt(666))),xx,yy,this.direction);
+        lineTo(ctx, -18, -11, xx, yy, this.direction);
+        ctx.stroke();
+        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+
+    }
+}
