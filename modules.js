@@ -1732,9 +1732,9 @@ function RGBLed(x, y, scope) {
     this.customSave = function() {
         var data = {
             nodes:{
-                inp1: scope.allNodes.indexOf(this.inp1),
-                inp2: scope.allNodes.indexOf(this.inp2),
-                inp3: scope.allNodes.indexOf(this.inp3),
+                inp1: findNode(this.inp1),
+                inp2: findNode(this.inp2),
+                inp3: findNode(this.inp3),
             },
         }
         return data;
