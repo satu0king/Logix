@@ -1658,9 +1658,7 @@ function Button(x, y, scope, dir) {
     this.state = 0;
     this.output1 = new Node(-30, 0, 1, this);
     this.wasClicked = false;
-    this.directionFixed = true;
     this.rectangleObject=false;
-    this.setDimensions(10,10);
     
     this.customSave = function() {
         var data = {
@@ -1712,20 +1710,5 @@ function Button(x, y, scope, dir) {
         if(this.wasClicked)
             ctx.fillStyle ="red";
         ctx.fill();
-    }
-    this.newDirection = function(dir) {
-        if (dir == this.direction) return;
-        this.direction = dir;
-        this.output1.refresh();
-        if (dir == "RIGHT" || dir == "LEFT") {
-            this.output1.leftx = 10 * this.bitWidth;
-            this.output1.lefty = 0;
-        } else {
-            this.output1.leftx = 10; //10*this.bitWidth;
-            this.output1.lefty = 0;
-        }
-
-        this.output1.refresh();
-        this.labelDirection = oppositeDirection[this.direction];
     }
 }
