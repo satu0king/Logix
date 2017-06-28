@@ -1690,7 +1690,7 @@ function Button(x, y, scope, dir) {
         ctx = simulationArea.context;
         var xx = this.x;
         var yy = this.y;
-        ctx.fillStyle="#30ccdd";
+        ctx.fillStyle="yellow";
 
         ctx.strokeStyle = "#353535";
         ctx.lineWidth=5;
@@ -1707,9 +1707,9 @@ function Button(x, y, scope, dir) {
         ctx.stroke();
 
         if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
-            ctx.fillStyle = "#30ccdd";
+            ctx.fillStyle = "yellow";
         if(this.wasClicked)
-            ctx.fillStyle ="#24931f";
+            ctx.fillStyle ="rgba(232, 13, 13,0.7)";
         ctx.fill();
     }
 }
