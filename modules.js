@@ -1690,24 +1690,24 @@ function Button(x, y, scope, dir) {
         ctx = simulationArea.context;
         var xx = this.x;
         var yy = this.y;
-        ctx.fillStyle="#c4361d";
+        ctx.fillStyle="#30ccdd";
 
         ctx.strokeStyle = "#353535";
         ctx.lineWidth=5;
 
         ctx.beginPath();
 
-        moveTo(ctx, -15, 0, xx, yy, this.direction);
+        moveTo(ctx, -10, 0, xx, yy, this.direction);
         lineTo(ctx, -40, 0, xx, yy, this.direction);
         ctx.stroke();
 
         ctx.beginPath();
 
-        arc(ctx, 0, 0, 15,0, 2*Math.PI , xx, yy, this.direction);
+        arc(ctx, 0, 0, 12,0, 2*Math.PI , xx, yy, this.direction);
         ctx.stroke();
 
         if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
-            ctx.fillStyle = "#c4361d";
+            ctx.fillStyle = "#30ccdd";
         if(this.wasClicked)
             ctx.fillStyle ="#24931f";
         ctx.fill();
