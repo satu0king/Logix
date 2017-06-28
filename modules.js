@@ -1656,12 +1656,12 @@ function VariableLed(x, y, scope) {
 function Button(x, y, scope, dir) {
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.state = 0;
-    this.output1 = new Node(this.bitWidth * 10, 0, 1, this);
+    this.output1 = new Node(-30, 0, 1, this);
     this.wasClicked = false;
     this.directionFixed = true;
-    this.setWidth(this.bitWidth * 10);
-    this.rectangleObject = true; // Trying to make use of base class draw
-
+    this.rectangleObject=false;
+    this.setDimensions(10,10);
+    
     this.customSave = function() {
         var data = {
             nodes: {
@@ -1688,20 +1688,29 @@ function Button(x, y, scope, dir) {
         this.scope.stack.push(this.output1);
     }
     this.customDraw = function() {
-
-        // ctx = simulationArea.context;
-        ctx.beginPath();
-        ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = 3;
+        ctx = simulationArea.context;
         var xx = this.x;
         var yy = this.y;
+        ctx.fillStyle="yellow";
+
+        ctx.strokeStyle = "#353535";
+        ctx.lineWidth=3;
 
         ctx.beginPath();
-        ctx.fillStyle = "green";
-        ctx.textAlign = "center";
-        var bin = dec2bin(this.state, this.bitWidth);
-        for (var k = 0; k < this.bitWidth; k++)
-            fillText(ctx, bin[k], xx - 10 * this.bitWidth + 10 + (k) * 20, yy + 5);
+
+        moveTo(ctx, -10, 0, xx, yy, this.direction);
+        lineTo(ctx, -30, 0, xx, yy, this.direction);
+        ctx.stroke();
+
+        ctx.beginPath();
+
+        arc(ctx, 0, 0, 10, (-Math.PI ), (Math.PI ), xx, yy, this.direction);
+        ctx.stroke();
+
+        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
+            ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        if(this.wasClicked)
+            ctx.fillStyle ="red";
         ctx.fill();
     }
     this.newDirection = function(dir) {
