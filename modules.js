@@ -1553,7 +1553,7 @@ function DigitalLed(x, y, scope) {
 
     CircuitElement.call(this, x, y, scope, "UP",1);
     this.rectangleObject=false;
-    this.setDimensions(10,10);
+    this.setDimensions(10,20);
     this.inp1 = new Node(-40, 0, 0, this,1);
     this.directionFixed=true;
     this.fixedBitWidth=true;
@@ -1604,7 +1604,7 @@ function VariableLed(x, y, scope) {
 
     CircuitElement.call(this, x, y, scope, "UP",8);
     this.rectangleObject=false;
-    this.setDimensions(10,10);
+    this.setDimensions(10,20);
     this.inp1 = new Node(-40, 0, 0, this,8);
     this.directionFixed=true;
     this.fixedBitWidth=true;
