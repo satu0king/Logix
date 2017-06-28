@@ -1660,7 +1660,7 @@ function Button(x, y, scope, dir) {
     this.wasClicked = false;
     this.rectangleObject=false;
     this.setDimensions(10,10);
-    
+
     this.customSave = function() {
         var data = {
             nodes: {
@@ -1679,10 +1679,10 @@ function Button(x, y, scope, dir) {
             this.state=1;
             this.output1.value=this.state;
         }
-        else 
+        else
         {
             this.state=0;
-            this.output1.value=this.state;   
+            this.output1.value=this.state;
         }
         this.scope.stack.push(this.output1);
     }
@@ -1706,7 +1706,7 @@ function Button(x, y, scope, dir) {
         arc(ctx, 0, 0, 12,0, 2*Math.PI , xx, yy, this.direction);
         ctx.stroke();
 
-        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
+        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
             ctx.fillStyle = "yellow";
         if(this.wasClicked)
             ctx.fillStyle ="rgba(232, 13, 13,0.7)";
@@ -1732,9 +1732,9 @@ function RGBLed(x, y, scope) {
     this.customSave = function() {
         var data = {
             nodes:{
-                inp1: findNode(this.inp1),
-                inp2: findNode(this.inp2),
-                inp3: findNode(this.inp3),
+                inp1: this.scope.allNodes.findNode(this.inp1),
+                inp2: this.scope.allNodes.findNode(this.inp2),
+                inp3: this.scope.allNodes.findNode(this.inp3),
             },
         }
         return data;
@@ -1747,16 +1747,27 @@ function RGBLed(x, y, scope) {
         var xx = this.x;
         var yy = this.y;
 
-        ctx.strokeStyle = "#e3e4e5";
+        ctx.strokeStyle = "green";
         ctx.lineWidth=3;
         ctx.beginPath();
         moveTo(ctx, -20, 0, xx, yy, this.direction);
         lineTo(ctx, -40, 0, xx, yy, this.direction);
-        moveTo(ctx, -20, -8, xx, yy, this.direction);
-        lineTo(ctx, -40, -8, xx, yy, this.direction);
-        moveTo(ctx, -20, 8, xx, yy, this.direction);
-        lineTo(ctx, -40, 8, xx, yy, this.direction);
         ctx.stroke();
+
+        ctx.strokeStyle = "red";
+        ctx.lineWidth=2;
+        ctx.beginPath();
+        moveTo(ctx, -20, -10, xx, yy, this.direction);
+        lineTo(ctx, -40, -10, xx, yy, this.direction);
+        ctx.stroke();
+
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth=2;
+        ctx.beginPath();
+        moveTo(ctx, -20, 10, xx, yy, this.direction);
+        lineTo(ctx, -40, 10, xx, yy, this.direction);
+        ctx.stroke();
+
         var a = this.inp1.value;
         var b = this.inp2.value;
         var c = this.inp3.value;
