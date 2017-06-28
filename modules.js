@@ -1656,7 +1656,7 @@ function VariableLed(x, y, scope) {
 function Button(x, y, scope, dir) {
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.state = 0;
-    this.output1 = new Node(-30, 0, 1, this);
+    this.output1 = new Node(-40, 0, 1, this);
     this.wasClicked = false;
     this.rectangleObject=false;
     this.setDimensions(10,10);
@@ -1690,26 +1690,26 @@ function Button(x, y, scope, dir) {
         ctx = simulationArea.context;
         var xx = this.x;
         var yy = this.y;
-        ctx.fillStyle="yellow";
+        ctx.fillStyle="#c4361d";
 
         ctx.strokeStyle = "#353535";
-        ctx.lineWidth=3;
+        ctx.lineWidth=5;
 
         ctx.beginPath();
 
-        moveTo(ctx, -10, 0, xx, yy, this.direction);
-        lineTo(ctx, -30, 0, xx, yy, this.direction);
+        moveTo(ctx, -15, 0, xx, yy, this.direction);
+        lineTo(ctx, -40, 0, xx, yy, this.direction);
         ctx.stroke();
 
         ctx.beginPath();
 
-        arc(ctx, 0, 0, 10,0, 2*Math.PI , xx, yy, this.direction);
+        arc(ctx, 0, 0, 15,0, 2*Math.PI , xx, yy, this.direction);
         ctx.stroke();
 
         if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
-            ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+            ctx.fillStyle = "#c4361d";
         if(this.wasClicked)
-            ctx.fillStyle ="red";
+            ctx.fillStyle ="#24931f";
         ctx.fill();
     }
 }
