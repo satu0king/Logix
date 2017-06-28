@@ -1,8 +1,86 @@
 
+
 var inputSample = 5;
 var dataSample=[['01---','11110','01---','00000'],['01110','1-1-1','----0'],['01---','11110','01110','1-1-1','0---0'],['----1']];
 
+var sampleInputListNames=["A","B"];
+var sampleOutputListNames=["X","Y"];
 
+createCombinationalAnalysisPrompt()
+function createCombinationalAnalysisPrompt(inputListNames=sampleInputListNames,outputListNames=sampleOutputListNames){
+    var s='<table>'
+    s+='<tr>';
+    for(var i=0;i<inputListNames.length;i++)
+        s+='<th>'+inputListNames[i]+'</th>';
+    for(var i=0;i<outputListNames.length;i++)
+        s+='<th>'+outputListNames[i]+'</th>';
+    s+='</tr>';
+
+    var matrix = [];
+    for(var i=0; i<inputListNames.length; i++) {
+        matrix[i] = new Array((1<<inputListNames.length));
+    }
+
+    for(var i=0;i<inputListNames.length;i++){
+        for(var j=0;j<(1<<inputListNames.length);j++){
+            matrix[i][j]=(+((j&(1<<(inputListNames.length-i-1)))!=0));
+        }
+    }
+
+    for(var j=0;j<(1<<inputListNames.length);j++){
+        s+='<tr>';
+        for(var i=0;i<inputListNames.length;i++){
+            s+='<td>'+matrix[i][j]+'</td>';
+        }
+        for(var i=0;i<outputListNames.length;i++){
+            s+='<td class ="output '+outputListNames[i]+'" id="'+j+'">'+'x'+'</td>';
+        }
+        s+='</tr>';
+    }
+
+    s+='</table>';
+    console.log(s)
+    $('#booleanTable').append(s)
+    $('#booleanTable').dialog({
+        width:"auto",
+      buttons: [
+        {
+          text: "Submit",
+          click: function() {
+            $( this ).dialog( "close" );
+            generateBooleanTableData(outputListNames);
+        },
+
+        }
+      ]
+    });
+
+    $('.output').click(function (){
+        var v=$(this).html();
+        if(v==0)v=$(this).html(1);
+        else if(v==1)v=$(this).html('x');
+        else if(v=='x')v=$(this).html(0);
+    })
+}
+
+function generateBooleanTableData(outputListNames){
+    var data={};
+    for(var i=0;i<outputListNames.length;i++){
+        data[outputListNames[i]]={
+            'x':[],
+            '1':[],
+            '0':[],
+        }
+        $rows=$('.'+outputListNames[i]);
+        for(j=0;j<$rows.length;j++){
+            console.log($rows[j].innerHTML)
+            data[outputListNames[i]][$rows[j].innerHTML].push($rows[j].id);
+        }
+
+    }
+    console.log(data);
+    return data;
+}
 
 function combinationalAnalysis(combinationalData=dataSample,inputCount=inputSample,scope=globalScope){
     var maxTerms=0;
