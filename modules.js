@@ -1720,9 +1720,9 @@ function RGBLed(x, y, scope) {
     this.rectangleObject=false;
     this.inp = [];
     this.setDimensions(10,10);
-    this.inp1 = new Node(-40, -8, 0, this,8);
+    this.inp1 = new Node(-40, -10, 0, this,8);
     this.inp2 = new Node(-40, 0, 0, this,8);
-    this.inp3 = new Node(-40, 8, 0, this,8);
+    this.inp3 = new Node(-40, 10, 0, this,8);
     this.inp.push(this.inp1);
     this.inp.push(this.inp2);
     this.inp.push(this.inp3);
@@ -1731,7 +1731,11 @@ function RGBLed(x, y, scope) {
 
     this.customSave = function() {
         var data = {
-            nodes:{inp: this.inp.map(findNode)},
+            nodes:{
+                inp1: findNode(this.inp1),
+                inp2: findNode(this.inp2),
+                inp3: findNode(this.inp3),
+            },
         }
         return data;
     }
@@ -1764,7 +1768,7 @@ function RGBLed(x, y, scope) {
         console.log(c);
         console.log(ch2);
         ctx.strokeStyle = "#d3d4d5";
-        ctx.fillStyle = ["rgba("+ a +", "+ b +", "+ c +", 0.5)","rgba(227, 228, 229, 0.8)"][((a === undefined || b === undefined || c === undefined) || (a == 0 && b == 0 && c == 0)) + 0]
+        ctx.fillStyle = ["rgba("+ a +", "+ b +", "+ c +", 0.8)","rgba(227, 228, 229, 0.8)"][((a === undefined || b === undefined || c === undefined) ) + 0]
         //ctx.fillStyle = ["rgba(200, 200, 200, 0.3)","rgba(227, 228, 229, 0.8)"][((a === undefined || b === undefined || c === undefined) || (a == 0 && b == 0 && c == 0)) + 0];
         ctx.lineWidth = 1;
 
