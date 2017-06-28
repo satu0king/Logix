@@ -95,7 +95,7 @@ function backUp(scope=globalScope) {
 function Save() {
     // var data = backUp();
     data={}
-    data["title"] = "DATA";//prompt("EnterName:");
+    data["name"] = "DATA";//prompt("EnterName:");
     data["timePeriod"] = simulationArea.timePeriod;
     data.scopes=[]
     var dependencyList={};

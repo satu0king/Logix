@@ -1,3 +1,5 @@
+
+
 var width;
 
 var height;
@@ -128,8 +130,10 @@ function setup() {
     // globalScope = new Scope("globalScope"); //enabling scope
     // scopeList.push(globalScope);
     newCircuit("Main");
-    data = {};
-    //retrieving data
+    data={}
+    // data = JSON.parse(SAP_DATA);
+    // load(data);
+    // retrieving data
     if (parent.location.hash.length > 1) {
 
         var http = new XMLHttpRequest();
@@ -144,7 +148,7 @@ function setup() {
             if (http.responseText == "ERROR") alert("Error: could not load ");
             else {
                 data = JSON.parse(http.responseText);
-                console.log(data);
+                console.log("From Server:"+data);
                 load(data);
                 simulationArea.changeClockTime(data["timePeriod"] || 500);
                 // globalScope.backups.push(backUp(globalScope));

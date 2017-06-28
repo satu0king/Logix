@@ -22,7 +22,7 @@ $(document).ready(function() {
     });
     $('#newCircuit').click(function(){
         newCircuit();
-        
+
     });
     $('#saveAsImg').click(function(){
         saveAsImg();

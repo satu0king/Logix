@@ -136,9 +136,9 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT",id=undefined, saved
     this.click = function() {
         // this.id=prompt();
     }
-    // this.isResolvable = function() {
-    //     return true;
-    // }
+    this.isResolvable = function() {
+        return true;
+    }
     this.dblclick = function() {
         var prevHash = window.location.hash;
         window.location.hash = simulationArea.lastSelected.id;
