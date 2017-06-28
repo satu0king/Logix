@@ -1659,6 +1659,7 @@ function Button(x, y, scope, dir) {
     this.output1 = new Node(-30, 0, 1, this);
     this.wasClicked = false;
     this.rectangleObject=false;
+    this.setDimensions(10,10);
     
     this.customSave = function() {
         var data = {
@@ -1702,7 +1703,7 @@ function Button(x, y, scope, dir) {
 
         ctx.beginPath();
 
-        arc(ctx, 0, 0, 10, (-Math.PI ), (Math.PI ), xx, yy, this.direction);
+        arc(ctx, 0, 0, 10,0, 2*Math.PI , xx, yy, this.direction);
         ctx.stroke();
 
         if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
