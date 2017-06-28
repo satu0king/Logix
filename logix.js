@@ -11,10 +11,11 @@ objectSelection = false;
 var backups = []
 loading = false
 //Exact same name as object constructor
-moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "RGBLed", "SubCircuit"];
+moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "RGBLed","Button", "SubCircuit"];
+
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
-inputList = ["Stepper","Ground", "Power", "ConstantVal", "Input", "Clock"];
+inputList = ["Stepper","Ground", "Power", "ConstantVal", "Input", "Clock","Button"];
 
 function showError(error) {
     console.log("ERROR: " + error);

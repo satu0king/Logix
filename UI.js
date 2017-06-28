@@ -95,19 +95,19 @@ function addNand() {
 }
 
 function addXor() {
-    var or = new XorGate(200, 150, globalScope, "RIGHT", prompt("No of inputs:"));
+    var a = new XorGate(200, 150, globalScope, "RIGHT", prompt("No of inputs:"));
 }
 
 function addXnor() {
-    var or = new XnorGate(200, 150, globalScope, "RIGHT", prompt("No of inputs:"));
+    var a = new XnorGate(200, 150, globalScope, "RIGHT", prompt("No of inputs:"));
 }
 
 function addDigitalLed(){
-    var or = new DigitalLed(200, 150, globalScope, "UP");
+    var a = new DigitalLed(200, 150, globalScope, "UP");
 }
 
 function addVariableLed(){
-    var or = new VariableLed(200, 150, globalScope, "UP");
+    var a = new VariableLed(200, 150, globalScope, "UP");
 }
 
 function addRGBLed(){
@@ -115,7 +115,10 @@ function addRGBLed(){
 }
 
 function addStepper(){
-    var or = new Stepper(200, 150, globalScope,"RIGHT");
+    var a = new Stepper(200, 150, globalScope,"RIGHT");
+}
+function addButton(){
+    var a = new Button(200, 150, globalScope, "RIGHT");
 }
 document.getElementById("powerButton").addEventListener("click", addPower);
 document.getElementById("bitSelectorButton").addEventListener("click", addBitSelector);
@@ -147,4 +150,5 @@ document.getElementById("norButton").addEventListener("click", addNor);
 document.getElementById("digitalledButton").addEventListener("click", addDigitalLed);
 document.getElementById("variableledButton").addEventListener("click", addVariableLed);
 document.getElementById("stepperButton").addEventListener("click", addStepper);
+document.getElementById("buttonButton").addEventListener("click", addButton);
 document.getElementById("rgbledButton").addEventListener("click", addRGBLed);
