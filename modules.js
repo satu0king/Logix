@@ -1553,7 +1553,7 @@ function DigitalLed(x, y, scope) {
 
     CircuitElement.call(this, x, y, scope, "UP",1);
     this.rectangleObject=false;
-    this.setDimensions(10,10);
+    this.setDimensions(10,20);
     this.inp1 = new Node(-40, 0, 0, this,1);
     this.directionFixed=true;
     this.fixedBitWidth=true;
@@ -1604,7 +1604,7 @@ function VariableLed(x, y, scope) {
 
     CircuitElement.call(this, x, y, scope, "UP",8);
     this.rectangleObject=false;
-    this.setDimensions(10,10);
+    this.setDimensions(10,20);
     this.inp1 = new Node(-40, 0, 0, this,8);
     this.directionFixed=true;
     this.fixedBitWidth=true;
@@ -1653,6 +1653,66 @@ function VariableLed(x, y, scope) {
     }
 }
 
+function Button(x, y, scope, dir) {
+    CircuitElement.call(this, x, y, scope, dir, 1);
+    this.state = 0;
+    this.output1 = new Node(-40, 0, 1, this);
+    this.wasClicked = false;
+    this.rectangleObject=false;
+    this.setDimensions(10,10);
+    
+    this.customSave = function() {
+        var data = {
+            nodes: {
+                output1: findNode(this.output1)
+            },
+            values: {
+                state: this.state
+            },
+            constructorParamaters: [this.direction, this.bitWidth]
+        }
+        return data;
+    }
+    this.resolve = function() {
+        if(this.wasClicked)
+        {
+            this.state=1;
+            this.output1.value=this.state;
+        }
+        else 
+        {
+            this.state=0;
+            this.output1.value=this.state;   
+        }
+        this.scope.stack.push(this.output1);
+    }
+    this.customDraw = function() {
+        ctx = simulationArea.context;
+        var xx = this.x;
+        var yy = this.y;
+        ctx.fillStyle="yellow";
+
+        ctx.strokeStyle = "#353535";
+        ctx.lineWidth=5;
+
+        ctx.beginPath();
+
+        moveTo(ctx, -10, 0, xx, yy, this.direction);
+        lineTo(ctx, -40, 0, xx, yy, this.direction);
+        ctx.stroke();
+
+        ctx.beginPath();
+
+        arc(ctx, 0, 0, 12,0, 2*Math.PI , xx, yy, this.direction);
+        ctx.stroke();
+
+        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
+            ctx.fillStyle = "yellow";
+        if(this.wasClicked)
+            ctx.fillStyle ="rgba(232, 13, 13,0.7)";
+        ctx.fill();
+    }
+}
 function RGBLed(x, y, scope) {
     // Calling base class constructor
 
