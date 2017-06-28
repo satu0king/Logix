@@ -137,6 +137,8 @@ function setup() {
     simulationArea.setup();
     scheduleUpdate();
 
+    combinationalAnalysis();
+
 
 }
 
@@ -670,6 +672,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.objectType = this.constructor.name; // CHECK IF THIS IS VALID
     this.x = x;
     this.y = y;
+    this.deleteNodesWhenDeleted=false;
     this.parent = parent;
     this.nodeList = []
     this.isResolved = false;
@@ -958,11 +961,18 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.delete = function() {
         simulationArea.lastSelected = undefined;
         this.scope[this.objectType].clean(this); // CHECK IF THIS IS VALID
-        for (var i = 0; i < this.nodeList.length; i++) {
-            this.nodeList[i].delete();
-        }
+        if(this.deleteNodesWhenDeleted)
+            for (var i = 0; i < this.nodeList.length; i++)
+                this.nodeList[i].delete();
+        else
+            for (var i = 0; i < this.nodeList.length; i++)
+                this.nodeList[i].converToIntermediate();
     }
 
+    this.cleanDelete=function(){
+        this.deleteNodesWhenDeleted=true;
+        this.delete();
+    }
     //method to change direction
     //OVERRIDE WITH CAUTION
     this.newDirection = function(dir) {
