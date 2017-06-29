@@ -1606,7 +1606,7 @@ function DigitalLed(x, y, scope=globalScope) {
 
     CircuitElement.call(this, x, y, scope, "UP",1);
     this.rectangleObject=false;
-    this.setDimensions(10,10);
+    this.setDimensions(10,20);
     this.inp1 = new Node(-40, 0, 0, this,1);
     this.directionFixed=true;
     this.fixedBitWidth=true;
@@ -1657,7 +1657,7 @@ function VariableLed(x, y, scope=globalScope) {
 
     CircuitElement.call(this, x, y, scope, "UP",8);
     this.rectangleObject=false;
-    this.setDimensions(10,10);
+    this.setDimensions(10,20);
     this.inp1 = new Node(-40, 0, 0, this,8);
     this.directionFixed=true;
     this.fixedBitWidth=true;
@@ -1699,6 +1699,141 @@ function VariableLed(x, y, scope=globalScope) {
 
         */
         lineTo(ctx, -20, -9, xx, yy, this.direction);
+        ctx.stroke();
+        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+
+    }
+}
+
+function Button(x, y, scope, dir) {
+    CircuitElement.call(this, x, y, scope, dir, 1);
+    this.state = 0;
+    this.output1 = new Node(-40, 0, 1, this);
+    this.wasClicked = false;
+    this.rectangleObject=false;
+    this.setDimensions(10,10);
+    
+    this.customSave = function() {
+        var data = {
+            nodes: {
+                output1: findNode(this.output1)
+            },
+            values: {
+                state: this.state
+            },
+            constructorParamaters: [this.direction, this.bitWidth]
+        }
+        return data;
+    }
+    this.resolve = function() {
+        if(this.wasClicked)
+        {
+            this.state=1;
+            this.output1.value=this.state;
+        }
+        else 
+        {
+            this.state=0;
+            this.output1.value=this.state;   
+        }
+        this.scope.stack.push(this.output1);
+    }
+    this.customDraw = function() {
+        ctx = simulationArea.context;
+        var xx = this.x;
+        var yy = this.y;
+        ctx.fillStyle="yellow";
+
+        ctx.strokeStyle = "#353535";
+        ctx.lineWidth=5;
+
+        ctx.beginPath();
+
+        moveTo(ctx, -10, 0, xx, yy, this.direction);
+        lineTo(ctx, -40, 0, xx, yy, this.direction);
+        ctx.stroke();
+
+        ctx.beginPath();
+
+        arc(ctx, 0, 0, 12,0, 2*Math.PI , xx, yy, this.direction);
+        ctx.stroke();
+
+        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
+            ctx.fillStyle = "yellow";
+        if(this.wasClicked)
+            ctx.fillStyle ="rgba(232, 13, 13,0.7)";
+        ctx.fill();
+    }
+}
+function RGBLed(x, y, scope) {
+    // Calling base class constructor
+
+    CircuitElement.call(this, x, y, scope, "UP",8);
+    this.rectangleObject=false;
+    this.inp = [];
+    this.setDimensions(10,10);
+    this.inp1 = new Node(-40, -10, 0, this,8);
+    this.inp2 = new Node(-40, 0, 0, this,8);
+    this.inp3 = new Node(-40, 10, 0, this,8);
+    this.inp.push(this.inp1);
+    this.inp.push(this.inp2);
+    this.inp.push(this.inp3);
+    this.directionFixed=true;
+    this.fixedBitWidth=true;
+
+    this.customSave = function() {
+        var data = {
+            nodes:{
+                inp1: findNode(this.inp1),
+                inp2: findNode(this.inp2),
+                inp3: findNode(this.inp3),
+            },
+        }
+        return data;
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+
+        var xx = this.x;
+        var yy = this.y;
+
+        ctx.strokeStyle = "#e3e4e5";
+        ctx.lineWidth=3;
+        ctx.beginPath();
+        moveTo(ctx, -20, 0, xx, yy, this.direction);
+        lineTo(ctx, -40, 0, xx, yy, this.direction);
+        moveTo(ctx, -20, -8, xx, yy, this.direction);
+        lineTo(ctx, -40, -8, xx, yy, this.direction);
+        moveTo(ctx, -20, 8, xx, yy, this.direction);
+        lineTo(ctx, -40, 8, xx, yy, this.direction);
+        ctx.stroke();
+        var a = this.inp1.value;
+        var b = this.inp2.value;
+        var c = this.inp3.value;
+        var ch1 = "start";
+        var ch2 = "end";
+        console.log(ch1);
+        console.log(a);
+        console.log(b);
+        console.log(c);
+        console.log(ch2);
+        ctx.strokeStyle = "#d3d4d5";
+        ctx.fillStyle = ["rgba("+ a +", "+ b +", "+ c +", 0.8)","rgba(227, 228, 229, 0.8)"][((a === undefined || b === undefined || c === undefined) ) + 0]
+        //ctx.fillStyle = ["rgba(200, 200, 200, 0.3)","rgba(227, 228, 229, 0.8)"][((a === undefined || b === undefined || c === undefined) || (a == 0 && b == 0 && c == 0)) + 0];
+        ctx.lineWidth = 1;
+
+        ctx.beginPath();
+
+        moveTo(ctx, -18, -11, xx, yy, this.direction);
+        lineTo(ctx, 0, -11, xx, yy, this.direction);
+        arc(ctx, 0, 0, 11, (-Math.PI / 2), (Math.PI / 2), xx, yy, this.direction);
+        lineTo(ctx, -18, 11, xx, yy, this.direction);
+        lineTo(ctx,-21,15,xx,yy,this.direction);
+        arc(ctx,0,0,Math.sqrt(666),((Math.PI/2) + Math.acos(15/Math.sqrt(666))),((-Math.PI/2) - Math.asin(21/Math.sqrt(666))),xx,yy,this.direction);
+        lineTo(ctx, -18, -11, xx, yy, this.direction);
         ctx.stroke();
         if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
