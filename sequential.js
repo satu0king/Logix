@@ -1,9 +1,12 @@
 function clockTick() {
-    globalScope.clockTick();
-    play()
+    if(errorDetected)return;
+
     updateCanvas=true;
     toBeUpdated = true;
     scheduleUpdate();
+    globalScope.clockTick();
+    play();
+
 }
 
 

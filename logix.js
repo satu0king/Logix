@@ -10,6 +10,7 @@ updateCanvas = true;
 wireToBeChecked = 0; // when node disconnects from another node
 willBeUpdated = false;
 objectSelection = false;
+errorDetected=false;
 // var backups = []
 loading = false
 //Exact same name as object constructor
@@ -24,9 +25,10 @@ globalScope=undefined;
 
 function showError(error) {
     // console.log("ERROR: " + error);
+    errorDetected=true;
     var id=Math.floor(Math.random()*10000);
     $('#errorMessageDiv').append("<div class='errorMessage' id='"+id+"'> "+error+"</div>");
-    setTimeout(function(){$('#'+id).fadeOut('slow')},1500);
+    setTimeout(function(){$('#'+id).fadeOut()},1500);
     // console.log("<div class='errorMessage'>"+error+"</div>");
 }
 
@@ -193,6 +195,7 @@ window.addEventListener('orientationchange', resetup);
 
 //Main fn that resolves circuit
 function play(scope = globalScope, resetNodes = true) {
+    if(errorDetected)return;
 
     // console.log("simulation");
     if (loading == true) return;
@@ -218,6 +221,7 @@ function play(scope = globalScope, resetNodes = true) {
     }
     var stepCount = 0;
     while (scope.stack.length) {
+        if(errorDetected)return;
         var elem = scope.stack.pop();
         elem.resolve();
         stepCount++;

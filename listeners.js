@@ -10,6 +10,8 @@ window.addEventListener('keyup', function(e) {
     }
 });
 window.addEventListener('keydown', function(e) {
+    errorDetected=false;
+    toBeUpdated=true;
 
 
     // zoom in (+)
@@ -114,6 +116,8 @@ document.getElementById("simulationArea").addEventListener('dblclick', function(
 });
 document.getElementById("simulationArea").addEventListener('mousedown', function(e) {
     // return;
+    errorDetected=false;
+    toBeUpdated=true;
     e.preventDefault();
     scheduleBackup();
     update();
@@ -150,6 +154,8 @@ window.addEventListener('mouseup', function(e) {
 
     // return;
     // update();
+    errorDetected=false;
+    toBeUpdated=true;
     scheduleUpdate(1);
     var rect = simulationArea.canvas.getBoundingClientRect();
     // simulationArea.mouseDownX = (e.clientX - rect.left) / simulationArea.scale;

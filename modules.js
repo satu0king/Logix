@@ -1706,14 +1706,14 @@ function VariableLed(x, y, scope=globalScope) {
     }
 }
 
-function Button(x, y, scope, dir) {
+function Button(x, y, scope=globalScope, dir="RIGHT") {
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.state = 0;
-    this.output1 = new Node(-40, 0, 1, this);
+    this.output1 = new Node(40, 0, 1, this);
     this.wasClicked = false;
     this.rectangleObject=false;
     this.setDimensions(10,10);
-    
+
     this.customSave = function() {
         var data = {
             nodes: {
@@ -1732,10 +1732,10 @@ function Button(x, y, scope, dir) {
             this.state=1;
             this.output1.value=this.state;
         }
-        else 
+        else
         {
             this.state=0;
-            this.output1.value=this.state;   
+            this.output1.value=this.state;
         }
         this.scope.stack.push(this.output1);
     }
@@ -1743,15 +1743,15 @@ function Button(x, y, scope, dir) {
         ctx = simulationArea.context;
         var xx = this.x;
         var yy = this.y;
-        ctx.fillStyle="yellow";
+        ctx.fillStyle="#ddd";
 
         ctx.strokeStyle = "#353535";
         ctx.lineWidth=5;
 
         ctx.beginPath();
 
-        moveTo(ctx, -10, 0, xx, yy, this.direction);
-        lineTo(ctx, -40, 0, xx, yy, this.direction);
+        moveTo(ctx, 10, 0, xx, yy, this.direction);
+        lineTo(ctx, 40, 0, xx, yy, this.direction);
         ctx.stroke();
 
         ctx.beginPath();
@@ -1759,14 +1759,14 @@ function Button(x, y, scope, dir) {
         arc(ctx, 0, 0, 12,0, 2*Math.PI , xx, yy, this.direction);
         ctx.stroke();
 
-        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
-            ctx.fillStyle = "yellow";
+        if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
+            ctx.fillStyle="rgba(232, 13, 13,0.6)"
         if(this.wasClicked)
-            ctx.fillStyle ="rgba(232, 13, 13,0.7)";
+            ctx.fillStyle ="rgba(232, 13, 13,0.8)";
         ctx.fill();
     }
 }
-function RGBLed(x, y, scope) {
+function RGBLed(x, y, scope=globalScope) {
     // Calling base class constructor
 
     CircuitElement.call(this, x, y, scope, "UP",8);
