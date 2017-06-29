@@ -3,8 +3,8 @@
 var inputSample = 5;
 var dataSample=[['01---','11110','01---','00000'],['01110','1-1-1','----0'],['01---','11110','01110','1-1-1','0---0'],['----1']];
 
-var sampleInputListNames=["A","B"];
-var sampleOutputListNames=["X","Y"];
+var sampleInputListNames=["A", "B", "C", "D"];
+var sampleOutputListNames=["X"];
 
 createCombinationalAnalysisPrompt()
 function createCombinationalAnalysisPrompt(inputListNames=sampleInputListNames,outputListNames=sampleOutputListNames){
@@ -48,7 +48,17 @@ function createCombinationalAnalysisPrompt(inputListNames=sampleInputListNames,o
           text: "Submit",
           click: function() {
             $( this ).dialog( "close" );
-            generateBooleanTableData(outputListNames);
+            var data = generateBooleanTableData(outputListNames);
+            dataSample = [];
+            for(let output in data){
+                let temp = new BooleanMinimize(
+                    sampleInputListNames.length,
+                    data[output][1].map(Number),
+                    data[output]['x'].map(Number)
+                )
+                dataSample.push(temp.result);
+            }
+            console.log(dataSample);
         },
 
         }
