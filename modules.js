@@ -181,6 +181,7 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
     this.inputSize = 1 << this.controlSignalSize;
 
     this.setDimensions(20, 5 * (this.inputSize));
+    this.rectangleObject=false;
     this.upDimensionY = 5 * (this.inputSize + 2);
     this.inp = [];
 
@@ -192,7 +193,7 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
     }
 
     this.output1 = new Node(20, 0, 1, this);
-    this.controlSignalInput = new Node(0, 5 * this.inputSize, 0, this, this.controlSignalSize);
+    this.controlSignalInput = new Node(0, 5 * (this.inputSize-1), 0, this, this.controlSignalSize);
 
     //fn to create save Json Data of object
     this.customSave = function() {
@@ -220,6 +221,35 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
         }
         this.output1.value = this.inp[this.controlSignalInput.value].value;
         this.scope.stack.push(this.output1);
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+
+        var xx = this.x;
+        var yy = this.y;
+
+        ctx.beginPath();
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.lineWidth = 3;
+        ctx.fillStyle = "green";
+        moveTo(ctx, -20, -(10+10*(this.inputSize/2)), xx, yy, this.direction);
+        lineTo(ctx, -20, 10+10*(this.inputSize/2-1), xx, yy, this.direction);
+
+        moveTo(ctx, 20, -(5+5+10*(this.inputSize/2-1)), xx, yy, this.direction);
+        lineTo(ctx, 20, 0+10*(this.inputSize/2-1), xx, yy, this.direction);
+
+        moveTo(ctx, 20, 0+10*(this.inputSize/2-1), xx, yy, this.direction);
+        lineTo(ctx, -20,10+10*(this.inputSize/2-1), xx, yy, this.direction);
+
+        moveTo(ctx, -20, -(10+10*(this.inputSize/2)), xx, yy, this.direction);
+        lineTo(ctx, 20,-(10+10*(this.inputSize/2-1)), xx, yy, this.direction);        
+        ctx.stroke();
+
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
+            ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
     }
 
 }
@@ -1794,8 +1824,9 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
     this.outputsize = 1 << this.controlSignalSize;
 
     this.setDimensions(20, 5 * (this.outputsize));
+    this.rectangleObject=false;
     this.upDimensionY = 5 * (this.outputsize + 2);
-    this.input = new Node(-20, 0, 0, this);
+    this.input = new Node(-20, -5, 0, this);
 
     this.output1=[];
     for (var i = 0; i < this.outputsize; i++) {
@@ -1803,7 +1834,7 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
         this.output1.push(a);
     }
 
-    this.controlSignalInput = new Node(0, 5 * this.outputsize, 0, this, this.controlSignalSize);
+    this.controlSignalInput = new Node(0, 5 * (this.outputsize-1), 0, this, this.controlSignalSize);
 
     this.customSave = function() {
         var data = {
@@ -1820,5 +1851,34 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
     this.resolve = function() {
         this.output1[this.controlSignalInput.value].value=this.input.value;
         this.scope.stack.push(this.output1[this.controlSignalInput.value]);
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+
+        var xx = this.x;
+        var yy = this.y;
+
+        ctx.beginPath();
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.lineWidth = 3;
+        ctx.fillStyle = "green";
+        moveTo(ctx, 20, -(10+10*(this.outputsize/2)), xx, yy, this.direction);
+        lineTo(ctx, 20, 10+10*(this.outputsize/2-1), xx, yy, this.direction);
+
+        moveTo(ctx, -20, -(5+5+10*(this.outputsize/2-1)), xx, yy, this.direction);
+        lineTo(ctx, -20, 0+10*(this.outputsize/2-1), xx, yy, this.direction);
+
+        moveTo(ctx, 20, 10+10*(this.outputsize/2-1), xx, yy, this.direction);
+        lineTo(ctx, -20,0+10*(this.outputsize/2-1), xx, yy, this.direction);
+
+        moveTo(ctx, -20, -(10+10*(this.outputsize/2-1)), xx, yy, this.direction);
+        lineTo(ctx, 20,-(5+5+10*(this.outputsize/2)), xx, yy, this.direction);        
+        ctx.stroke();
+
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
+            ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
     }
 }
