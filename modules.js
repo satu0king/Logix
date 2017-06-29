@@ -1818,7 +1818,6 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
     }
 
     this.resolve = function() {
-        console.log(this.output1[this.controlSignalInput.value].value);
         this.output1[this.controlSignalInput.value].value=this.input.value;
         this.scope.stack.push(this.output1[this.controlSignalInput.value]);
     }
