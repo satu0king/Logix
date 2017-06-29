@@ -233,18 +233,12 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.lineWidth = 3;
-        ctx.fillStyle = "green";
-        moveTo(ctx, -20, -(10+10*(this.inputSize/2)), xx, yy, this.direction);
-        lineTo(ctx, -20, 10+10*(this.inputSize/2-1), xx, yy, this.direction);
-
-        moveTo(ctx, 20, -(5+5+10*(this.inputSize/2-1)), xx, yy, this.direction);
-        lineTo(ctx, 20, 0+10*(this.inputSize/2-1), xx, yy, this.direction);
-
-        moveTo(ctx, 20, 0+10*(this.inputSize/2-1), xx, yy, this.direction);
-        lineTo(ctx, -20,10+10*(this.inputSize/2-1), xx, yy, this.direction);
-
-        moveTo(ctx, -20, -(10+10*(this.inputSize/2)), xx, yy, this.direction);
-        lineTo(ctx, 20,-(10+10*(this.inputSize/2-1)), xx, yy, this.direction);        
+        ctx.fillStyle = "white";
+        moveTo(ctx, -20, -10*(this.inputSize/2+1), xx, yy, this.direction);
+        lineTo(ctx, -20, 10*(this.inputSize/2), xx, yy, this.direction);
+        lineTo(ctx, 20, 10*(this.inputSize/2-1), xx, yy, this.direction);
+        lineTo(ctx, 20,-(10*(this.inputSize/2)), xx, yy, this.direction);   
+        lineTo(ctx, -20,-10*(this.inputSize/2+1), xx, yy, this.direction);     
         ctx.stroke();
 
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
@@ -1863,22 +1857,17 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.lineWidth = 3;
-        ctx.fillStyle = "green";
-        moveTo(ctx, 20, -(10+10*(this.outputsize/2)), xx, yy, this.direction);
-        lineTo(ctx, 20, 10+10*(this.outputsize/2-1), xx, yy, this.direction);
-
-        moveTo(ctx, -20, -(5+5+10*(this.outputsize/2-1)), xx, yy, this.direction);
-        lineTo(ctx, -20, 0+10*(this.outputsize/2-1), xx, yy, this.direction);
-
-        moveTo(ctx, 20, 10+10*(this.outputsize/2-1), xx, yy, this.direction);
-        lineTo(ctx, -20,0+10*(this.outputsize/2-1), xx, yy, this.direction);
-
-        moveTo(ctx, -20, -(10+10*(this.outputsize/2-1)), xx, yy, this.direction);
-        lineTo(ctx, 20,-(5+5+10*(this.outputsize/2)), xx, yy, this.direction);        
+        ctx.fillStyle = "white";
+        moveTo(ctx, 20, -10*(this.outputsize/2+1), xx, yy, this.direction);
+        lineTo(ctx, 20, 10*(this.outputsize/2), xx, yy, this.direction);
+        lineTo(ctx, -20, 10*(this.outputsize/2-1), xx, yy, this.direction);
+        lineTo(ctx, -20, -10*(this.outputsize/2), xx, yy, this.direction);
+        lineTo(ctx, 20,-10*(this.outputsize/2+1), xx, yy, this.direction);        
         ctx.stroke();
 
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
     }
+
 }
