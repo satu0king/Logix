@@ -1795,11 +1795,11 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
 
     this.setDimensions(20, 5 * (this.outputsize));
     this.upDimensionY = 5 * (this.outputsize + 2);
-    this.input = new Node(-20, 0, 1, this);
+    this.input = new Node(-20, 0, 0, this);
 
     this.output1=[];
     for (var i = 0; i < this.outputsize; i++) {
-        var a = new Node(20, +10 * (i - this.outputsize / 2), 0, this);
+        var a = new Node(20, +10 * (i - this.outputsize / 2), 1, this);
         this.output1.push(a);
     }
 
@@ -1817,11 +1817,8 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
         return data;
     }
 
-    this.isResolvable = function() {
-        return this.controlSignalInput.value !== undefined && this.input.value !== undefined;
-    }
-    
     this.resolve = function() {
+        console.log(this.output1[this.controlSignalInput.value].value);
         this.output1[this.controlSignalInput.value].value=this.input.value;
         this.scope.stack.push(this.output1[this.controlSignalInput.value]);
     }
