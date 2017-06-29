@@ -179,6 +179,10 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
 
     this.controlSignalSize = controlSignalSize || parseInt(prompt("Enter control signal bitWidth"), 10);
     this.inputSize = 1 << this.controlSignalSize;
+    var count=0;
+    if(this.controlSignalSize==1){
+        count=10;
+    }
 
     this.setDimensions(20, 5 * (this.inputSize));
     this.rectangleObject=false;
@@ -188,11 +192,11 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
     //variable inputLength , node creation
 
     for (var i = 0; i < this.inputSize; i++) {
-        var a = new Node(-20, +10 * (i - this.inputSize / 2), 0, this);
+        var a = new Node(-20+count, +10 * (i - this.inputSize / 2), 0, this);
         this.inp.push(a);
     }
 
-    this.output1 = new Node(20, 0, 1, this);
+    this.output1 = new Node(20-count, 0, 1, this);
     this.controlSignalInput = new Node(0, 5 * (this.inputSize-1), 0, this, this.controlSignalSize);
 
     //fn to create save Json Data of object
@@ -234,11 +238,11 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.lineWidth = 3;
         ctx.fillStyle = "white";
-        moveTo(ctx, -20, -10*(this.inputSize/2+1), xx, yy, this.direction);
-        lineTo(ctx, -20, 10*(this.inputSize/2), xx, yy, this.direction);
-        lineTo(ctx, 20, 10*(this.inputSize/2-1), xx, yy, this.direction);
-        lineTo(ctx, 20,-(10*(this.inputSize/2)), xx, yy, this.direction);   
-        lineTo(ctx, -20,-10*(this.inputSize/2+1), xx, yy, this.direction);     
+        moveTo(ctx, -20+count, -10*(this.inputSize/2+1), xx, yy, this.direction);
+        lineTo(ctx, -20+count, 10*(this.inputSize/2), xx, yy, this.direction);
+        lineTo(ctx, 20-count, 10*(this.inputSize/2-1), xx, yy, this.direction);
+        lineTo(ctx, 20-count,-(10*(this.inputSize/2)), xx, yy, this.direction);   
+        lineTo(ctx, -20+count,-10*(this.inputSize/2+1), xx, yy, this.direction);     
         ctx.stroke();
 
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
@@ -1816,15 +1820,19 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.controlSignalSize = controlSignalSize || parseInt(prompt("Enter control signal bitWidth"), 10);
     this.outputsize = 1 << this.controlSignalSize;
+    var count=0;
+    if(this.controlSignalSize==1) {
+        count=10;
+    }
 
     this.setDimensions(20, 5 * (this.outputsize));
     this.rectangleObject=false;
     this.upDimensionY = 5 * (this.outputsize + 2);
-    this.input = new Node(-20, -5, 0, this);
+    this.input = new Node(-20+count, -5, 0, this);
 
     this.output1=[];
     for (var i = 0; i < this.outputsize; i++) {
-        var a = new Node(20, +10 * (i - this.outputsize / 2), 1, this);
+        var a = new Node(20-count, +10 * (i - this.outputsize / 2), 1, this);
         this.output1.push(a);
     }
 
@@ -1858,11 +1866,11 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.lineWidth = 3;
         ctx.fillStyle = "white";
-        moveTo(ctx, 20, -10*(this.outputsize/2+1), xx, yy, this.direction);
-        lineTo(ctx, 20, 10*(this.outputsize/2), xx, yy, this.direction);
-        lineTo(ctx, -20, 10*(this.outputsize/2-1), xx, yy, this.direction);
-        lineTo(ctx, -20, -10*(this.outputsize/2), xx, yy, this.direction);
-        lineTo(ctx, 20,-10*(this.outputsize/2+1), xx, yy, this.direction);        
+        moveTo(ctx, 20-count, -10*(this.outputsize/2+1), xx, yy, this.direction);
+        lineTo(ctx, 20-count, 10*(this.outputsize/2), xx, yy, this.direction);
+        lineTo(ctx, -20+count, 10*(this.outputsize/2-1), xx, yy, this.direction);
+        lineTo(ctx, -20+count, -10*(this.outputsize/2), xx, yy, this.direction);
+        lineTo(ctx, 20-count,-10*(this.outputsize/2+1), xx, yy, this.direction);        
         ctx.stroke();
 
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
