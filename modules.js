@@ -174,7 +174,6 @@ function NandGate(x, y, scope, dir, inputLength, bitWidth = undefined) {
 }
 
 function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize = undefined) {
-
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
 
     this.controlSignalSize = controlSignalSize || parseInt(prompt("Enter control signal bitWidth"), 10);
@@ -187,19 +186,16 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
     this.setDimensions(20, 5 * (this.inputSize));
     this.rectangleObject=false;
     this.upDimensionY = 5 * (this.inputSize + 2);
+
     this.inp = [];
-
-    //variable inputLength , node creation
-
     for (var i = 0; i < this.inputSize; i++) {
         var a = new Node(-20+count, +10 * (i - this.inputSize / 2), 0, this);
         this.inp.push(a);
     }
 
-    this.output1 = new Node(20-count, 0, 1, this);
+    this.output1 = new Node(20-count, -5, 1, this);
     this.controlSignalInput = new Node(0, 5 * (this.inputSize-1), 0, this, this.controlSignalSize);
 
-    //fn to create save Json Data of object
     this.customSave = function() {
         var data = {
             constructorParamaters: [this.direction, this.bitWidth, this.controlSignalSize],
@@ -212,12 +208,6 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
         return data;
     }
 
-    // checks if the module has enough information to resolve
-    this.isResolvable = function() {
-        return this.controlSignalInput.value !== undefined && this.inp[this.controlSignalInput.value].value !== undefined;
-    }
-
-    //resolve output values based on inputData
     this.resolve = function() {
 
         if (this.isResolvable() == false) {
@@ -243,6 +233,7 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
         lineTo(ctx, 20-count, 10*(this.inputSize/2-1), xx, yy, this.direction);
         lineTo(ctx, 20-count,-(10*(this.inputSize/2)), xx, yy, this.direction);   
         lineTo(ctx, -20+count,-10*(this.inputSize/2+1), xx, yy, this.direction);     
+        ctx.closePath();
         ctx.stroke();
 
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
@@ -1870,7 +1861,8 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
         lineTo(ctx, 20-count, 10*(this.outputsize/2), xx, yy, this.direction);
         lineTo(ctx, -20+count, 10*(this.outputsize/2-1), xx, yy, this.direction);
         lineTo(ctx, -20+count, -10*(this.outputsize/2), xx, yy, this.direction);
-        lineTo(ctx, 20-count,-10*(this.outputsize/2+1), xx, yy, this.direction);        
+        lineTo(ctx, 20-count,-10*(this.outputsize/2+1), xx, yy, this.direction); 
+        ctx.closePath();       
         ctx.stroke();
 
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
