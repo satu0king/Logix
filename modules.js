@@ -610,23 +610,33 @@ function OrGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth=1
     this.changeInputSize=changeInputSize;
 
     if (inputs % 2 == 1) {
-        for (var i = 0; i < inputs / 2 - 1; i++) {
+        // for (var i = 0; i < inputs / 2 - 1; i++) {
+        //     var a = new Node(-10, -10 * (i + 1), 0, this);
+        //     this.inp.push(a);
+        // }
+        // var a = new Node(-10, 0, 0, this);
+        // this.inp.push(a);
+        // for (var i = inputs / 2 + 1; i < inputs; i++) {
+        //     var a = new Node(-10, 10 * (i + 1 - inputs / 2 - 1), 0, this);
+        //     this.inp.push(a);
+        // }
+        for (var i = Math.floor(inputs/2)-1; i >=0; i--) {
             var a = new Node(-10, -10 * (i + 1), 0, this);
             this.inp.push(a);
         }
         var a = new Node(-10, 0, 0, this);
         this.inp.push(a);
-        for (var i = inputs / 2 + 1; i < inputs; i++) {
-            var a = new Node(-10, 10 * (i + 1 - inputs / 2 - 1), 0, this);
+        for (var i = 0; i < Math.floor(inputs/2); i++) {
+            var a = new Node(-10, 10 * (i + 1 ), 0, this);
             this.inp.push(a);
         }
     } else {
-        for (var i = 0; i < inputs / 2; i++) {
+        for (var i = inputs/2-1; i >=0; i--) {
             var a = new Node(-10, -10 * (i + 1), 0, this);
             this.inp.push(a);
         }
-        for (var i = inputs / 2; i < inputs; i++) {
-            var a = new Node(-10, 10 * (i + 1 - inputs / 2), 0, this);
+        for (var i = 0; i < inputs/2; i++) {
+            var a = new Node(-10, 10 * (i + 1 ), 0, this);
             this.inp.push(a);
         }
     }

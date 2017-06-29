@@ -102,6 +102,14 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     }
 
+    this.converToIntermediate=function(){
+        this.type=2;
+        this.x=this.absX();
+        this.y=this.absY();
+        this.parent=this.scope.root;
+        this.scope.nodes.push(this);
+    }
+    
     this.startDragging=function(){
         this.oldx = this.x;
         this.oldy = this.y;
