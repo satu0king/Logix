@@ -1791,44 +1791,19 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.controlSignalSize = controlSignalSize || parseInt(prompt("Enter control signal bitWidth"), 10);
-    //this.inputSize = 1 << this.controlSignalSize;
     this.outputsize = 1 << this.controlSignalSize;
 
-    //this.setDimensions(20, 5 * (this.inputSize));
     this.setDimensions(20, 5 * (this.outputsize));
-    //this.upDimensionY = 5 * (this.inputSize + 2);
     this.upDimensionY = 5 * (this.outputsize + 2);
-    //this.inp = [];
     this.input = new Node(-20, 0, 1, this);
-    //variable inputLength , node creation
 
-    //for (var i = 0; i < this.inputSize; i++) {
-    //    var a = new Node(-20, +10 * (i - this.inputSize / 2), 0, this);
-    //    this.inp.push(a);
-    //}
     this.output1=[];
-
     for (var i = 0; i < this.outputsize; i++) {
         var a = new Node(20, +10 * (i - this.outputsize / 2), 0, this);
         this.output1.push(a);
     }
 
-    //this.output1 = new Node(20, 0, 1, this);
-    //this.controlSignalInput = new Node(0, 5 * this.inputSize, 0, this, this.controlSignalSize);
     this.controlSignalInput = new Node(0, 5 * this.outputsize, 0, this, this.controlSignalSize);
-
-    //fn to create save Json Data of object
-    //this.customSave = function() {
-      //  var data = {
-        //    constructorParamaters: [this.direction, this.bitWidth, this.controlSignalSize],
-          //  nodes: {
-            //    inp: this.inp.map(findNode),
-              //  output1: findNode(this.output1),
-                //controlSignalInput: findNode(this.controlSignalInput)
-       //     },
-        //}
-    //    return data;
-    //}
 
     this.customSave = function() {
         var data = {
@@ -1842,24 +1817,10 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
         return data;
     }
 
-    // checks if the module has enough information to resolve
-    //this.isResolvable = function() {
-      //  return this.controlSignalInput.value !== undefined && this.inp[this.controlSignalInput.value].value !== undefined;
-    //}
-
     this.isResolvable = function() {
         return this.controlSignalInput.value !== undefined && this.input.value !== undefined;
     }
-
-    //resolve output values based on inputData
-    //this.resolve = function() {
-
-      //  if (this.isResolvable() == false) {
-        //    return;
-        //}
-        //this.output1.value = this.inp[this.controlSignalInput.value].value;
-        //this.scope.stack.push(this.output1);
-    //}
+    
     this.resolve = function() {
         this.output1[this.controlSignalInput.value].value=this.input.value;
         this.scope.stack.push(this.output1[this.controlSignalInput.value]);
