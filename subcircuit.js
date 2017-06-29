@@ -4,6 +4,13 @@ function loadSubCircuit(savedData, scope) {
 
 //subCircuit
 function SubCircuit(x, y, scope = globalScope, dir = "RIGHT",id=undefined, savedData = undefined) {
+
+    this.id = id||prompt("Enter Id: ");
+    if(scopeList[this.id].checkDependency(scope.id)){
+        showError("Cyclic Circuit Error");
+        return;
+    }
+
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.directionFixed = true;
     this.fixedBitWidth = true;
@@ -15,7 +22,7 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT",id=undefined, saved
     this.width = 0;
     this.height = 0;
     this.title = "";
-    this.id = id||prompt("Enter Hash: ");
+
     if (this.savedData != undefined) {
         this.height = savedData["height"];
         this.width = savedData["width"];
@@ -140,10 +147,11 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT",id=undefined, saved
         return true;
     }
     this.dblclick = function() {
-        var prevHash = window.location.hash;
-        window.location.hash = simulationArea.lastSelected.id;
-        openInNewTab(window.location.href);
-        window.location.hash = prevHash;
+        // var prevHash = window.location.hash;
+        // window.location.hash = simulationArea.lastSelected.id;
+        // openInNewTab(window.location.href);
+        // window.location.hash = prevHash;
+        switchCircuit(this.id)
     }
     this.saveObject = function() {
         var data = {

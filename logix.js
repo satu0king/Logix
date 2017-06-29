@@ -23,7 +23,11 @@ scopeList={};
 globalScope=undefined;
 
 function showError(error) {
-    console.log("ERROR: " + error);
+    // console.log("ERROR: " + error);
+    var id=Math.floor(Math.random()*10000);
+    $('#errorMessageDiv').append("<div class='errorMessage' id='"+id+"'> "+error+"</div>");
+    setTimeout(function(){$('#'+id).fadeOut('slow')},1500);
+    // console.log("<div class='errorMessage'>"+error+"</div>");
 }
 
 function openInNewTab(url) {
@@ -98,6 +102,7 @@ function Scope(name = "localScope") {
     }
 
     this.checkDependency=function(id){
+        if(id==this.id)return true;
         for (var i = 0; i < this.SubCircuit.length; i++)
             if(this.SubCircuit[i].id==id)return true;
 

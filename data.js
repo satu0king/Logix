@@ -10,7 +10,7 @@ function newCircuit(name,id){
 }
 
 function switchCircuit(id){
-    // scheduleBackup();
+    scheduleBackup();
     console.log(id);
     if(id==globalScope.id)return;
     simulationArea.lastSelected=undefined;
@@ -18,7 +18,7 @@ function switchCircuit(id){
     simulationArea.copyList=[];
     globalScope=scopeList[id];
     toBeUpdated=true;
-    // scheduleUpdate();
+    scheduleUpdate();
 
 }
 
@@ -89,6 +89,21 @@ function backUp(scope=globalScope) {
     // console.log(data);
     return data
 
+}
+
+function generateDependencyOrder(){
+    var dependencyList={};
+    var completed={};
+    for(id in scopeList)
+        dependencyList[id]=scopeList[id].getDependencies();
+
+    function saveScope(id){
+        if(completed[id])return;
+        for(var i=0;i<dependencyList[id].length;i++)
+            saveScope(dependencyList[id][i]);
+        completed[id]=true;
+        data.scopes.push(id);
+    }
 }
 
 

@@ -26,6 +26,31 @@ body {
     background-color: #eee;
 }
 
+#errorMessageDiv{
+    position: absolute;
+    margin-left: 30%;
+    bottom: 200px;
+    /*height:auto;*/
+    width:40%;
+    /*padding: 2px;*/
+    /*border: 3px solid red;*/
+    /*border-radius: 6px;*/
+    /*background-color: #fcc;*/
+    z-index: 10;
+}
+.errorMessage{
+    /*position: absolute;*/
+    /*margin-left: 30%;*/
+    /*bottom: 150px;*/
+    height:auto;
+    width:100%;
+    /*margin-bottom: 10px;*/
+    padding: 2px;
+    border: 3px solid red;
+    border-radius: 6px;
+    background-color: #fcc;
+    /*z-index: 10;*/
+}
 
 
 .toolbarButton {
@@ -62,13 +87,14 @@ body {
 
 
 .moduleProperty{
+    /*display: block;*/
     background-color: #f8f8f8;
-    margin: 0px;
+    margin-top: 30px;
     height:30%;
     padding-left: 5px;
     padding-right: 5px;
     padding-bottom:10px;
-    overflow: scroll;
+    /*overflow: scroll;*/
     border-top: 1px solid black;
     border-bottom: 1px solid black;
 
@@ -155,7 +181,7 @@ button.accordion.active, button.accordion:hover {
     background-color: white;
     display: none;
     /*height:auto;*/
-    /*max-height: 40%;*/
+    max-height: 40%;
     overflow: scroll;
 }
 
