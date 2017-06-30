@@ -830,7 +830,10 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
                 this.nodeList[i].delete();
         else
             for (var i = 0; i < this.nodeList.length; i++)
-                this.nodeList[i].converToIntermediate();
+                if(this.nodeList[i].connections.length)
+                    this.nodeList[i].converToIntermediate();
+                else
+                    this.nodeList[i].delete();
     }
 
     this.cleanDelete=function(){

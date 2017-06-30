@@ -51,6 +51,8 @@ function extractNode(x, scope, parent) {
 //input node=0
 //intermediate node =2
 function Node(x, y, type, parent, bitWidth = undefined) {
+
+
     this.objectType = "Node";
     this.id = 'node' + uniqueIdCounter;
     uniqueIdCounter++;
@@ -58,12 +60,15 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     if (type != 2 && this.parent.nodeList !== undefined)
         this.parent.nodeList.push(this);
     // console.log(this.parent.nodeList);
-    this.leftx = x;
+
     if (bitWidth == undefined) {
         this.bitWidth = parent.bitWidth;
     } else {
         this.bitWidth = bitWidth;
     }
+    this.prevx=undefined;
+    this.prevy=undefined;
+    this.leftx = x;
     this.lefty = y;
     this.x = x;
     this.y = y;
@@ -109,7 +114,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         this.parent=this.scope.root;
         this.scope.nodes.push(this);
     }
-    
+
     this.startDragging=function(){
         this.oldx = this.x;
         this.oldy = this.y;
@@ -488,9 +493,5 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         }
 
     }
-
-
-    this.prevx = this.absX();
-    this.prevy = this.absY();
 
 }

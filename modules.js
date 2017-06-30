@@ -219,7 +219,7 @@ function Multiplexer(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, control
         if(size==undefined||size<1||size>32)return;
         if(this.controlSignalSize==size)return;
         var obj=new window[this.objectType](this.x,this.y,this.scope,this.direction,this.bitWidth,size);
-        this.delete();
+        this.cleanDelete();
         simulationArea.lastSelected=obj;
         return obj;
     }
@@ -1800,11 +1800,8 @@ function Button(x, y, scope=globalScope, dir="RIGHT") {
         ctx.stroke();
 
         if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
-<<<<<<< HEAD
             ctx.fillStyle="rgba(232, 13, 13,0.6)"
-=======
-            ctx.fillStyle = "yellow";
->>>>>>> master
+
         if(this.wasClicked)
             ctx.fillStyle ="rgba(232, 13, 13,0.8)";
         ctx.fill();
@@ -1895,7 +1892,7 @@ function RGBLed(x, y, scope=globalScope) {
     }
 }
 
-function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize = undefined) {
+function Demultiplexer(x, y, scope=globalScope, dir="LEFT", bitWidth = 1, controlSignalSize = 1) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.controlSignalSize = controlSignalSize || parseInt(prompt("Enter control signal bitWidth"), 10);
@@ -1909,13 +1906,38 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
         yOff=2;
     }
 
+    this.changeControlSignalSize=function(size){
+        if(size==undefined||size<1||size>32)return;
+        if(this.controlSignalSize==size)return;
+        var obj=new window[this.objectType](this.x,this.y,this.scope,this.direction,this.bitWidth,size);
+        this.cleanDelete();
+        simulationArea.lastSelected=obj;
+        return obj;
+    }
+    this.mutableProperties={
+        "controlSignalSize":{
+            name:"Control Signal Size",
+            type:"int",
+            max:"32",
+            min:"1",
+            func:"changeControlSignalSize",
+        },
+    }
+    this.newBitWidth=function(bitWidth){
+        this.bitWidth=bitWidth;
+        for (var i = 0; i < this.inputSize; i++) {
+            this.outputs1[i].bitWidth=bitWidth
+        }
+        this.input.bitWidth=bitWidth;
+    }
+
     this.setDimensions(20, yOff*5 * (this.outputsize));
     this.rectangleObject=false;
-    this.input = new Node(-20+xOff, 0, 0, this);
+    this.input = new Node(20-xOff, 0, 0, this);
 
     this.output1=[];
     for (var i = 0; i < this.outputsize; i++) {
-        var a = new Node(20-xOff, +yOff*10 * (i - this.outputsize / 2)+10, 1, this);
+        var a = new Node(-20+xOff, +yOff*10 * (i - this.outputsize / 2)+10, 1, this);
         this.output1.push(a);
     }
 
@@ -1937,8 +1959,6 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
         this.output1[this.controlSignalInput.value].value=this.input.value;
         this.scope.stack.push(this.output1[this.controlSignalInput.value]);
     }
-<<<<<<< HEAD
-=======
 
     this.customDraw = function() {
 
@@ -1956,10 +1976,10 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.lineWidth = 4;
         ctx.fillStyle = "white";
-        moveTo(ctx, 20-xOff, -yOff*10*(this.outputsize/2), xx, yy, this.direction);
-        lineTo(ctx, 20-xOff,  20+yOff*10*(this.outputsize/2-1), xx, yy, this.direction);
-        lineTo(ctx, -20+xOff,+ yOff*10*(this.outputsize/2-1)+xOff, xx, yy, this.direction);
-        lineTo(ctx, -20+xOff, -yOff*10*(this.outputsize/2)-xOff+20, xx, yy, this.direction);
+        moveTo(ctx, -20+xOff, -yOff*10*(this.outputsize/2), xx, yy, this.direction);
+        lineTo(ctx, -20+xOff,  20+yOff*10*(this.outputsize/2-1), xx, yy, this.direction);
+        lineTo(ctx, 20-xOff,+ yOff*10*(this.outputsize/2-1)+xOff, xx, yy, this.direction);
+        lineTo(ctx, 20-xOff, -yOff*10*(this.outputsize/2)-xOff+20, xx, yy, this.direction);
 
         ctx.closePath();
         ctx.stroke();
@@ -1969,5 +1989,5 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
         ctx.fill();
     }
 
->>>>>>> master
+
 }
