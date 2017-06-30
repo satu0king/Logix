@@ -173,6 +173,7 @@ function setup() {
     // console.log(width);
     //setup simulationArea
     simulationArea.setup();
+    backgroundArea.setup();
     scheduleUpdate();
 
 
@@ -185,6 +186,8 @@ function resetup() {
     height = document.getElementById("canvasArea").clientHeight;
     simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
+    backgroundArea.canvas.width = width;
+    backgroundArea.canvas.height = height;
     // simulationArea.setup();
     scheduleUpdate();
 }
@@ -234,6 +237,18 @@ function play(scope = globalScope, resetNodes = true) {
 
 }
 
+var backgroundArea = {
+    canvas: document.getElementById("backgroundArea"),
+    setup:function(){
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.context = this.canvas.getContext("2d");
+        dots();
+    },
+    clear: function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
 //simulation environment object
 var simulationArea = {
     canvas: document.getElementById("simulationArea"),
@@ -393,6 +408,7 @@ function update(scope=globalScope) {
             // smartDropX=Math.round(((200 - simulationArea.ox) / simulationArea.scale) / unit) * unit;
             // smartDropY=Math.round(((30 - simulationArea.oy) / simulationArea.scale) / unit) * unit;
         }
+        dots();
 
     } else if (simulationArea.lastSelected == scope.root) {
         simulationArea.lastSelected = undefined;
@@ -445,7 +461,7 @@ function update(scope=globalScope) {
     //Draw
     if (toBeUpdated || updateCanvas) {
         simulationArea.clear();
-        dots(); // draw dots
+        // dots(); // draw dots
         for (var i = 0; i < scope.objects.length; i++)
             for (var j = 0; j < scope[scope.objects[i]].length; j++)
                 updated |= scope[scope.objects[i]][j].draw();
@@ -470,10 +486,11 @@ function update(scope=globalScope) {
 
 //fn to draw Dots on screen
 function dots() {
-    var canvasWidth = simulationArea.canvas.width; //max X distance
-    var canvasHeight = simulationArea.canvas.height; //max Y distance
+    backgroundArea.clear();
+    var canvasWidth = backgroundArea.canvas.width; //max X distance
+    var canvasHeight = backgroundArea.canvas.height; //max Y distance
 
-    var ctx = simulationArea.context;
+    var ctx = backgroundArea.context;
     var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
 
     var scale = unit * simulationArea.scale;

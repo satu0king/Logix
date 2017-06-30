@@ -156,6 +156,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     }
 
 
+
     this.isResolvable = function() {
         return this.value != undefined;
     }
@@ -493,5 +494,6 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         }
 
     }
+    this.cleanDelete=this.delete;
 
 }

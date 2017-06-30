@@ -10,7 +10,7 @@ window.addEventListener('keyup', function(e) {
     }
 });
 window.addEventListener('keydown', function(e) {
-    
+
     errorDetected=false;
     toBeUpdated=true;
 
@@ -69,7 +69,7 @@ window.addEventListener('keydown', function(e) {
     if (e.keyCode == 8) {
         if (simulationArea.lastSelected) simulationArea.lastSelected.delete();
         for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
-            simulationArea.multipleObjectSelections[i].delete();
+            simulationArea.multipleObjectSelections[i].cleanDelete();
         }
     }
 
