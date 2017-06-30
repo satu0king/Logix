@@ -10,6 +10,7 @@ window.addEventListener('keyup', function(e) {
     }
 });
 window.addEventListener('keydown', function(e) {
+    
     errorDetected=false;
     toBeUpdated=true;
 
@@ -93,7 +94,7 @@ window.addEventListener('keydown', function(e) {
         if (simulationArea.lastSelected.bitWidth !== undefined)
             simulationArea.lastSelected.newBitWidth(parseInt(prompt("Enter new bitWidth"), 10));
     }
-    if (!simulationArea.controlDown&&(e.keyCode == 67 || e.keyCode == 99)) {
+    if (e.key=="T"||e.key=="t") {
         simulationArea.changeClockTime(prompt("Enter Time:"));
     }
     if ((e.keyCode == 108 || e.keyCode == 76) && simulationArea.lastSelected != undefined) {

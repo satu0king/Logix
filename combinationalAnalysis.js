@@ -6,8 +6,32 @@ var dataSample=[['01---','11110','01---','00000'],['01110','1-1-1','----0'],['01
 var sampleInputListNames=["A", "B"];
 var sampleOutputListNames=["X"];
 
-createCombinationalAnalysisPrompt()
-function createCombinationalAnalysisPrompt(inputListNames=sampleInputListNames,outputListNames=sampleOutputListNames){
+createCombinationalAnalysisPrompt=function(scope=globalScope){
+    $('#combinationalAnalysis').empty();
+    $('#combinationalAnalysis').append("<p>Enter Input names separated by spaces: <input id='inputNameList' type='text'  placeHolder='eg. A B C'></p>");
+    $('#combinationalAnalysis').append("<p>Enter Output names separated by spaces: <input id='outputNameList' type='text'  placeHolder='eg. X Y Z'></p>");
+    $('#combinationalAnalysis').dialog({
+        width:"auto",
+      buttons: [
+        {
+          text: "Next",
+          click: function() {
+            // console.log($("#inputNameList"),$("#inputNameList").val(),$("#inputNameList").html());
+            var inputList=$("#inputNameList").val().split(' ');
+            var outputList=$("#outputNameList").val().split(' ');
+            $( this ).dialog( "close" );
+            createBooleanPrompt(inputList,outputList,scope);
+        },
+        }
+      ]
+    });
+
+}
+function createBooleanPrompt(inputListNames,outputListNames,scope=globalScope){
+
+    inputListNames=inputListNames||(prompt("Enter inputs separated by space").split(' '));
+    outputListNames=outputListNames||(prompt("Enter outputs separated by space").split(' '));
+
     var s='<table>'
     s+='<tr>';
     for(var i=0;i<inputListNames.length;i++)
@@ -40,25 +64,27 @@ function createCombinationalAnalysisPrompt(inputListNames=sampleInputListNames,o
 
     s+='</table>';
     console.log(s)
-    $('#booleanTable').append(s)
-    $('#booleanTable').dialog({
+    $('#combinationalAnalysis').empty()
+    $('#combinationalAnalysis').append(s)
+    $('#combinationalAnalysis').dialog({
         width:"auto",
       buttons: [
         {
-          text: "Submit",
+          text: "Generate Circuit",
           click: function() {
             $( this ).dialog( "close" );
             var data = generateBooleanTableData(outputListNames);
-            dataSample = [];
+            minmizedCircuit = [];
             for(let output in data){
                 let temp = new BooleanMinimize(
-                    sampleInputListNames.length,
+                    inputListNames.length,
                     data[output][1].map(Number),
                     data[output]['x'].map(Number)
                 )
-                dataSample.push(temp.result);
+                minmizedCircuit.push(temp.result);
             }
-            console.log(dataSample);
+            // console.log(dataSample);
+            drawCombinationalAnalysis(minmizedCircuit,inputListNames,outputListNames,scope)
         },
 
         }
@@ -92,7 +118,10 @@ function generateBooleanTableData(outputListNames){
     return data;
 }
 
-function combinationalAnalysis(combinationalData=dataSample,inputCount=inputSample,scope=globalScope){
+function drawCombinationalAnalysis(combinationalData,inputList,outputListNames,scope=globalScope){
+
+    console.log(combinationalData);
+    var inputCount=inputList.length;
     var maxTerms=0;
     for(var i=0;i<combinationalData.length;i++)
     maxTerms=Math.max(maxTerms,combinationalData[i].length);
@@ -110,6 +139,8 @@ function combinationalAnalysis(combinationalData=dataSample,inputCount=inputSamp
 
     for(var i=0;i<inputCount;i++){
         inputObjects.push(new Input(startPosX+i*40,startPosY,scope,"DOWN",1));
+        inputObjects[i].setLabel(inputList[i]);
+        inputObjects[i].newLabelDirection("UP");
         var v1=new Node(startPosX+i*40,startPosY+20,2,scope.root);
         inputObjects[i].output1.connect(v1);
         var v2=new Node(startPosX+i*40+20,startPosY+20,2,scope.root);
@@ -149,7 +180,7 @@ function combinationalAnalysis(combinationalData=dataSample,inputCount=inputSamp
             else{
                 for(var k=0;k<combinationalData[i][j].length;k++){
                     if(combinationalData[i][j][k]=='-')continue;
-                    var index=2*k+parseInt(combinationalData[i][j][k],10);
+                    var index=2*k+(combinationalData[i][j][k]==0);
                     var andGateSubstituteNode= new Node(andPosX, currentPosY, 2,scope.root);
                     var v=new Node(logixNodes[index].absX(),andGateSubstituteNode.absY(),2,scope.root);
                     logixNodes[index].connect(v);
@@ -189,6 +220,8 @@ function combinationalAnalysis(combinationalData=dataSample,inputCount=inputSamp
             var out=new Output(outputPosX,andGateNodes[0].absY(),scope,"LEFT",1);
             out.inp1.connect(andGateNodes[0]);
         }
+        out.setLabel(outputListNames[i]);
+        out.newLabelDirection("RIGHT");
 
 
     }

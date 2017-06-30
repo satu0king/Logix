@@ -175,7 +175,6 @@ function setup() {
     simulationArea.setup();
     scheduleUpdate();
 
-    combinationalAnalysis();
 
 
 }
@@ -741,7 +740,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     };
 
     this.setLabel = function(label) {
-        this.label = label;
+        this.label = label||prompt("Enter Label:");
         // console.log(this.label);
     }
 

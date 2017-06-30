@@ -20,16 +20,16 @@ $(document).ready(function() {
             smartDropYY+=80;
         }
     });
-    $('#newCircuit').click(function(){
-        newCircuit();
+    $('.logixButton').click(function(){
+        window[this.id]();
 
     });
-    $('#saveAsImg').click(function(){
-        saveAsImg();
-    });
-    $('#Save').click(function(){
-        Save();
-    });
+    // $('#saveAsImg').click(function(){
+    //     saveAsImg();
+    // });
+    // $('#Save').click(function(){
+    //     Save();
+    // });
     // $('#moduleProperty').draggable();
 
 }); // accordion
