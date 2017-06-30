@@ -194,20 +194,26 @@ function Multiplexer(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, control
 
     this.controlSignalSize = controlSignalSize || parseInt(prompt("Enter control signal bitWidth"), 10);
     this.inputSize = 1 << this.controlSignalSize;
+    var xOff=0;
+    var yOff=1;
+    if(this.controlSignalSize==1) {
+        xOff=10;
+    }
+    if(this.controlSignalSize<=3) {
+        yOff=2;
+    }
 
-    this.setDimensions(20, 5 * (this.inputSize));
-    this.upDimensionY = 5 * (this.inputSize + 2);
+    this.setDimensions(20, yOff*5 * (this.inputSize));
+    this.rectangleObject=false;
+
     this.inp = [];
-
-    //variable inputLength , node creation
-
     for (var i = 0; i < this.inputSize; i++) {
-        var a = new Node(-20, +10 * (i - this.inputSize / 2), 0, this);
+        var a = new Node(-20+xOff,+yOff*10 * (i - this.inputSize / 2)+10, 0, this);
         this.inp.push(a);
     }
 
-    this.output1 = new Node(20, 0, 1, this);
-    this.controlSignalInput = new Node(0, 5 * this.inputSize, 0, this, this.controlSignalSize);
+    this.output1 = new Node(20-xOff,0, 1, this);
+    this.controlSignalInput = new Node(0, yOff*10*(this.inputSize/2-1)+xOff+10, 0, this, this.controlSignalSize);
 
     this.changeControlSignalSize=function(size){
         if(size==undefined||size<1||size>32)return;
@@ -234,6 +240,7 @@ function Multiplexer(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, control
         this.output1.bitWidth=bitWidth;
     }
 
+
     //fn to create save Json Data of object
     this.customSave = function() {
         var data = {
@@ -247,12 +254,6 @@ function Multiplexer(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, control
         return data;
     }
 
-    // checks if the module has enough information to resolve
-    this.isResolvable = function() {
-        return this.controlSignalInput.value !== undefined && this.inp[this.controlSignalInput.value].value !== undefined;
-    }
-
-    //resolve output values based on inputData
     this.resolve = function() {
 
         if (this.isResolvable() == false) {
@@ -260,6 +261,35 @@ function Multiplexer(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1, control
         }
         this.output1.value = this.inp[this.controlSignalInput.value].value;
         this.scope.stack.push(this.output1);
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+
+        var xx = this.x;
+        var yy = this.y;
+
+        ctx.beginPath();
+        moveTo(ctx, 0, yOff*10*(this.inputSize/2-1)+10 +0.5*xOff, xx, yy, this.direction);
+        lineTo(ctx, 0,yOff*5* (this.inputSize-1)+xOff, xx, yy, this.direction);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.lineWidth = 3;
+        ctx.fillStyle = "white";
+        moveTo(ctx, -20+xOff, -yOff*10*(this.inputSize/2), xx, yy, this.direction);
+        lineTo(ctx, -20+xOff,  20+yOff*10*(this.inputSize/2-1), xx, yy, this.direction);
+        lineTo(ctx, 20-xOff,+ yOff*10*(this.inputSize/2-1)+xOff, xx, yy, this.direction);
+        lineTo(ctx, 20-xOff, -yOff*10*(this.inputSize/2)-xOff+20, xx, yy, this.direction);
+
+        ctx.closePath();
+        ctx.stroke();
+
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
+            ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
     }
 
 }
@@ -1300,7 +1330,7 @@ function Output(x, y, scope=globalScope, dir="LEFT", bitWidth=1) {
     this.customSave = function() {
         var data = {
             nodes: {
-                inp1: scope.allNodes.indexOf(this.inp1)
+                inp1: findNode(this.inp1)
             },
             constructorParamaters: [this.direction, this.bitWidth],
         }
@@ -1402,9 +1432,9 @@ function BitSelector(x, y, scope=globalScope, dir="RIGHT", bitWidth = 2, selecto
         var data = {
 
             nodes: {
-                inp1: scope.allNodes.indexOf(this.inp1),
-                output1: scope.allNodes.indexOf(this.output1),
-                bitSelectorInp: scope.allNodes.indexOf(this.bitSelectorInp)
+                inp1: findNode(this.inp1),
+                output1: findNode(this.output1),
+                bitSelectorInp: findNode(this.bitSelectorInp)
             },
             constructorParamaters: [this.direction, this.bitWidth, this.selectorBitWidth],
         }
@@ -1623,7 +1653,7 @@ function DigitalLed(x, y, scope=globalScope) {
 
     this.customSave = function() {
         var data = {
-            nodes:{inp1: scope.allNodes.indexOf(this.inp1)},
+            nodes:{inp1: findNode(this.inp1)},
         }
         return data;
     }
@@ -1674,7 +1704,7 @@ function VariableLed(x, y, scope=globalScope) {
 
     this.customSave = function() {
         var data = {
-            nodes:{inp1: scope.allNodes.indexOf(this.inp1)},
+            nodes:{inp1: findNode(this.inp1)},
         }
         return data;
     }
@@ -1770,7 +1800,11 @@ function Button(x, y, scope=globalScope, dir="RIGHT") {
         ctx.stroke();
 
         if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
+<<<<<<< HEAD
             ctx.fillStyle="rgba(232, 13, 13,0.6)"
+=======
+            ctx.fillStyle = "yellow";
+>>>>>>> master
         if(this.wasClicked)
             ctx.fillStyle ="rgba(232, 13, 13,0.8)";
         ctx.fill();
@@ -1810,16 +1844,27 @@ function RGBLed(x, y, scope=globalScope) {
         var xx = this.x;
         var yy = this.y;
 
-        ctx.strokeStyle = "#e3e4e5";
+        ctx.strokeStyle = "green";
         ctx.lineWidth=3;
         ctx.beginPath();
         moveTo(ctx, -20, 0, xx, yy, this.direction);
         lineTo(ctx, -40, 0, xx, yy, this.direction);
-        moveTo(ctx, -20, -8, xx, yy, this.direction);
-        lineTo(ctx, -40, -8, xx, yy, this.direction);
-        moveTo(ctx, -20, 8, xx, yy, this.direction);
-        lineTo(ctx, -40, 8, xx, yy, this.direction);
         ctx.stroke();
+
+        ctx.strokeStyle = "red";
+        ctx.lineWidth=2;
+        ctx.beginPath();
+        moveTo(ctx, -20, -10, xx, yy, this.direction);
+        lineTo(ctx, -40, -10, xx, yy, this.direction);
+        ctx.stroke();
+
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth=2;
+        ctx.beginPath();
+        moveTo(ctx, -20, 10, xx, yy, this.direction);
+        lineTo(ctx, -40, 10, xx, yy, this.direction);
+        ctx.stroke();
+
         var a = this.inp1.value;
         var b = this.inp2.value;
         var c = this.inp3.value;
@@ -1847,6 +1892,82 @@ function RGBLed(x, y, scope=globalScope) {
         ctx.stroke();
         if ((this.hover&&!simulationArea.shiftDown)|| simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
-
     }
+}
+
+function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize = undefined) {
+
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.controlSignalSize = controlSignalSize || parseInt(prompt("Enter control signal bitWidth"), 10);
+    this.outputsize = 1 << this.controlSignalSize;
+    var xOff=0;
+    var yOff=1;
+    if(this.controlSignalSize==1) {
+        xOff=10;
+    }
+    if(this.controlSignalSize<=3) {
+        yOff=2;
+    }
+
+    this.setDimensions(20, yOff*5 * (this.outputsize));
+    this.rectangleObject=false;
+    this.input = new Node(-20+xOff, 0, 0, this);
+
+    this.output1=[];
+    for (var i = 0; i < this.outputsize; i++) {
+        var a = new Node(20-xOff, +yOff*10 * (i - this.outputsize / 2)+10, 1, this);
+        this.output1.push(a);
+    }
+
+    this.controlSignalInput = new Node(0, yOff*10*(this.outputsize/2-1)+xOff+10, 0, this, this.controlSignalSize);
+
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.direction, this.bitWidth, this.controlSignalSize],
+            nodes: {
+                output1: this.output1.map(findNode),
+                input: findNode(this.input),
+                controlSignalInput: findNode(this.controlSignalInput)
+            },
+        }
+        return data;
+    }
+
+    this.resolve = function() {
+        this.output1[this.controlSignalInput.value].value=this.input.value;
+        this.scope.stack.push(this.output1[this.controlSignalInput.value]);
+    }
+<<<<<<< HEAD
+=======
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+
+        var xx = this.x;
+        var yy = this.y;
+
+        ctx.beginPath();
+        moveTo(ctx, 0, yOff*10*(this.outputsize/2-1)+10 +0.5*xOff, xx, yy, this.direction);
+        lineTo(ctx, 0,yOff*5* (this.outputsize-1)+xOff, xx, yy, this.direction);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.lineWidth = 4;
+        ctx.fillStyle = "white";
+        moveTo(ctx, 20-xOff, -yOff*10*(this.outputsize/2), xx, yy, this.direction);
+        lineTo(ctx, 20-xOff,  20+yOff*10*(this.outputsize/2-1), xx, yy, this.direction);
+        lineTo(ctx, -20+xOff,+ yOff*10*(this.outputsize/2-1)+xOff, xx, yy, this.direction);
+        lineTo(ctx, -20+xOff, -yOff*10*(this.outputsize/2)-xOff+20, xx, yy, this.direction);
+
+        ctx.closePath();
+        ctx.stroke();
+
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
+            ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+    }
+
+>>>>>>> master
 }

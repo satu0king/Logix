@@ -458,8 +458,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     }
 
     this.isHover = function() {
-        if (distance(this.absX(), this.absY(), simulationArea.mouseX, simulationArea.mouseY) <= this.radius * 1.5) return true;
-        return false;
+        return this.absX()==simulationArea.mouseX&&this.absY()==simulationArea.mouseY;
     }
 
     this.nodeConnect = function() {

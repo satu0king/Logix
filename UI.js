@@ -121,6 +121,9 @@ function addStepper(){
 function addButton(){
     var a = new Button(200, 150, globalScope, "RIGHT");
 }
+function addDemultiplexer() {
+    var a = new Demultiplexer(200, 150, globalScope, "RIGHT");
+}
 document.getElementById("powerButton").addEventListener("click", addPower);
 document.getElementById("bitSelectorButton").addEventListener("click", addBitSelector);
 document.getElementById("groundButton").addEventListener("click", addGround);
@@ -153,3 +156,4 @@ document.getElementById("variableledButton").addEventListener("click", addVariab
 document.getElementById("stepperButton").addEventListener("click", addStepper);
 document.getElementById("buttonButton").addEventListener("click", addButton);
 document.getElementById("rgbledButton").addEventListener("click", addRGBLed);
+document.getElementById("demultiplexerButton").addEventListener("click", addDemultiplexer);
