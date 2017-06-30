@@ -179,22 +179,25 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
     this.controlSignalSize = controlSignalSize || parseInt(prompt("Enter control signal bitWidth"), 10);
     this.inputSize = 1 << this.controlSignalSize;
     var xOff=0;
-    if(this.controlSignalSize==1){
+    var yOff=1;
+    if(this.controlSignalSize==1) {
         xOff=10;
     }
+    if(this.controlSignalSize<=3) {
+        yOff=2;
+    }
 
-    this.setDimensions(20, 5 * (this.inputSize));
+    this.setDimensions(20, yOff*5 * (this.inputSize));
     this.rectangleObject=false;
-    this.upDimensionY = 5 * (this.inputSize + 2);
 
     this.inp = [];
     for (var i = 0; i < this.inputSize; i++) {
-        var a = new Node(-20+xOff, +10 * (i - this.inputSize / 2), 0, this);
+        var a = new Node(-20+xOff,+yOff*10 * (i - this.inputSize / 2)+10, 0, this);
         this.inp.push(a);
     }
 
-    this.output1 = new Node(20-xOff, -5, 1, this);
-    this.controlSignalInput = new Node(0, 5 * (this.inputSize-1), 0, this, this.controlSignalSize);
+    this.output1 = new Node(20-xOff,0, 1, this);
+    this.controlSignalInput = new Node(0, yOff*10*(this.inputSize/2-1)+xOff+10, 0, this, this.controlSignalSize);
 
     this.customSave = function() {
         var data = {
@@ -225,14 +228,19 @@ function Multiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize =
         var yy = this.y;
 
         ctx.beginPath();
+        moveTo(ctx, 0, yOff*10*(this.inputSize/2-1)+10 +0.5*xOff, xx, yy, this.direction);
+        lineTo(ctx, 0,yOff*5* (this.inputSize-1)+xOff, xx, yy, this.direction);
+        ctx.stroke();
+
+        ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.lineWidth = 3;
         ctx.fillStyle = "white";
-        moveTo(ctx, -20+xOff, -10*(this.inputSize/2+1), xx, yy, this.direction);
-        lineTo(ctx, -20+xOff, 10*(this.inputSize/2), xx, yy, this.direction);
-        lineTo(ctx, 20-xOff, 10*(this.inputSize/2-1), xx, yy, this.direction);
-        lineTo(ctx, 20-xOff,-(10*(this.inputSize/2)), xx, yy, this.direction);
-        lineTo(ctx, -20+xOff,-10*(this.inputSize/2+1), xx, yy, this.direction);
+        moveTo(ctx, -20+xOff, -yOff*10*(this.inputSize/2), xx, yy, this.direction);
+        lineTo(ctx, -20+xOff,  20+yOff*10*(this.inputSize/2-1), xx, yy, this.direction);
+        lineTo(ctx, 20-xOff,+ yOff*10*(this.inputSize/2-1)+xOff, xx, yy, this.direction);
+        lineTo(ctx, 20-xOff, -yOff*10*(this.inputSize/2)-xOff+20, xx, yy, this.direction);
+
         ctx.closePath();
         ctx.stroke();
 
@@ -1833,7 +1841,6 @@ function Demultiplexer(x, y, scope, dir, bitWidth = undefined, controlSignalSize
 
     this.setDimensions(20, yOff*5 * (this.outputsize));
     this.rectangleObject=false;
-    // this.upDimensionY = 5 * (this.outputsize + 2);
     this.input = new Node(-20+xOff, 0, 0, this);
 
     this.output1=[];
