@@ -8,7 +8,7 @@
 //      1) result: returns the minimized expression (when called for first time it minimizes the expression; future calls return stored result)
 //      2) kmap: returns the Karnaugh Map for the expression (when called for first time it calls result and then return kmap; future calls return stored result)
 // 
-// In result each string might contain '-', '0' or '1'. '-' means that the particular input variable is not present in that term, '0' means that the negation of that particular input variable is present in the term while '1' means that the particular input variable is present as is in that term. Each string represent one AND term. All the strings are ORed together for final expression. Thus the result is in Sum of Product form.
+// In result each string might contain '-', '0' or '1'. '-' means that the particular input variable is not present in that term, '0' means that the negation of that particular input variable is present in the term while '1' means that the particular input variable is present as is in that term. Each string represent one AND term. All the strings are ORed together for final expression. Thus the result is in Sum of Product form. If the expression simplifies to tautology (fallacy) then ['tautology'] (['fallacy']) is returned.
 //
 // The kmap is a list of lists. Each inner list represents the set of greycodes that constitutes one 'box' in the Karnaugh Map.
 function BooleanMinimize(numVarsArg, minTermsArg = [], dontCaresArg = []){
