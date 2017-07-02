@@ -552,7 +552,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         this.newElement=true;
         this.hover=true;
     }
-    this.deleteNodesWhenDeleted=false;
+    this.deleteNodesWhenDeleted=true; // FOR NOW - TO CHECK LATER
 
     this.parent = parent;
     this.nodeList = []
