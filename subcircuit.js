@@ -1,9 +1,16 @@
 function loadSubCircuit(savedData, scope) {
-    var v = new SubCircuit(savedData["x"], savedData["y"], scope, "RIGHT", savedData);
+    var v = new SubCircuit(savedData["x"], savedData["y"], scope, "RIGHT",savedData["id"], savedData);
 }
 
 //subCircuit
-function SubCircuit(x, y, scope = globalScope, dir = "RIGHT", savedData = undefined) {
+function SubCircuit(x, y, scope = globalScope, dir = "RIGHT",id=undefined, savedData = undefined) {
+
+    this.id = id||prompt("Enter Id: ");
+    if(scopeList[this.id].checkDependency(scope.id)){
+        showError("Cyclic Circuit Error");
+        return;
+    }
+
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.directionFixed = true;
     this.fixedBitWidth = true;
@@ -15,13 +22,12 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT", savedData = undefi
     this.width = 0;
     this.height = 0;
     this.title = "";
-    if (savedData == undefined)
-        this.dataHash = prompt("Enter Hash: ");
+
     if (this.savedData != undefined) {
         this.height = savedData["height"];
         this.width = savedData["width"];
         this.setDimensions(this.width / 2, this.height / 2);
-        this.dataHash = savedData["dataHash"];
+        this.id = savedData["id"];
         for (var i = 0; i < this.savedData["inputNodes"].length; i++) {
             this.inputNodes.push(this.scope.allNodes[this.savedData["inputNodes"][i]]);
             this.inputNodes[i].parent = this;
@@ -34,63 +40,12 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT", savedData = undefi
         this.nodeList.extend(this.outputNodes);
     }
 
-    var http = new XMLHttpRequest();
-    http.open("POST", "./index.php", true);
-    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    var params = "retrieve=" + this.dataHash; // probably use document.getElementById(...).value
-    http.send(params);
-    http.parent = this;
-
-
-    http.onload = function() {
-        // console.log(this.parent);
-        if (http.responseText == "ERROR") {
-            alert("Error: could not load ");
-            this.parent.delete();
-            return;
-        } else {
-            this.parent.data = JSON.parse(http.responseText);
-            this.parent.buildCircuit();
-        }
-    }
-    this.resetNodes = function() {
-        for (var i = 0; i < this.localScope.allNodes.length; i++)
-            this.localScope.allNodes[i].reset();
-        for (var i = 0; i < this.localScope.SubCircuit.length; i++) {
-            this.localScope.SubCircuit[i].resetNodes();
-        }
-
-    }
-    this.click = function() {
-        // this.dataHash=prompt();
-    }
-    this.isResolvable = function() {
-        return true;
-    }
-    this.dblclick = function() {
-        var prevHash = window.location.hash;
-        window.location.hash = simulationArea.lastSelected.dataHash;
-        openInNewTab(window.location.href);
-        window.location.hash = prevHash;
-    }
-    this.saveObject = function() {
-        var data = {
-            x: this.x,
-            y: this.y,
-            dataHash: this.dataHash,
-            height: this.height,
-            width: this.width,
-            dir: this.direction,
-            inputNodes: this.inputNodes.map(findNode),
-            outputNodes: this.outputNodes.map(findNode),
-        }
-        return data;
-    }
     this.buildCircuit = function() {
-        load(this.localScope, this.data);
+        loadScope(this.localScope, this.data);
+        this.lastUpdated=scopeList[this.id].timeStamp;
         toBeUpdated = true;
         this.width = 100;
-        this.title = this.data["title"];
+        // this.title = document.getElementById(this.id).innerHTML;
         this.localScope.name = this.title;
         this.height = Math.max(this.localScope.Input.length, this.localScope.Output.length) * 20 + 30;
         this.setDimensions(this.width / 2, this.height / 2);
@@ -106,6 +61,110 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT", savedData = undefi
             }
         }
 
+    }
+
+
+
+    // for(var i=0;i<scopeList.length;i++){
+    //     if(scopeList[i].id==this.id){
+
+            // this.data=JSON.parse(scopeList[this.id].backups[scopeList[this.id].backups.length-1]);
+            this.data=JSON.parse(scheduleBackup(scopeList[this.id]));
+            this.title=scopeList[this.id].name;
+            this.buildCircuit();
+        //     break;
+        // }
+    // }
+
+
+
+    // var http = new XMLHttpRequest();
+    // http.open("POST", "./index.php", true);
+    // http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // var params = "retrieve=" + this.id; // probably use document.getElementById(...).value
+    // http.send(params);
+    // http.parent = this;
+    //
+    //
+    // http.onload = function() {
+    //     // console.log(this.parent);
+    //     if (http.responseText == "ERROR") {
+    //         alert("Error: could not load ");
+    //         this.parent.delete();
+    //         return;
+    //     } else {
+    //         this.parent.data = JSON.parse(http.responseText);
+    //         this.parent.buildCircuit();
+    //     }
+    // }
+    this.reBuild=function(){
+        new SubCircuit(x=this.x, y=this.y, scope = this.scope, this.direction,this.id)
+        this.delete();
+    }
+    this.reBuildCircuit=function(){
+        this.data=this.data=JSON.parse(scopeList[this.id].backups[scopeList[this.id].backups.length-1]);
+        this.localScope=new Scope();
+        loadScope(this.localScope, this.data);
+        this.lastUpdated=scopeList[this.id].timeStamp;
+    }
+    this.reset = function() {
+        if(scopeList[this.id].Input.length==this.inputNodes.length){
+            l=scopeList[this.id].Input;
+            for(var i=0;i<l.length;i++){
+                this.inputNodes[i].bitWidth=l[i].bitWidth;
+            }
+        }
+        else{
+            this.reBuild();
+            return;
+        }
+
+        if(scopeList[this.id].Output.length==this.outputNodes.length){
+            l=scopeList[this.id].Output;
+            for(var i=0;i<l.length;i++){
+                this.outputNodes[i].bitWidth=l[i].bitWidth;
+            }
+        }
+        else{
+            this.reBuild();
+            return;
+        }
+
+        if(scopeList[this.id].timeStamp>this.lastUpdated)this.reBuildCircuit();
+
+
+        for (var i = 0; i < this.localScope.allNodes.length; i++)
+            this.localScope.allNodes[i].reset();
+        for (var i = 0; i < this.localScope.SubCircuit.length; i++) {
+            this.localScope.SubCircuit[i].reset();
+        }
+
+    }
+    this.click = function() {
+        // this.id=prompt();
+    }
+    // this.isResolvable = function() {
+    //     return true;
+    // }
+    this.dblclick = function() {
+        // var prevHash = window.location.hash;
+        // window.location.hash = simulationArea.lastSelected.id;
+        // openInNewTab(window.location.href);
+        // window.location.hash = prevHash;
+        switchCircuit(this.id)
+    }
+    this.saveObject = function() {
+        var data = {
+            x: this.x,
+            y: this.y,
+            id: this.id,
+            height: this.height,
+            width: this.width,
+            dir: this.direction,
+            inputNodes: this.inputNodes.map(findNode),
+            outputNodes: this.outputNodes.map(findNode),
+        }
+        return data;
     }
 
     this.resolve = function() {
