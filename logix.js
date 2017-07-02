@@ -14,11 +14,11 @@ errorDetected=false;
 // var backups = []
 loading = false
 //Exact same name as object constructor
-moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "RGBLed","Button", "SubCircuit","Demultiplexer"];
+moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "RGBLed","Button","Demultiplexer", "Buffer","SubCircuit"];
 
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
-inputList = ["Stepper","Ground", "Power", "ConstantVal", "Input", "Clock","Button"];
+inputList = ["Buffer","Stepper","Ground", "Power", "ConstantVal", "Input", "Clock","Button"];
 
 scopeList={};
 globalScope=undefined;
@@ -190,6 +190,7 @@ function resetup() {
     backgroundArea.canvas.height = height;
     // simulationArea.setup();
     scheduleUpdate();
+    dots()
 }
 
 window.onresize = resetup;
@@ -211,13 +212,15 @@ function play(scope = globalScope, resetNodes = true) {
             scope.SubCircuit[i].reset();
         }
     }
+
     for (var i = 0; i < scope.SubCircuit.length; i++) {
-        if (scope.SubCircuit[i].isResolvable())
-            scope.stack.push(scope.SubCircuit[i]);
+        if(scope.SubCircuit[i].isResolvable())scope.stack.push(scope.SubCircuit[i]);
     }
+
     for (var i = 0; i < scope.FlipFlop.length; i++) {
         scope.stack.push(scope.FlipFlop[i]);
     }
+
     for (var i = 0; i < inputList.length; i++) {
         for (var j = 0; j < scope[inputList[i]].length; j++) {
             scope.stack.push(scope[inputList[i]][j]);
@@ -234,6 +237,22 @@ function play(scope = globalScope, resetNodes = true) {
             return;
         }
     }
+    // for (var i = 0; i < scope.SubCircuit.length; i++) {
+    //     if(!scope.SubCircuit[i].isResolvable())
+    //         {
+    //             scope.stack.push(scope.SubCircuit[i]);
+    //             while (scope.stack.length) {
+    //                 if(errorDetected)return;
+    //                 var elem = scope.stack.pop();
+    //                 elem.resolve();
+    //                 stepCount++;
+    //                 if (stepCount > 1000) {
+    //                     showError("Simulation Stack limit exceeded: maybe due to cyclic paths or contention");
+    //                     return;
+    //                 }
+    //             }
+    //         }
+    // }
 
 }
 

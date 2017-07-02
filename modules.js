@@ -871,6 +871,73 @@ function TriState(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1) {
     }
 
 }
+function Buffer(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1) {
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.rectangleObject = false;
+    this.setDimensions(15, 15);
+
+    this.state=0;
+    this.preState=0;
+    this.inp1 = new Node(-10, 0, 0, this);
+    this.reset = new Node(0, 0, 0, this,1);
+    this.output1 = new Node(20, 0, 1, this);
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.direction, this.bitWidth],
+            nodes: {
+                output1: findNode(this.output1),
+                inp1: findNode(this.inp1),
+                reset: findNode(this.reset),
+            },
+        }
+        return data;
+    }
+
+    this.newBitWidth = function(bitWidth) {
+        this.inp1.bitWidth = bitWidth;
+        this.output1.bitWidth = bitWidth;
+        this.bitWidth = bitWidth;
+    }
+
+
+    this.isResolvable=function(){
+        return true;
+    }
+
+    this.resolve = function() {
+
+        if(this.reset.value==1){
+            this.state=this.preState;
+        }
+        if(this.inp1.value!==undefined)
+            this.state=this.inp1.value;
+
+        this.output1.value = this.state;
+        this.scope.stack.push(this.output1);
+
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+        ctx.strokeStyle = ("rgba(200,0,0,1)");
+        ctx.lineWidth = 3;
+
+        var xx = this.x;
+        var yy = this.y;
+        ctx.beginPath();
+        ctx.fillStyle = "white";
+        moveTo(ctx, -10, -15, xx, yy, this.direction);
+        lineTo(ctx, 20, 0, xx, yy, this.direction);
+        lineTo(ctx, -10, 15, xx, yy, this.direction);
+        ctx.closePath();
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+
+    }
+
+}
 
 function ControlledInverter(x, y, scope=globalScope, dir="RIGHT", bitWidth = 1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
