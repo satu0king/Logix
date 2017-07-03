@@ -28,5 +28,5 @@ else if(isset($_POST["retrieve"])){
   exit();
 }
 else
-require("index.html");
+require("UX.html");
 ?>

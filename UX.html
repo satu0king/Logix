@@ -1,0 +1,123 @@
+<html>
+
+<head>
+<title> Logix - Digital Simulator </title>
+</head>
+    <link rel="stylesheet" type="text/css" href="./UX.css"/>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script src="./UX.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<body onload="setup()">
+
+<div class="toolbar" id="toolbar">
+<div class="toolbarButton logixButton" id="Save" onclick="saveAsImg">Save</div>
+<div class="toolbarButton logixButton" id="saveAsImg" onclick="saveAsImg">Download Image</div>
+<div class="toolbarButton logixButton" id="newCircuit">New Circuit +</div>
+<div class="toolbarButton logixButton" id="createCombinationalAnalysisPrompt">Combinational Analysis</div>
+</div>
+
+<div>
+    <div class="side left" id="sideBar">
+        <div class="modules">
+            <div class="menu" id="menu">
+                <button class="accordion">Input</button>
+                <div class="panel">
+
+                  <div class="icon logixModules" id="Input" >Input</div>
+                  <div class="icon logixModules" id="Button" >Button</div>
+                  <div class="icon logixModules" id="Power" >Power</div>
+                  <div class="icon logixModules" id="Ground" >Ground</div>
+                  <div class="icon logixModules" id="ConstantVal" >Constant</div>
+                  <div class="icon logixModules" id="Stepper" >Stepper</div>
+                </div>
+                <button class="accordion">Output</button>
+                <div class="panel">
+
+                  <div class="icon logixModules" id="Output" >Output</div>
+                  <div class="icon logixModules" id="Power" >Power</div>
+                  <div class="icon logixModules" id="RGBLed" >RGB LED</div>
+                  <div class="icon logixModules" id="DigitalLed" >LED</div>
+                  <div class="icon logixModules" id="VariableLed" >V. LED</div>
+                  <div class="icon logixModules" id="HexDisplay" >Hex Display</div>
+                  <div class="icon logixModules" id="SevenSegDisplay" >7 Segment</div>
+
+                </div>
+
+                <button class="accordion">Gates</button>
+                <div class="panel">
+                   <div class="icon logixModules" id="AndGate" >AND</div>
+                   <div class="icon logixModules" id="OrGate" >OR</div>
+                   <div class="icon logixModules" id="NotGate" >NOT</div>
+                   <div class="icon logixModules" id="XorGate" >XOR</div>
+                   <div class="icon logixModules" id="NandGate" >NAND</div>
+                   <div class="icon logixModules" id="NorGate" >NOR</div>
+                   <div class="icon logixModules" id="XnorGate" >XNOR</div>
+                </div>
+
+                <button class="accordion">Plexers</button>
+                <div class="panel">
+                    <div class="icon logixModules" id="Multiplexer" >Multiplexer</div>
+                    <div class="icon logixModules" id="Demultiplexer" >Demultiplexer</div>
+                    <div class="icon logixModules" id="BitSelector" >BitSelector</div>
+                </div>
+
+                <button class="accordion">Sequential Elements</button>
+                <div class="panel">
+                    <div class="icon logixModules" id="FlipFlop" >FlipFlop</div>
+                    <div class="icon logixModules" id="TTY" >TTY</div>
+                    <div class="icon logixModules" id="Keyboard" >Keyboard</div>
+                    <div class="icon logixModules" id="Clock" >Clock</div>
+                </div>
+
+                <button class="accordion">Misc</button>
+                <div class="panel">
+                    <div class="icon logixModules" id="Splitter" >Splitter</div>
+                    <div class="icon logixModules" id="Adder" >Adder</div>
+                   <div class="icon logixModules" id="TriState" >TriState</div>
+                   <div class="icon logixModules" id="Buffer" >Buffer</div>
+                   <div class="icon logixModules" id="ControlledInverter" >C Invertor</div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+        <div class="moduleProperty effect1" id="moduleProperty"> TEST
+        </div>
+
+    </div>
+    <div class="canvasArea" id="canvasArea">
+        <div id="errorMessageDiv" >
+            <!-- <div class='errorMessage'>Contention Error: 0 and 1</div> -->
+        </div>
+     <canvas id="backgroundArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+     <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%;height:100%"></canvas>
+
+     </div>
+     <div id="combinationalAnalysis" title="BooleanLogicTable">
+</div>
+
+
+ <!-- <script src="./SAP_DATA.js"></script> -->
+ <script src="./logix.js"></script>
+ <script src="./Node.js"></script>
+ <script src="./wire.js"></script>
+ <script src="./subcircuit.js"></script>
+ <script src="./modules.js"></script>
+ <script src="./sequential.js"></script>
+ <script src="./canvasApi.js"></script>
+ <script src="./data.js"></script>
+ <script src="./listeners.js"></script>
+ <script src="./combinationalAnalysis.js"></script>
+ <script src="./Quin_McCluskey.js"></script>
+
+
+</body>
+
+</html>

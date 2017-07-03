@@ -1,3 +1,5 @@
+
+
 var width;
 
 var height;
@@ -8,17 +10,26 @@ updateCanvas = true;
 wireToBeChecked = 0; // when node disconnects from another node
 willBeUpdated = false;
 objectSelection = false;
-var backups = []
+errorDetected=false;
+// var backups = []
 loading = false
 //Exact same name as object constructor
-moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "RGBLed","Button", "SubCircuit","Demultiplexer"];
+moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "RGBLed","Button","Demultiplexer", "Buffer","SubCircuit"];
 
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
-inputList = ["Stepper","Ground", "Power", "ConstantVal", "Input", "Clock","Button"];
+inputList = ["Buffer","Stepper","Ground", "Power", "ConstantVal", "Input", "Clock","Button"];
+
+scopeList={};
+globalScope=undefined;
 
 function showError(error) {
-    console.log("ERROR: " + error);
+    // console.log("ERROR: " + error);
+    errorDetected=true;
+    var id=Math.floor(Math.random()*10000);
+    $('#errorMessageDiv').append("<div class='errorMessage' id='"+id+"'> "+error+"</div>");
+    setTimeout(function(){$('#'+id).fadeOut()},1500);
+    // console.log("<div class='errorMessage'>"+error+"</div>");
 }
 
 function openInNewTab(url) {
@@ -42,15 +53,7 @@ function scheduleUpdate(count = 0) {
 
 }
 
-function scheduleBackup() {
-    // return;
-    // setTimeout(function(){
-    var backup = backUp();
-    // if(backups.length==0||backups[backups.length-1]!=backup){
-    backups.push(backup);
-    // }
-    // }, 1000);
-}
+
 //fn to remove elem in array
 Array.prototype.clean = function(deleteValue) {
     for (var i = 0; i < this.length; i++) {
@@ -77,17 +80,47 @@ Array.prototype.contains = function(value) {
 
 
 //Scope object for each circuit level, globalScope for outer level
+
+function uniq(a) {
+    var seen = {};
+    return a.filter(function(item) {
+        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+    });
+}
+
 function Scope(name = "localScope") {
     //root object for referring to main canvas - intermediate node uses this
+    this.id=Math.floor((Math.random() * 100000000000) + 1);
     this.CircuitElement = [];
     this.root = new CircuitElement(0, 0, this, "RIGHT", 1);
+    this.backups=[];
+    this.timeStamp=new Date().getTime();
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)
             this.Clock[i].toggleState(); //tick clock!
-        // for (var i = 0; i < this.subCircuits.length; i++)
-        //     this.subCircuits[i].localScope.clockTick(); //tick clock!
+        for (var i = 0; i < this.SubCircuit.length; i++)
+            this.SubCircuit[i].localScope.clockTick(); //tick clock!
     }
+
+    this.checkDependency=function(id){
+        if(id==this.id)return true;
+        for (var i = 0; i < this.SubCircuit.length; i++)
+            if(this.SubCircuit[i].id==id)return true;
+
+        for (var i = 0; i < this.SubCircuit.length; i++)
+            if(this.SubCircuit[i].localScope.checkDependency(id))return true;
+    }
+
+    this.getDependencies=function(){
+        var list=[]
+        for (var i = 0; i < this.SubCircuit.length; i++){
+            list.push(this.SubCircuit[i].id);
+            list.extend(this.SubCircuit[i].localScope.getDependencies());
+        }
+        return uniq(list);
+    }
+
     this.name = name;
     this.stack = [];
 
@@ -102,10 +135,13 @@ function Scope(name = "localScope") {
 
 //fn to setup environment
 function setup() {
-    globalScope = new Scope("globalScope"); //enabling scope
-
-    data = {};
-    //retrieving data
+    // globalScope = new Scope("globalScope"); //enabling scope
+    // scopeList.push(globalScope);
+    newCircuit("Main");
+    data={}
+    // data = JSON.parse(SAP_DATA);
+    // load(data);
+    // retrieving data
     if (parent.location.hash.length > 1) {
 
         var http = new XMLHttpRequest();
@@ -121,10 +157,10 @@ function setup() {
             else {
                 console.log(http.responseText);
                 data = JSON.parse(http.responseText);
-                console.log(data);
-                load(globalScope, data);
+                console.log("From Server:"+data);
+                load(data);
                 simulationArea.changeClockTime(data["timePeriod"] || 500);
-                backups.push(backUp())
+                // globalScope.backups.push(backUp(globalScope));
             }
         }
 
@@ -132,23 +168,29 @@ function setup() {
     // return;
 
     toBeUpdated = true;
-    width = window.innerWidth;
-    height = window.innerHeight;
+    width = document.getElementById("canvasArea").clientWidth;
+    height = document.getElementById("canvasArea").clientHeight;
+    // console.log(width);
     //setup simulationArea
     simulationArea.setup();
+    backgroundArea.setup();
     scheduleUpdate();
+
 
 
 }
 
 //to resize window
 function resetup() {
-    width = window.innerWidth;
-    height = window.innerHeight;
+    width = document.getElementById("canvasArea").clientWidth;
+    height = document.getElementById("canvasArea").clientHeight;
     simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
+    backgroundArea.canvas.width = width;
+    backgroundArea.canvas.height = height;
     // simulationArea.setup();
     scheduleUpdate();
+    dots()
 }
 
 window.onresize = resetup;
@@ -158,6 +200,7 @@ window.addEventListener('orientationchange', resetup);
 
 //Main fn that resolves circuit
 function play(scope = globalScope, resetNodes = true) {
+    if(errorDetected)return;
 
     // console.log("simulation");
     if (loading == true) return;
@@ -166,16 +209,18 @@ function play(scope = globalScope, resetNodes = true) {
         for (var i = 0; i < scope.allNodes.length; i++)
             scope.allNodes[i].reset();
         for (var i = 0; i < scope.SubCircuit.length; i++) {
-            scope.SubCircuit[i].resetNodes();
+            scope.SubCircuit[i].reset();
         }
     }
+
     for (var i = 0; i < scope.SubCircuit.length; i++) {
-        if (scope.SubCircuit[i].isResolvable())
-            scope.stack.push(scope.SubCircuit[i]);
+        if(scope.SubCircuit[i].isResolvable())scope.stack.push(scope.SubCircuit[i]);
     }
+
     for (var i = 0; i < scope.FlipFlop.length; i++) {
         scope.stack.push(scope.FlipFlop[i]);
     }
+
     for (var i = 0; i < inputList.length; i++) {
         for (var j = 0; j < scope[inputList[i]].length; j++) {
             scope.stack.push(scope[inputList[i]][j]);
@@ -183,6 +228,7 @@ function play(scope = globalScope, resetNodes = true) {
     }
     var stepCount = 0;
     while (scope.stack.length) {
+        if(errorDetected)return;
         var elem = scope.stack.pop();
         elem.resolve();
         stepCount++;
@@ -191,9 +237,37 @@ function play(scope = globalScope, resetNodes = true) {
             return;
         }
     }
+    // for (var i = 0; i < scope.SubCircuit.length; i++) {
+    //     if(!scope.SubCircuit[i].isResolvable())
+    //         {
+    //             scope.stack.push(scope.SubCircuit[i]);
+    //             while (scope.stack.length) {
+    //                 if(errorDetected)return;
+    //                 var elem = scope.stack.pop();
+    //                 elem.resolve();
+    //                 stepCount++;
+    //                 if (stepCount > 1000) {
+    //                     showError("Simulation Stack limit exceeded: maybe due to cyclic paths or contention");
+    //                     return;
+    //                 }
+    //             }
+    //         }
+    // }
 
 }
 
+var backgroundArea = {
+    canvas: document.getElementById("backgroundArea"),
+    setup:function(){
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.context = this.canvas.getContext("2d");
+        dots();
+    },
+    clear: function() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
 //simulation environment object
 var simulationArea = {
     canvas: document.getElementById("simulationArea"),
@@ -230,6 +304,7 @@ var simulationArea = {
         // this.shiftDown=false;
 
         window.addEventListener('mousemove', function(e) {
+            // if(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height)simulationArea.mouseDown=false;
             // return;
             scheduleUpdate();
             // toBeUpdated=true;
@@ -240,217 +315,6 @@ var simulationArea = {
             simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
             simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
 
-        });
-        window.addEventListener('keyup', function(e) {
-            // update();
-            scheduleUpdate(1);
-            if (e.keyCode == 16) {
-                // simulationArea.lastSelected.delete(); // delete key
-                simulationArea.shiftDown = false;
-            }
-            if (e.key == "Meta"||e.key=="Control") {
-                simulationArea.controlDown = false;
-            }
-        });
-        window.addEventListener('keydown', function(e) {
-            scheduleUpdate(1);
-            updateCanvas = true;
-            wireToBeChecked = 1;
-            // e.preventDefault();
-               console.log("KEY:"+e.key);
-           if (e.key == "Meta"||e.key=="Control") {
-               simulationArea.controlDown = true;
-           }
-
-           if(simulationArea.controlDown&&(e.key=="C"||e.key=="c")){
-               simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
-               if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
-                   simulationArea.copyList.push(simulationArea.lastSelected);
-               }
-           }
-           if(simulationArea.controlDown&&(e.key=="V"||e.key=="v")){
-               copyPaste(simulationArea.copyList);
-           }
-            if (simulationArea.lastSelected && simulationArea.lastSelected.keyDown) {
-                if (e.key.toString().length == 1) {
-                    simulationArea.lastSelected.keyDown(e.key);
-                    return;
-                }
-                if (e.key == "Shift") return;
-            }
-            if (e.keyCode == 8) {
-                if (simulationArea.lastSelected) simulationArea.lastSelected.delete();
-                for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
-                    simulationArea.multipleObjectSelections[i].delete();
-                }
-            }
-            if (e.keyCode == 16) {
-                simulationArea.shiftDown = true;
-                if (simulationArea.lastSelected) {
-                    simulationArea.multipleObjectSelections.push(simulationArea.lastSelected);
-                    simulationArea.lastSelected = undefined;
-                }
-            }
-
-            if (simulationArea.controlDown&&e.key.charCodeAt(0) == 122) { // detect the special CTRL-Z code
-                if (backups.length == 0) return;
-                var backupOx = simulationArea.ox;
-                var backupOy = simulationArea.oy;
-                simulationArea.ox = 0;
-                simulationArea.oy = 0;
-                globalScope = new Scope("globalScope");
-                loading = true;
-                load(globalScope, backups.pop());
-                console.log("UNDO");
-                loading = false;
-                simulationArea.ox = backupOx;
-                simulationArea.oy = backupOy;
-            }
-            //change direction fns
-            if (e.keyCode == 37 && simulationArea.lastSelected != undefined) {
-                simulationArea.lastSelected.newDirection("LEFT");
-            }
-            if (e.keyCode == 38 && simulationArea.lastSelected != undefined) {
-                simulationArea.lastSelected.newDirection("UP");
-            }
-            if (e.keyCode == 39 && simulationArea.lastSelected != undefined) {
-                simulationArea.lastSelected.newDirection("RIGHT");
-            }
-            if (e.keyCode == 40 && simulationArea.lastSelected != undefined) {
-                simulationArea.lastSelected.newDirection("DOWN");
-            }
-            if ((e.keyCode == 113 || e.keyCode == 81) && simulationArea.lastSelected != undefined) {
-                if (simulationArea.lastSelected.bitWidth !== undefined)
-                    simulationArea.lastSelected.newBitWidth(parseInt(prompt("Enter new bitWidth"), 10));
-            }
-            if (!simulationArea.controlDown&&(e.keyCode == 67 || e.keyCode == 99)) {
-                simulationArea.changeClockTime(prompt("Enter Time:"));
-            }
-            if ((e.keyCode == 108 || e.keyCode == 76) && simulationArea.lastSelected != undefined) {
-                if (simulationArea.lastSelected.setLabel !== undefined)
-                    simulationArea.lastSelected.setLabel();
-            }
-
-            // zoom in (+)
-            if (simulationArea.controlDown&&e.keyCode == 187 && simulationArea.scale < 4) {
-                e.preventDefault();
-                changeScale(.1);
-            }
-            // zoom out (-)
-            if (simulationArea.controlDown&&e.keyCode == 189 && simulationArea.scale > 0.5) {
-                e.preventDefault();
-                changeScale(-.1);
-            }
-            // console.log()
-            // update();
-        })
-        window.addEventListener('dblclick', function(e) {
-            scheduleUpdate(2);
-            if (simulationArea.lastSelected&&simulationArea.lastSelected.dblclick !== undefined) {
-                simulationArea.lastSelected.dblclick();
-            }
-            if (!simulationArea.shiftDown) {
-                simulationArea.multipleObjectSelections = [];
-            }
-            // console.log(simulationArea.mouseDown, "mouseDOn");
-        });
-        // window.addEventListener('click', function(e) {
-        //     // console.log("click");
-        //     // if(simulationArea.lastSelected.click!==undefined){
-        //     //     simulationArea.lastSelected.click();
-        //     // }
-        //     // scheduleUpdate(1);
-        // });
-        window.addEventListener('mousedown', function(e) {
-            // return;
-            scheduleBackup();
-            update();
-            scheduleUpdate(1);
-
-            simulationArea.lastSelected = undefined;
-            simulationArea.selected = false;
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            simulationArea.mouseDownRawX = (e.clientX - rect.left);
-            simulationArea.mouseDownRawY = (e.clientY - rect.top);
-            simulationArea.mouseDownX = Math.round(((simulationArea.mouseDownRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseDownY = Math.round(((simulationArea.mouseDownRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseDown = true;
-            simulationArea.oldx = simulationArea.ox;
-            simulationArea.oldy = simulationArea.oy;
-            if (simulationArea.clickCount === 0) {
-                simulationArea.clickCount++;
-                simulationArea.timer();
-            } else if (simulationArea.clickCount === 1) {
-                simulationArea.clickCount = 0;
-                if (simulationArea.lock === "locked")
-                    simulationArea.lock = "unlocked";
-                else
-                    simulationArea.lock = "locked";
-                // console.log("Double", simulationArea.lock);
-            }
-            // console.log(simulationArea.mouseDown);
-            // console.log(simulationArea.mouseDown, "mouseDOn");
-        });
-
-        window.addEventListener('mouseup', function(e) {
-
-            // return;
-            // update();
-            scheduleUpdate(1);
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            // simulationArea.mouseDownX = (e.clientX - rect.left) / simulationArea.scale;
-            // simulationArea.mouseDownY = (e.clientY - rect.top) / simulationArea.scale;
-            // simulationArea.mouseDownX = Math.round((simulationArea.mouseDownX - simulationArea.ox / simulationArea.scale) / unit) * unit;
-            // simulationArea.mouseDownY = Math.round((simulationArea.mouseDownY - simulationArea.oy / simulationArea.scale) / unit) * unit;
-
-            simulationArea.mouseDown = false;
-            console.log(simulationArea.mouseDown);
-        });
-        window.addEventListener('touchmove', function(e) {
-            scheduleUpdate();
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            simulationArea.mouseRawX = (e.touches[0].clientX - rect.left);
-            simulationArea.mouseRawY = (e.touches[0].clientY - rect.top);
-            simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
-
-        })
-        window.addEventListener('touchstart', function(e) {
-            scheduleUpdate();
-            var rect = simulationArea.canvas.getBoundingClientRect();
-
-            simulationArea.mouseDownRawX = (e.touches[0].clientX - rect.left);
-            simulationArea.mouseDownRawY = (e.touches[0].clientY - rect.top);
-            simulationArea.mouseRawX = (e.touches[0].clientX - rect.left);
-            simulationArea.mouseRawY = (e.touches[0].clientY - rect.top);
-            simulationArea.mouseDownX = Math.round(((simulationArea.mouseDownRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseDownY = Math.round(((simulationArea.mouseDownRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
-
-            simulationArea.mouseDown = true;
-            simulationArea.oldx = simulationArea.ox;
-            simulationArea.oldy = simulationArea.oy;
-
-
-            simulationArea.mouseDown = true;
-            console.log(simulationArea.mouseDown);
-        });
-        window.addEventListener('touchend', function(e) {
-            scheduleUpdate();
-            // update();
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            simulationArea.mouseDownY = simulationArea.mouseY;
-            simulationArea.mouseDownX = simulationArea.mouseX;
-
-            simulationArea.mouseDown = false;
-            console.log(simulationArea.mouseDown);
-        });
-        window.addEventListener('touchleave', function(e) {
-            scheduleUpdate();
-            // update();
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            simulationArea.mouseDown = false;
         });
     },
     changeClockTime(t) {
@@ -467,7 +331,7 @@ var simulationArea = {
 function copyPaste(copyList){
     tempScope=new Scope("globalScope");
     d=backUp();
-    load(tempScope,d);
+    loadScope(tempScope,d);
     for (var i = 0; i < globalScope.objects.length; i++)
         for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++){
             var obj=globalScope[globalScope.objects[i]][j];
@@ -537,7 +401,12 @@ function update(scope=globalScope) {
         // toBeUpdated = false;
         play();
     }
-
+    if(simulationArea.lastSelected!==undefined&&simulationArea.lastSelected.objectType!=="Wire"&&simulationArea.lastSelected.objectType!=="CircuitElement"){
+        showProperties(simulationArea.lastSelected);
+    }
+    else{
+        hideProperties();
+    }
 
     if (!simulationArea.selected && simulationArea.mouseDown) {
         //mouse click NOT on object
@@ -555,7 +424,10 @@ function update(scope=globalScope) {
             simulationArea.oy = (simulationArea.mouseRawY - simulationArea.mouseDownRawY) + simulationArea.oldy;
             simulationArea.ox = Math.round(simulationArea.ox);
             simulationArea.oy = Math.round(simulationArea.oy);
+            // smartDropX=Math.round(((200 - simulationArea.ox) / simulationArea.scale) / unit) * unit;
+            // smartDropY=Math.round(((30 - simulationArea.oy) / simulationArea.scale) / unit) * unit;
         }
+        dots();
 
     } else if (simulationArea.lastSelected == scope.root) {
         simulationArea.lastSelected = undefined;
@@ -608,7 +480,7 @@ function update(scope=globalScope) {
     //Draw
     if (toBeUpdated || updateCanvas) {
         simulationArea.clear();
-        dots(); // draw dots
+        // dots(); // draw dots
         for (var i = 0; i < scope.objects.length; i++)
             for (var j = 0; j < scope[scope.objects[i]].length; j++)
                 updated |= scope[scope.objects[i]][j].draw();
@@ -633,10 +505,11 @@ function update(scope=globalScope) {
 
 //fn to draw Dots on screen
 function dots() {
-    var canvasWidth = simulationArea.canvas.width; //max X distance
-    var canvasHeight = simulationArea.canvas.height; //max Y distance
+    backgroundArea.clear();
+    var canvasWidth = backgroundArea.canvas.width; //max X distance
+    var canvasHeight = backgroundArea.canvas.height; //max Y distance
 
-    var ctx = simulationArea.context;
+    var ctx = backgroundArea.context;
     var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
 
     var scale = unit * simulationArea.scale;
@@ -671,11 +544,20 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.objectType = this.constructor.name; // CHECK IF THIS IS VALID
     this.x = x;
     this.y = y;
+
+    this.hover = false;
+    if(this.x==undefined||this.y==undefined){
+        this.x=simulationArea.mouseX;
+        this.y=simulationArea.mouseY;
+        this.newElement=true;
+        this.hover=true;
+    }
+    this.deleteNodesWhenDeleted=true; // FOR NOW - TO CHECK LATER
+
     this.parent = parent;
     this.nodeList = []
-    this.isResolved = false;
     this.clicked = false;
-    this.hover = false;
+
     this.oldx = x;
     this.oldy = y;
     this.leftDimensionX = 10;
@@ -692,7 +574,15 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.labelDirection = dir;
     this.orientationFixed = true; // should it be false?
     this.fixedBitWidth = false;
+    this.copyFrom=function(obj){
+        var properties=["label","labelDirection"];
+        for(var i=0;i<properties.length;i++){
+            if(obj[properties[i]]!==undefined)
+                this[properties[i]]=obj[properties[i]];
+        }
+    }
 
+    scheduleUpdate();
 
     /* Methods to be Implemented for derivedClass
         saveObject(); //To generate JSON-safe data that can be loaded
@@ -764,12 +654,24 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.update = function() {
 
         var update = false;
+
+        update|=this.newElement;
+        if(this.newElement){
+            this.x=simulationArea.mouseX;
+            this.y=simulationArea.mouseY;
+            if(simulationArea.mouseDown){
+                this.newElement=false;
+                simulationArea.lastSelected=this;
+            }
+            else return;
+        }
         // console.log(this.nodeList)
         for (var i = 0; i < this.nodeList.length; i++) {
             update |= this.nodeList[i].update();
         }
 
         if (!simulationArea.mouseDown) this.hover = false;
+
 
         if ((this.clicked || !simulationArea.hover) && this.isHover()) {
             this.hover = true;
@@ -873,8 +775,8 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         return false;
     };
 
-    this.setLabel = function() {
-        this.label = prompt("Enter Label:");
+    this.setLabel = function(label) {
+        this.label = label||prompt("Enter Label:");
         // console.log(this.label);
     }
 
@@ -959,15 +861,25 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.delete = function() {
         simulationArea.lastSelected = undefined;
         this.scope[this.objectType].clean(this); // CHECK IF THIS IS VALID
-        for (var i = 0; i < this.nodeList.length; i++) {
-            this.nodeList[i].delete();
-        }
+        if(this.deleteNodesWhenDeleted)
+            for (var i = 0; i < this.nodeList.length; i++)
+                this.nodeList[i].delete();
+        else
+            for (var i = 0; i < this.nodeList.length; i++)
+                if(this.nodeList[i].connections.length)
+                    this.nodeList[i].converToIntermediate();
+                else
+                    this.nodeList[i].delete();
     }
 
+    this.cleanDelete=function(){
+        this.deleteNodesWhenDeleted=true;
+        this.delete();
+    }
     //method to change direction
     //OVERRIDE WITH CAUTION
     this.newDirection = function(dir) {
-        console.log(dir)
+        if(this.direction==dir)return;
         // Leave this for now
         if (this.directionFixed && this.orientationFixed) return;
         else if (this.directionFixed) {
@@ -981,6 +893,9 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             this.nodeList[i].refresh();
         }
 
+    }
+    this.newLabelDirection = function(dir) {
+        this.labelDirection=dir;
     }
 
     //Method to check if object can be resolved
