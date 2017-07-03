@@ -190,7 +190,7 @@ function resetup() {
     backgroundArea.canvas.height = height;
     // simulationArea.setup();
     scheduleUpdate();
-    dots()
+    dots(true,false);
 }
 
 window.onresize = resetup;
@@ -262,7 +262,7 @@ var backgroundArea = {
         this.canvas.width = width;
         this.canvas.height = height;
         this.context = this.canvas.getContext("2d");
-        dots();
+        dots(true,false);
     },
     clear: function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -277,6 +277,7 @@ var simulationArea = {
     lastSelected: undefined,
     stack: [],
     ox: 0,
+    oy: 0,
     oy: 0,
     oldx: 0,
     oldy: 0,
@@ -427,7 +428,7 @@ function update(scope=globalScope) {
             // smartDropX=Math.round(((200 - simulationArea.ox) / simulationArea.scale) / unit) * unit;
             // smartDropY=Math.round(((30 - simulationArea.oy) / simulationArea.scale) / unit) * unit;
         }
-        dots();
+        dots(true,false);
 
     } else if (simulationArea.lastSelected == scope.root) {
         simulationArea.lastSelected = undefined;
@@ -504,12 +505,18 @@ function update(scope=globalScope) {
 // }
 
 //fn to draw Dots on screen
-function dots() {
+function dots(dots, transparentBackground) {
     backgroundArea.clear();
     var canvasWidth = backgroundArea.canvas.width; //max X distance
     var canvasHeight = backgroundArea.canvas.height; //max Y distance
 
     var ctx = backgroundArea.context;
+    if(!transparentBackground){
+        ctx.fillStyle="white";
+        ctx.rect(0, 0, canvasWidth, canvasHeight);
+        ctx.fill();
+    }
+    console.log(canvasWidth,canvasHeight)
     var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
 
     var scale = unit * simulationArea.scale;
@@ -523,11 +530,11 @@ function dots() {
         canvasData.data[index + 2] = b;
         canvasData.data[index + 3] = a;
     }
-
+    if(dots){
     for (var i = 0 + ox; i < canvasWidth; i += scale)
         for (var j = 0 + oy; j < canvasHeight; j += scale)
             drawPixel(i, j, 0, 0, 0, 255);
-
+        }
     ctx.putImageData(canvasData, 0, 0);
 
 }
@@ -574,6 +581,12 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.labelDirection = dir;
     this.orientationFixed = true; // should it be false?
     this.fixedBitWidth = false;
+    this.absX=function(){
+        return this.x;
+    }
+    this.absY=function(){
+        return this.y;
+    }
     this.copyFrom=function(obj){
         var properties=["label","labelDirection"];
         for(var i=0;i<properties.length;i++){

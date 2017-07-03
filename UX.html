@@ -14,8 +14,8 @@
 <body onload="setup()">
 
 <div class="toolbar" id="toolbar">
-<div class="toolbarButton logixButton" id="Save" onclick="saveAsImg">Save</div>
-<div class="toolbarButton logixButton" id="saveAsImg" onclick="saveAsImg">Download Image</div>
+<div class="toolbarButton logixButton" id="Save">Save</div>
+<div class="toolbarButton logixButton" id="createSaveAsImgPrompt" >Download Image</div>
 <div class="toolbarButton logixButton" id="newCircuit">New Circuit +</div>
 <div class="toolbarButton logixButton" id="createCombinationalAnalysisPrompt">Combinational Analysis</div>
 </div>
@@ -27,8 +27,12 @@
                 <button class="accordion">Input</button>
                 <div class="panel">
 
-                  <div class="icon logixModules" id="Input" >Input</div>
-                  <div class="icon logixModules" id="Button" >Button</div>
+                  <div class="icon logixModules" id="Input" ><img src="./img/input.svg"/><p class="img__description">
+                      input
+                  </p></div>
+                  <div class="icon logixModules" id="Button" ><img src="./img/input.svg"/><p class="img__description">
+                      input
+                  </p></div>
                   <div class="icon logixModules" id="Power" >Power</div>
                   <div class="icon logixModules" id="Ground" >Ground</div>
                   <div class="icon logixModules" id="ConstantVal" >Constant</div>
@@ -94,13 +98,31 @@
     </div>
     <div class="canvasArea" id="canvasArea">
         <div id="errorMessageDiv" >
-            <!-- <div class='errorMessage'>Contention Error: 0 and 1</div> -->
         </div>
      <canvas id="backgroundArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
      <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%;height:100%"></canvas>
 
      </div>
      <div id="combinationalAnalysis" title="BooleanLogicTable">
+     <div id="saveImageDialog" >
+        <p>
+            Full Circuit View: <input type="radio" name="view" value="full" />
+            Current View: <input type="radio" name="view" value="current" checked="checked" />
+        </p>
+        <p>
+            Transparent Background: <input type="checkbox" name="transparent" value="transparent"/>
+        </p>
+        <p>
+            Grid: <input type="checkbox" name="grid" value="grid" checked="checked" />
+        </p>
+        <p>
+            Resolution:
+            1x<input type="radio" name="resolution" value="1" checked="checked"  />
+            2x<input type="radio" name="resolution" value="2"/>
+            4x<input type="radio" name="resolution" value="4"/>
+        </p>
+
+     </div>
 </div>
 
 

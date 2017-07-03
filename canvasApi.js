@@ -1,12 +1,14 @@
-function changeScale(delta) {
-    var xx, yy;
+function changeScale(delta,xx,yy) {
+    // var xx, yy;
 
-    if (simulationArea.lastSelected) { // selected object
-        xx = simulationArea.lastSelected.x;
-        yy = simulationArea.lastSelected.y;
-    } else { //mouse location
-        xx = simulationArea.mouseX;
-        yy = simulationArea.mouseY;
+    if(xx===undefined||yy===undefined){
+        if (simulationArea.lastSelected) { // selected object
+            xx = simulationArea.lastSelected.x;
+            yy = simulationArea.lastSelected.y;
+        } else { //mouse location
+            xx = simulationArea.mouseX;
+            yy = simulationArea.mouseY;
+        }
     }
 
     var oldScale = simulationArea.scale;
@@ -14,6 +16,7 @@ function changeScale(delta) {
     simulationArea.scale = Math.round(simulationArea.scale * 10) / 10;
     simulationArea.ox -= Math.round(xx * (simulationArea.scale - oldScale));
     simulationArea.oy -= Math.round(yy * (simulationArea.scale - oldScale));
+    dots(true,false);
 }
 
 function bezierCurveTo(x1, y1, x2, y2, x3, y3, xx, yy, dir) {
@@ -118,6 +121,7 @@ function drawLine(ctx, x1, y1, x2, y2, color, width) {
     ctx.strokeStyle = color;
     ctx.lineCap = "round";
     ctx.lineWidth = width;
+    console.log(ctx.lineWidth)
     ctx.moveTo(x1 + simulationArea.ox, y1 + simulationArea.oy);
     ctx.lineTo(x2 + simulationArea.ox, y2 + simulationArea.oy);
     ctx.stroke();
