@@ -46,6 +46,8 @@ function moveTo(ctx, x1, y1, xx, yy, dir) {
 }
 
 function lineTo(ctx, x1, y1, xx, yy, dir) {
+    // var lineWidthBackup=ctx.lineWidth;
+    // ctx.lineWidth *=widrsimulationArea.scale;
     [newX, newY] = rotate(x1, y1, dir);
     newX = newX * simulationArea.scale;
     newY = newY * simulationArea.scale;
@@ -68,15 +70,19 @@ function arc(ctx, sx, sy, radius, start, stop, xx, yy, dir) { //ox-x of origin, 
 }
 
 function rect(ctx, x1, y1, x2, y2) {
+    // var lineWidthBackup=ctx.lineWidth;
+    // ctx.lineWidth *=simulationArea.scale;
     x1 = x1 * simulationArea.scale;
     y1 = y1 * simulationArea.scale;
     x2 = x2 * simulationArea.scale;
     y2 = y2 * simulationArea.scale;
     ctx.rect(simulationArea.ox + x1, simulationArea.oy + y1, x2, y2);
+    // ctx.lineWidth=lineWidthBackup
 }
 
 function rect2(ctx, x1, y1, x2, y2, xx, yy, dir) {
-
+    // var lineWidthBackup=ctx.lineWidth;
+    // ctx.lineWidth *=simulationArea.scale;
     [x1, y1] = rotate(x1, y1, dir);
     [x2, y2] = rotate(x2, y2, dir);
     // [xx,yy]=rotate(xx,yy,dir);
@@ -87,6 +93,7 @@ function rect2(ctx, x1, y1, x2, y2, xx, yy, dir) {
     xx *= simulationArea.scale;
     yy *= simulationArea.scale;
     ctx.rect(simulationArea.ox + xx + x1, simulationArea.oy + yy + y1, x2, y2);
+    // ctx.lineWidth=lineWidthBackup
 }
 
 
@@ -120,8 +127,8 @@ function drawLine(ctx, x1, y1, x2, y2, color, width) {
     ctx.beginPath();
     ctx.strokeStyle = color;
     ctx.lineCap = "round";
-    ctx.lineWidth = width;
-    console.log(ctx.lineWidth)
+    ctx.lineWidth = width*simulationArea.scale;
+    // console.log(ctx.lineWidth);
     ctx.moveTo(x1 + simulationArea.ox, y1 + simulationArea.oy);
     ctx.lineTo(x2 + simulationArea.ox, y2 + simulationArea.oy);
     ctx.stroke();
@@ -130,11 +137,12 @@ function drawLine(ctx, x1, y1, x2, y2, color, width) {
 
 function drawCircle(ctx, x1, y1, r, color) {
     // r = r*simulationArea.scale;
+
     x1 = x1 * simulationArea.scale;
     y1 = y1 * simulationArea.scale;
     ctx.beginPath();
     ctx.fillStyle = color;
-    ctx.arc(x1 + simulationArea.ox, y1 + simulationArea.oy, r, 0, Math.PI * 2, false);
+    ctx.arc(x1 + simulationArea.ox, y1 + simulationArea.oy, r*simulationArea.scale, 0, Math.PI * 2, false);
     ctx.closePath();
     ctx.fill();
 }

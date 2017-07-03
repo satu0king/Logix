@@ -1,5 +1,3 @@
-
-
 var width;
 
 var height;
@@ -10,25 +8,27 @@ updateCanvas = true;
 wireToBeChecked = 0; // when node disconnects from another node
 willBeUpdated = false;
 objectSelection = false;
-errorDetected=false;
+errorDetected = false;
 // var backups = []
 loading = false
 //Exact same name as object constructor
-moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "RGBLed","Button","Demultiplexer", "Buffer","SubCircuit"];
+moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer", "Buffer", "SubCircuit"];
 
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
-inputList = ["Buffer","Stepper","Ground", "Power", "ConstantVal", "Input", "Clock","Button"];
+inputList = ["Buffer", "Stepper", "Ground", "Power", "ConstantVal", "Input", "Clock", "Button"];
 
-scopeList={};
-globalScope=undefined;
+scopeList = {};
+globalScope = undefined;
 
 function showError(error) {
     // console.log("ERROR: " + error);
-    errorDetected=true;
-    var id=Math.floor(Math.random()*10000);
-    $('#errorMessageDiv').append("<div class='errorMessage' id='"+id+"'> "+error+"</div>");
-    setTimeout(function(){$('#'+id).fadeOut()},1500);
+    errorDetected = true;
+    var id = Math.floor(Math.random() * 10000);
+    $('#errorMessageDiv').append("<div class='errorMessage' id='" + id + "'> " + error + "</div>");
+    setTimeout(function() {
+        $('#' + id).fadeOut()
+    }, 1500);
     // console.log("<div class='errorMessage'>"+error+"</div>");
 }
 
@@ -90,11 +90,11 @@ function uniq(a) {
 
 function Scope(name = "localScope") {
     //root object for referring to main canvas - intermediate node uses this
-    this.id=Math.floor((Math.random() * 100000000000) + 1);
+    this.id = Math.floor((Math.random() * 100000000000) + 1);
     this.CircuitElement = [];
     this.root = new CircuitElement(0, 0, this, "RIGHT", 1);
-    this.backups=[];
-    this.timeStamp=new Date().getTime();
+    this.backups = [];
+    this.timeStamp = new Date().getTime();
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)
@@ -103,18 +103,18 @@ function Scope(name = "localScope") {
             this.SubCircuit[i].localScope.clockTick(); //tick clock!
     }
 
-    this.checkDependency=function(id){
-        if(id==this.id)return true;
+    this.checkDependency = function(id) {
+        if (id == this.id) return true;
         for (var i = 0; i < this.SubCircuit.length; i++)
-            if(this.SubCircuit[i].id==id)return true;
+            if (this.SubCircuit[i].id == id) return true;
 
         for (var i = 0; i < this.SubCircuit.length; i++)
-            if(this.SubCircuit[i].localScope.checkDependency(id))return true;
+            if (this.SubCircuit[i].localScope.checkDependency(id)) return true;
     }
 
-    this.getDependencies=function(){
-        var list=[]
-        for (var i = 0; i < this.SubCircuit.length; i++){
+    this.getDependencies = function() {
+        var list = []
+        for (var i = 0; i < this.SubCircuit.length; i++) {
             list.push(this.SubCircuit[i].id);
             list.extend(this.SubCircuit[i].localScope.getDependencies());
         }
@@ -138,7 +138,7 @@ function setup() {
     // globalScope = new Scope("globalScope"); //enabling scope
     // scopeList.push(globalScope);
     newCircuit("Main");
-    data={}
+    data = {}
     // data = JSON.parse(SAP_DATA);
     // load(data);
     // retrieving data
@@ -157,7 +157,7 @@ function setup() {
             else {
                 console.log(http.responseText);
                 data = JSON.parse(http.responseText);
-                console.log("From Server:"+data);
+                console.log("From Server:" + data);
                 load(data);
                 simulationArea.changeClockTime(data["timePeriod"] || 500);
                 // globalScope.backups.push(backUp(globalScope));
@@ -190,7 +190,7 @@ function resetup() {
     backgroundArea.canvas.height = height;
     // simulationArea.setup();
     scheduleUpdate();
-    dots(true,false);
+    dots(true, false);
 }
 
 window.onresize = resetup;
@@ -200,7 +200,7 @@ window.addEventListener('orientationchange', resetup);
 
 //Main fn that resolves circuit
 function play(scope = globalScope, resetNodes = true) {
-    if(errorDetected)return;
+    if (errorDetected) return;
 
     // console.log("simulation");
     if (loading == true) return;
@@ -214,7 +214,7 @@ function play(scope = globalScope, resetNodes = true) {
     }
 
     for (var i = 0; i < scope.SubCircuit.length; i++) {
-        if(scope.SubCircuit[i].isResolvable())scope.stack.push(scope.SubCircuit[i]);
+        if (scope.SubCircuit[i].isResolvable()) scope.stack.push(scope.SubCircuit[i]);
     }
 
     for (var i = 0; i < scope.FlipFlop.length; i++) {
@@ -228,7 +228,7 @@ function play(scope = globalScope, resetNodes = true) {
     }
     var stepCount = 0;
     while (scope.stack.length) {
-        if(errorDetected)return;
+        if (errorDetected) return;
         var elem = scope.stack.pop();
         elem.resolve();
         stepCount++;
@@ -258,11 +258,11 @@ function play(scope = globalScope, resetNodes = true) {
 
 var backgroundArea = {
     canvas: document.getElementById("backgroundArea"),
-    setup:function(){
+    setup: function() {
         this.canvas.width = width;
         this.canvas.height = height;
         this.context = this.canvas.getContext("2d");
-        dots(true,false);
+        dots(true, false);
     },
     clear: function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -329,55 +329,55 @@ var simulationArea = {
     }
 }
 
-function copyPaste(copyList){
-    tempScope=new Scope("globalScope");
-    d=backUp();
-    loadScope(tempScope,d);
+function copyPaste(copyList) {
+    tempScope = new Scope("globalScope");
+    d = backUp();
+    loadScope(tempScope, d);
     for (var i = 0; i < globalScope.objects.length; i++)
-        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++){
-            var obj=globalScope[globalScope.objects[i]][j];
-            if(obj.objectType!='Wire'){//}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
-                if(!copyList.contains(globalScope[globalScope.objects[i]][j])){
-                    console.log("DELETE:",globalScope[globalScope.objects[i]][j]);
+        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
+            var obj = globalScope[globalScope.objects[i]][j];
+            if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
+                if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
+                    console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
                     globalScope[globalScope.objects[i]][j].delete()
                 }
             }
         }
-    toBeUpdated=true;
+    toBeUpdated = true;
     console.log(globalScope.wires.length)
     // update(globalScope);
     // console.log(globalScope.wires.length)
-    for(var i=0;i<copyList.length;i++){
+    for (var i = 0; i < copyList.length; i++) {
         // console.log(copyList[i]);
-        copyList[i].x+=10;
-        copyList[i].y+=10;
+        copyList[i].x += 10;
+        copyList[i].y += 10;
         copyList[i].updateScope(tempScope);
     }
-    for(var i=0;i<globalScope.wires.length;i++){
+    for (var i = 0; i < globalScope.wires.length; i++) {
         // console.log(copyList[i]);
 
         globalScope.wires[i].updateScope(tempScope);
     }
 
 
-    toBeUpdated=true;
+    toBeUpdated = true;
     update(tempScope);
 
-    for(l in globalScope){
-        if(globalScope[l] instanceof Array&&l!="objects"){
+    for (l in globalScope) {
+        if (globalScope[l] instanceof Array && l != "objects") {
             tempScope[l].extend(globalScope[l]);
         }
     }
-    simulationArea.multipleObjectSelections=copyList.slice();
+    simulationArea.multipleObjectSelections = copyList.slice();
 
-    globalScope=tempScope;
+    globalScope = tempScope;
 
 }
 
 // fn that calls update on everything else. If any change is there, it resolves the circuit and draws it again
 // fn to change scale (zoom) - It also shifts origin so that the position
 //of the object in focus doent changeB
-function update(scope=globalScope) {
+function update(scope = globalScope) {
 
     if (loading == true) return;
     // console.log("UPDATE");
@@ -402,10 +402,9 @@ function update(scope=globalScope) {
         // toBeUpdated = false;
         play();
     }
-    if(simulationArea.lastSelected!==undefined&&simulationArea.lastSelected.objectType!=="Wire"&&simulationArea.lastSelected.objectType!=="CircuitElement"){
+    if (simulationArea.lastSelected !== undefined && simulationArea.lastSelected.objectType !== "Wire" && simulationArea.lastSelected.objectType !== "CircuitElement") {
         showProperties(simulationArea.lastSelected);
-    }
-    else{
+    } else {
         hideProperties();
     }
 
@@ -428,7 +427,7 @@ function update(scope=globalScope) {
             // smartDropX=Math.round(((200 - simulationArea.ox) / simulationArea.scale) / unit) * unit;
             // smartDropY=Math.round(((30 - simulationArea.oy) / simulationArea.scale) / unit) * unit;
         }
-        dots(true,false);
+        dots(true, false);
 
     } else if (simulationArea.lastSelected == scope.root) {
         simulationArea.lastSelected = undefined;
@@ -511,17 +510,12 @@ function dots(dots, transparentBackground) {
     var canvasHeight = backgroundArea.canvas.height; //max Y distance
 
     var ctx = backgroundArea.context;
-    if(!transparentBackground){
-        ctx.fillStyle="white";
+    if (!transparentBackground) {
+        ctx.fillStyle = "white";
         ctx.rect(0, 0, canvasWidth, canvasHeight);
         ctx.fill();
     }
-    console.log(canvasWidth,canvasHeight)
-    var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-
-    var scale = unit * simulationArea.scale;
-    var ox = simulationArea.ox % scale; //offset
-    var oy = simulationArea.oy % scale; //offset
+    console.log(canvasWidth, canvasHeight)
 
     function drawPixel(x, y, r, g, b, a) {
         var index = (x + y * canvasWidth) * 4;
@@ -530,12 +524,19 @@ function dots(dots, transparentBackground) {
         canvasData.data[index + 2] = b;
         canvasData.data[index + 3] = a;
     }
-    if(dots){
-    for (var i = 0 + ox; i < canvasWidth; i += scale)
-        for (var j = 0 + oy; j < canvasHeight; j += scale)
-            drawPixel(i, j, 0, 0, 0, 255);
-        }
-    ctx.putImageData(canvasData, 0, 0);
+    if (dots) {
+        var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+
+        var scale = unit * simulationArea.scale;
+        var ox = simulationArea.ox % scale; //offset
+        var oy = simulationArea.oy % scale; //offset
+
+        for (var i = 0 + ox; i < canvasWidth; i += scale)
+            for (var j = 0 + oy; j < canvasHeight; j += scale)
+                drawPixel(i, j, 0, 0, 0, 255);
+        ctx.putImageData(canvasData, 0, 0);
+    }
+
 
 }
 
@@ -553,13 +554,13 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.y = y;
 
     this.hover = false;
-    if(this.x==undefined||this.y==undefined){
-        this.x=simulationArea.mouseX;
-        this.y=simulationArea.mouseY;
-        this.newElement=true;
-        this.hover=true;
+    if (this.x == undefined || this.y == undefined) {
+        this.x = simulationArea.mouseX;
+        this.y = simulationArea.mouseY;
+        this.newElement = true;
+        this.hover = true;
     }
-    this.deleteNodesWhenDeleted=true; // FOR NOW - TO CHECK LATER
+    this.deleteNodesWhenDeleted = true; // FOR NOW - TO CHECK LATER
 
     this.parent = parent;
     this.nodeList = []
@@ -581,17 +582,17 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.labelDirection = dir;
     this.orientationFixed = true; // should it be false?
     this.fixedBitWidth = false;
-    this.absX=function(){
+    this.absX = function() {
         return this.x;
     }
-    this.absY=function(){
+    this.absY = function() {
         return this.y;
     }
-    this.copyFrom=function(obj){
-        var properties=["label","labelDirection"];
-        for(var i=0;i<properties.length;i++){
-            if(obj[properties[i]]!==undefined)
-                this[properties[i]]=obj[properties[i]];
+    this.copyFrom = function(obj) {
+        var properties = ["label", "labelDirection"];
+        for (var i = 0; i < properties.length; i++) {
+            if (obj[properties[i]] !== undefined)
+                this[properties[i]] = obj[properties[i]];
         }
     }
 
@@ -608,10 +609,10 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
 
     // Method definitions
 
-    this.updateScope=function(scope){
-        this.scope=scope;
-        for(var i=0;i<this.nodeList.length;i++)
-            this.nodeList[i].scope=scope;
+    this.updateScope = function(scope) {
+        this.scope = scope;
+        for (var i = 0; i < this.nodeList.length; i++)
+            this.nodeList[i].scope = scope;
     }
 
     this.saveObject = function() {
@@ -656,11 +657,11 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     // NOT OVERIDABLE
 
 
-    this.startDragging=function(){
+    this.startDragging = function() {
         this.oldx = this.x;
         this.oldy = this.y;
     }
-    this.drag=function(){
+    this.drag = function() {
         this.x = this.oldx + simulationArea.mouseX - simulationArea.mouseDownX;
         this.y = this.oldy + simulationArea.mouseY - simulationArea.mouseDownY;
     }
@@ -668,15 +669,14 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
 
         var update = false;
 
-        update|=this.newElement;
-        if(this.newElement){
-            this.x=simulationArea.mouseX;
-            this.y=simulationArea.mouseY;
-            if(simulationArea.mouseDown){
-                this.newElement=false;
-                simulationArea.lastSelected=this;
-            }
-            else return;
+        update |= this.newElement;
+        if (this.newElement) {
+            this.x = simulationArea.mouseX;
+            this.y = simulationArea.mouseY;
+            if (simulationArea.mouseDown) {
+                this.newElement = false;
+                simulationArea.lastSelected = this;
+            } else return;
         }
         // console.log(this.nodeList)
         for (var i = 0; i < this.nodeList.length; i++) {
@@ -699,8 +699,8 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             // this.x = this.oldx + simulationArea.mouseX - simulationArea.mouseDownX;
             // this.y = this.oldy + simulationArea.mouseY - simulationArea.mouseDownY;
             this.drag();
-            if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
-                for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+            if (!simulationArea.shiftDown && simulationArea.multipleObjectSelections.contains(this)) {
+                for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
                     simulationArea.multipleObjectSelections[i].drag();
                 }
             }
@@ -710,8 +710,8 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             // this.oldx = this.x;
             // this.oldy = this.y;
             this.startDragging();
-            if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
-                for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+            if (!simulationArea.shiftDown && simulationArea.multipleObjectSelections.contains(this)) {
+                for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
                     simulationArea.multipleObjectSelections[i].startDragging();
                 }
             }
@@ -747,9 +747,9 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         return update;
     }
 
-    this.fixDirection=function(){
-        this.direction=fixDirection[this.direction]||this.direction;
-        this.labelDirection=fixDirection[this.labelDirection]||this.labelDirection;
+    this.fixDirection = function() {
+        this.direction = fixDirection[this.direction] || this.direction;
+        this.labelDirection = fixDirection[this.labelDirection] || this.labelDirection;
     }
 
     // The isHover method is used to check if the mouse is hovering over the object.
@@ -789,7 +789,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     };
 
     this.setLabel = function(label) {
-        this.label = label||prompt("Enter Label:");
+        this.label = label || prompt("Enter Label:");
         // console.log(this.label);
     }
 
@@ -802,7 +802,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             ctx = simulationArea.context;
             ctx.strokeStyle = "black";
             ctx.fillStyle = "white";
-            ctx.lineWidth = 3;
+            ctx.lineWidth = simulationArea.scale * 3;
             ctx.beginPath();
             rect2(ctx, -this.leftDimensionX, -this.upDimensionY, this.leftDimensionX + this.rightDimensionX, this.upDimensionY + this.downDimensionY, this.x, this.y, [this.direction, "RIGHT"][+this.directionFixed]);
             if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
@@ -874,25 +874,25 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.delete = function() {
         simulationArea.lastSelected = undefined;
         this.scope[this.objectType].clean(this); // CHECK IF THIS IS VALID
-        if(this.deleteNodesWhenDeleted)
+        if (this.deleteNodesWhenDeleted)
             for (var i = 0; i < this.nodeList.length; i++)
                 this.nodeList[i].delete();
         else
             for (var i = 0; i < this.nodeList.length; i++)
-                if(this.nodeList[i].connections.length)
+                if (this.nodeList[i].connections.length)
                     this.nodeList[i].converToIntermediate();
                 else
                     this.nodeList[i].delete();
     }
 
-    this.cleanDelete=function(){
-        this.deleteNodesWhenDeleted=true;
+    this.cleanDelete = function() {
+        this.deleteNodesWhenDeleted = true;
         this.delete();
     }
     //method to change direction
     //OVERRIDE WITH CAUTION
     this.newDirection = function(dir) {
-        if(this.direction==dir)return;
+        if (this.direction == dir) return;
         // Leave this for now
         if (this.directionFixed && this.orientationFixed) return;
         else if (this.directionFixed) {
@@ -908,7 +908,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
 
     }
     this.newLabelDirection = function(dir) {
-        this.labelDirection=dir;
+        this.labelDirection = dir;
     }
 
     //Method to check if object can be resolved
