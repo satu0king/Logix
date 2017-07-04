@@ -184,6 +184,20 @@ function loadModule(data, scope) {
         }
 
 }
+function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
 
 function loadScope(scope, data) {
     // console.log(data);
@@ -217,6 +231,7 @@ createSaveAsImgPrompt = function(scope = globalScope) {
         buttons: [{
             text: "Render Circuit Image",
             click: function() {
+
                 var view = $('input[name=view]:checked').val();
                 var transparent = $('input[name=transparent]:checked').val();
                 var grid = $('input[name=grid]:checked').val();
@@ -230,7 +245,8 @@ createSaveAsImgPrompt = function(scope = globalScope) {
                 var backUpWidth = width
                 var backUpHeight = height;
                 var backUpScale = simulationArea.scale;
-                backUpContext = backgroundArea.context;
+                backUpContextBackground = backgroundArea.context;
+                backUpContextSimulation = simulationArea.context;
                 backgroundArea.context = simulationArea.context;
                 simulationArea.ox*=resolution/backUpScale;
                 simulationArea.oy*=resolution/backUpScale;
@@ -274,15 +290,29 @@ createSaveAsImgPrompt = function(scope = globalScope) {
                 simulationArea.canvas.height = height;
                 backgroundArea.canvas.width = width;
                 backgroundArea.canvas.height = height;
+                simulationArea.context = new C2S(width,height);
                 backgroundArea.context = simulationArea.context;
 
                 simulationArea.clear();
-                dots(grid,transparent); // draw dots
+                // dots(grid,transparent); // draw dots
 
                 for (var i = 0; i < scope.objects.length; i++)
                     for (var j = 0; j < scope[scope.objects[i]].length; j++)
                         scope[scope.objects[i]][j].draw();
-                saveAsImg("z");
+
+                var mySerializedSVG = simulationArea.context.getSerializedSvg(); //true here, if you need to convert named to numbered entities.
+                download("test.svg",mySerializedSVG);
+                //If you really need to you can access the shadow inline SVG created by calling:
+                // var svg = simulationArea.context.getSvg();
+                // console.log(mySerializedSVG)
+                // var filename = "test";
+                // var anchor = document.createElement('a');
+                // anchor.href = mySerializedSVG;
+                // anchor.download = filename + '.svg';
+                // anchor.click()
+
+
+                // saveAsImg("z");
                 width = backUpWidth
                 height = backUpHeight
                 console.log("DIM:",width,height)
@@ -291,7 +321,8 @@ createSaveAsImgPrompt = function(scope = globalScope) {
                 backgroundArea.canvas.width = width;
                 backgroundArea.canvas.height = height;
                 simulationArea.scale=backUpScale;
-                backgroundArea.context = backUpContext;
+                backgroundArea.context = backUpContextBackground;
+                simulationArea.context = backUpContextSimulation;
                 simulationArea.ox = backUpOx
                 simulationArea.oy = backUpOy;
 

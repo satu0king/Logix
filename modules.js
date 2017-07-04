@@ -181,7 +181,7 @@ function NandGate(x, y, scope = globalScope, dir = "RIGHT", inputLength = 2, bit
         ctx.fill();
         ctx.stroke();
         ctx.beginPath();
-        arc(ctx, 25, 0, 5, 0, 2 * (Math.PI), xx, yy, this.direction);
+        drawCircle2(ctx, 25, 0, 5,xx,yy, this.direction);
         ctx.stroke();
 
 
@@ -450,7 +450,7 @@ function XnorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth
         arc(ctx, -35, 0, 25, 1.70 * (Math.PI), 0.30 * (Math.PI), xx, yy, this.direction);
         ctx.stroke();
         ctx.beginPath();
-        arc(ctx, 25, 0, 5, 0, 2 * (Math.PI), xx, yy, this.direction);
+        drawCircle2(ctx, 25, 0, 5,xx,yy, this.direction);
         ctx.stroke();
 
     }
@@ -518,7 +518,7 @@ function SevenSegDisplay(x, y, scope = globalScope) {
         this.customDrawSegment(-15, 38, 17, 38, ["grey", "red"][this.d.value]);
 
         ctx.beginPath();
-        ctx.strokeStyle = ["black", "red"][this.dot.value];
+        ctx.fillStyle = ["black", "red"][this.dot.value];
         rect(ctx, xx + 20, yy + 40, 2, 2);
         ctx.stroke();
     }
@@ -752,7 +752,7 @@ function Stepper(x, y, scope = globalScope, dir = "RIGHT") {
         ctx.fillStyle = "green";
         ctx.textAlign = "center";
         fillText(ctx, this.state.toString(16), this.x, this.y + 5);
-        ctx.stroke();;
+        ctx.fill();;
     }
 
     this.resolve = function() {
@@ -811,7 +811,7 @@ function NotGate(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         ctx.fill();
         ctx.stroke();
         ctx.beginPath();
-        arc(ctx, 15, 0, 5, 2 * (Math.PI), 0, xx, yy, this.direction);
+        drawCircle2(ctx, 15, 0, 5,xx,yy, this.direction);
         ctx.stroke();
 
     }
@@ -1001,7 +1001,7 @@ function ControlledInverter(x, y, scope = globalScope, dir = "RIGHT", bitWidth =
         ctx.fill();
         ctx.stroke();
         ctx.beginPath();
-        arc(ctx, 25, 0, 5, 2 * (Math.PI), 0, xx, yy, this.direction);
+        drawCircle2(ctx, 25, 0, 5,xx,yy, this.direction);
         ctx.stroke();
 
     }
@@ -1187,10 +1187,13 @@ function Splitter(x, y, scope = globalScope, dir = "RIGHT", bitWidth = undefined
         for (var i = this.splitCount - 1; i >= 0; i--) {
             moveTo(ctx, 0, -20 * i + this.yOffset, xx, yy, this.direction);
             lineTo(ctx, 20, -20 * i + this.yOffset, xx, yy, this.direction);
+        }
+        ctx.stroke();
+        for (var i = this.splitCount - 1; i >= 0; i--) {
             fillText2(ctx, bitCount + ":" + (bitCount + this.bitWidthSplit[this.splitCount - i - 1]), 10, -20 * i + 14 + this.yOffset, xx, yy, this.direction);
             bitCount += this.bitWidthSplit[this.splitCount - i - 1];
         }
-        ctx.stroke();
+
 
 
     }
@@ -1380,6 +1383,8 @@ function Power(x, y, scope = globalScope, bitWidth = 1) {
         lineTo(ctx, -10, 10, xx, yy, this.direction);
         lineTo(ctx, 10, 10, xx, yy, this.direction);
         lineTo(ctx, 0, 0, xx, yy, this.direction);
+        ctx.closePath();
+        ctx.stroke();
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
         moveTo(ctx, 0, 10, xx, yy, this.direction);
@@ -1453,7 +1458,7 @@ function Output(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1) {
 
         for (var k = 0; k < this.bitWidth; k++)
             fillText(ctx, bin[k], xx - 10 * this.bitWidth + 10 + (k) * 20, yy + 5);
-        ctx.stroke();
+        ctx.fill();
 
     }
 
@@ -1547,7 +1552,7 @@ function BitSelector(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 2, sel
             var bit = this.bitSelectorInp.value;
 
         fillText(ctx, bit, xx, yy + 5);
-        ctx.stroke();
+        ctx.fill();
     }
 }
 
@@ -1708,7 +1713,7 @@ function NorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
         ctx.fill();
         ctx.stroke();
         ctx.beginPath();
-        arc(ctx, 25, 0, 5, 0, 2 * (Math.PI), xx, yy, this.direction);
+        drawCircle2(ctx, 25, 0, 5,xx,yy, this.direction);
         ctx.stroke();
         //for debugging
     }
@@ -1870,7 +1875,7 @@ function Button(x, y, scope = globalScope, dir = "RIGHT") {
 
         ctx.beginPath();
 
-        arc(ctx, 0, 0, 12, 0, 2 * Math.PI, xx, yy, this.direction);
+        drawCircle2(ctx, 0, 0, 12, xx, yy, this.direction);
         ctx.stroke();
 
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
