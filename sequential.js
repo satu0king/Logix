@@ -120,7 +120,7 @@ function FlipFlop(x, y, scope=globalScope, dir="RIGHT", bitWidth=1) {
         ctx.fillStyle = "green";
         ctx.textAlign = "center";
         fillText(ctx, this.slaveState.toString(16), xx, yy + 5);
-        ctx.stroke();
+        ctx.fill();
 
     }
 }
@@ -230,7 +230,7 @@ function TTY(x, y, scope=globalScope,rows=3,cols=32) {
             asciiInp: findNode(this.asciiInp),
             reset: findNode(this.reset),
             en: findNode(this.en)},
-            constructorParamaters:[this.direction,this.rows,this.cols],
+            constructorParamaters:[this.rows,this.cols],
         }
         return data;
     }
@@ -265,7 +265,7 @@ function TTY(x, y, scope=globalScope,rows=3,cols=32) {
             lineData+=' '.repeat(this.cols-lineData.length);
             fillText3(ctx, lineData, 0, startY+(i/this.cols)*15+9,xx,yy,fontSize=15,font="Courier New",textAlign="center");
         }
-        ctx.stroke();
+        ctx.fill();
 
     }
     // this.delete = function() {
@@ -390,7 +390,7 @@ function Keyboard(x, y, scope=globalScope,bufferSize=32) {
             available: findNode(this.available),
             reset: findNode(this.reset),
             en: findNode(this.en)},
-            constructorParamaters:[this.direction,this.bufferSize]
+            constructorParamaters:[this.bufferSize]
         }
         return data;
     }
@@ -414,7 +414,7 @@ function Keyboard(x, y, scope=globalScope,bufferSize=32) {
         ctx.textAlign = "center";
         var lineData=this.buffer+' '.repeat(this.bufferSize-this.buffer.length);
         fillText3(ctx, lineData, 0,+5,xx,yy,fontSize=15,font="Courier New",textAlign="center");
-        ctx.stroke();
+        ctx.fill();
     }
 }
 
