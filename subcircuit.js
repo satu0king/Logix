@@ -193,7 +193,7 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT",id=undefined, saved
 
         ctx = simulationArea.context;
 
-        ctx.lineWidth = 3;
+        ctx.lineWidth = simulationArea.scale*  3;
         ctx.strokeStyle = "black"; //("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
         var xx = this.x;
