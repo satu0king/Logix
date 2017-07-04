@@ -102,7 +102,7 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT",id=undefined, saved
         this.delete();
     }
     this.reBuildCircuit=function(){
-        this.data=this.data=JSON.parse(scopeList[this.id].backups[scopeList[this.id].backups.length-1]);
+        this.data=JSON.parse(scheduleBackup(scopeList[this.id]));
         this.localScope=new Scope();
         loadScope(this.localScope, this.data);
         this.lastUpdated=scopeList[this.id].timeStamp;

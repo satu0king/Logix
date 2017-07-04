@@ -169,9 +169,13 @@ body {
 
 }
 img{
+    display: none;
+}
+div.icon img{
     margin: auto;
     width:100%;
     height:100%;
+    display: inline-block
 }
 
 .img__description {
