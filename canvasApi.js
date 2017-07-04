@@ -69,6 +69,17 @@ function arc(ctx, sx, sy, radius, start, stop, xx, yy, dir) { //ox-x of origin, 
     ctx.arc(xx + simulationArea.ox + Sx, yy + simulationArea.oy + Sy, radius, newStart, newStop, counterClock);
 }
 
+function drawCircle2(ctx, sx, sy, radius, xx, yy, dir) { //ox-x of origin, xx- x of element , sx - shift in x from element
+
+    [Sx, Sy] = rotate(sx, sy, dir);
+    Sx = Sx * simulationArea.scale;
+    Sy = Sy * simulationArea.scale;
+    xx = xx * simulationArea.scale;
+    yy = yy * simulationArea.scale;
+    radius *= simulationArea.scale;
+    ctx.arc(xx + simulationArea.ox + Sx, yy + simulationArea.oy + Sy, radius, 0, 2*Math.PI);
+}
+
 function rect(ctx, x1, y1, x2, y2) {
     // var lineWidthBackup=ctx.lineWidth;
     // ctx.lineWidth *=simulationArea.scale;
@@ -154,6 +165,7 @@ function fillText(ctx, str, x1, y1, fontSize = 20) {
     ctx.font = fontSize * simulationArea.scale + "px Georgia";
     // ctx.font = 20+"px Georgia";
     ctx.fillText(str, x1 + simulationArea.ox, y1 + simulationArea.oy);
+    // ctx.fill();
 }
 
 function fillText2(ctx, str, x1, y1, xx, yy, dir) {
@@ -178,6 +190,7 @@ function fillText2(ctx, str, x1, y1, xx, yy, dir) {
     ctx.textAlign = "center";
     ctx.fillText(str, 0, 0);
     ctx.restore();
+
     // ctx.fillText(str, xx+x1+simulationArea.ox,yy+ y1+simulationArea.oy);
 
 }
