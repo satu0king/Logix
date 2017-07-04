@@ -26,6 +26,14 @@ function switchCircuit(id) {
 
 function saveAsImg(name) {
     //window.open(simulationArea.canvas.toDataURL('image/png'));
+    // var imageMimes = ['image/png', 'image/bmp', 'image/gif', 'image/jpeg', 'image/tiff']; //Extend as necessary
+    // var acceptedMimes = new Array();
+    // for (i = 0; i < imageMimes.length; i++) {
+    //     if (canvas.toDataURL(imageMimes[i]).search(imageMimes[i]) >= 0) {
+    //         acceptedMimes[acceptedMimes.length] = imageMimes[i];
+    //     }
+    // }
+    // CHECK ABOVE CODE
     var gh = simulationArea.canvas.toDataURL('image/png');
     name = name || prompt("Enter imagename");
     if (name != null) {
@@ -294,7 +302,12 @@ createSaveAsImgPrompt = function(scope = globalScope) {
                 backgroundArea.context = simulationArea.context;
 
                 simulationArea.clear();
-                // dots(grid,transparent); // draw dots
+
+                if (!transparent) {
+                    simulationArea.context.fillStyle = "white";
+                    simulationArea.context.rect(0, 0, width, height);
+                    simulationArea.context.fill();
+                }
 
                 for (var i = 0; i < scope.objects.length; i++)
                     for (var j = 0; j < scope[scope.objects[i]].length; j++)
