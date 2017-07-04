@@ -503,42 +503,7 @@ function update(scope = globalScope) {
 //     return [a2,a1];
 // }
 
-//fn to draw Dots on screen
-function dots(dots, transparentBackground) {
-    backgroundArea.clear();
-    var canvasWidth = backgroundArea.canvas.width; //max X distance
-    var canvasHeight = backgroundArea.canvas.height; //max Y distance
 
-    var ctx = backgroundArea.context;
-    if (!transparentBackground) {
-        ctx.fillStyle = "white";
-        ctx.rect(0, 0, canvasWidth, canvasHeight);
-        ctx.fill();
-    }
-    console.log(canvasWidth, canvasHeight)
-
-    function drawPixel(x, y, r, g, b, a) {
-        var index = (x + y * canvasWidth) * 4;
-        canvasData.data[index + 0] = r;
-        canvasData.data[index + 1] = g;
-        canvasData.data[index + 2] = b;
-        canvasData.data[index + 3] = a;
-    }
-    if (dots) {
-        var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-
-        var scale = unit * simulationArea.scale;
-        var ox = simulationArea.ox % scale; //offset
-        var oy = simulationArea.oy % scale; //offset
-
-        for (var i = 0 + ox; i < canvasWidth; i += scale)
-            for (var j = 0 + oy; j < canvasHeight; j += scale)
-                drawPixel(i, j, 0, 0, 0, 255);
-        ctx.putImageData(canvasData, 0, 0);
-    }
-
-
-}
 
 // The Circuit element class serves as the abstract class for all circuit elements.
 // Data Members: /* Insert Description */
