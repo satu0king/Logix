@@ -24,6 +24,15 @@ $(document).ready(function() {
         window[this.id]();
 
     });
+
+    var iconList=$('.icon');
+    // console.log(iconList)
+    for(var i=0;i<iconList.length;i++){
+        console.log(iconList[i].id);
+        $(iconList[i]).append('<img src="./img/'+iconList[i].id+'.svg"/>');
+        $(iconList[i]).append('<p class="img__description">'+iconList[i].id+
+        '</p>');
+    }
     // $('#saveAsImg').click(function(){
     //     saveAsImg();
     // });

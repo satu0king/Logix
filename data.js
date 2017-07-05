@@ -11,6 +11,102 @@ function newCircuit(name, id) {
     return scope;
 }
 
+function generateSvg(){
+    resolution=1;
+    view = "full"
+
+    var backUpOx = simulationArea.ox;
+    var backUpOy = simulationArea.oy;
+    var backUpWidth = width
+    var backUpHeight = height;
+    var backUpScale = simulationArea.scale;
+    backUpContextBackground = backgroundArea.context;
+    backUpContextSimulation = simulationArea.context;
+    backgroundArea.context = simulationArea.context;
+    simulationArea.ox*=resolution/backUpScale;
+    simulationArea.oy*=resolution/backUpScale;
+
+    simulationArea.scale=resolution;
+
+    var scope = globalScope;
+
+    console.log("DIM:",width,height)
+    if (view == "full") {
+        var minX = 10000000;
+        var minY = 10000000;
+        var maxX = -10000000;
+        var maxY = -10000000;
+        var maxDimension=0;
+        for (var i = 0; i < scope.objects.length; i++)
+            for (var j = 0; j < scope[scope.objects[i]].length; j++) {
+                if (scope[scope.objects[i]][j].objectType !== "Wire") {
+                    console.log("obj:",scope[scope.objects[i]][j])
+                    minX = Math.min(minX, scope[scope.objects[i]][j].absX());
+                    maxX = Math.max(maxX, scope[scope.objects[i]][j].absX());
+                    minY = Math.min(minY, scope[scope.objects[i]][j].absY());
+                    maxY = Math.max(maxY, scope[scope.objects[i]][j].absY());
+                    maxDimension=Math.max(maxDimension,scope[scope.objects[i]][j].leftDimensionX)
+                    maxDimension=Math.max(maxDimension,scope[scope.objects[i]][j].rightDimensionX)
+                    maxDimension=Math.max(maxDimension,scope[scope.objects[i]][j].upDimensionY)
+                    maxDimension=Math.max(maxDimension,scope[scope.objects[i]][j].downDimensionY)
+                }
+            }
+
+        // width = (maxX - minX + 60) * resolution;
+        // height = (maxY - minY + 60) * resolution;
+        //
+        // simulationArea.ox = (-minX + maxDimension+11)*resolution;
+        // simulationArea.oy = (-minY + maxDimension-6)*resolution;
+        width = (maxX - minX + 2*maxDimension+10) * resolution;
+        height = (maxY - minY + 2*maxDimension+10) * resolution;
+
+        simulationArea.ox = (-minX + maxDimension+5)*resolution;
+        simulationArea.oy = (-minY + maxDimension+5)*resolution;
+    }
+    else{
+        width=(width*resolution)/backUpScale;
+        height=(height*resolution)/backUpScale;
+    }
+    console.log("DIM:",width,height)
+    simulationArea.ox=Math.round(simulationArea.ox);
+    simulationArea.oy=Math.round(simulationArea.oy);
+
+    simulationArea.canvas.width = width;
+    simulationArea.canvas.height = height;
+    backgroundArea.canvas.width = width;
+    backgroundArea.canvas.height = height;
+    simulationArea.context = new C2S(width,height);
+    backgroundArea.context = simulationArea.context;
+
+    simulationArea.clear();
+
+
+    for (var i = 0; i < scope.objects.length; i++)
+        for (var j = 0; j < scope[scope.objects[i]].length; j++)
+            scope[scope.objects[i]][j].draw();
+
+    var mySerializedSVG = simulationArea.context.getSerializedSvg(); //true here, if you need to convert named to numbered entities.
+    download("test.svg",mySerializedSVG);
+    width = backUpWidth
+    height = backUpHeight
+    console.log("DIM:",width,height)
+    simulationArea.canvas.width = width;
+    simulationArea.canvas.height = height;
+    backgroundArea.canvas.width = width;
+    backgroundArea.canvas.height = height;
+    simulationArea.scale=backUpScale;
+    backgroundArea.context = backUpContextBackground;
+    simulationArea.context = backUpContextSimulation;
+    simulationArea.ox = backUpOx
+    simulationArea.oy = backUpOy;
+
+      toBeUpdated=true;
+      updateCanvas=true;
+      scheduleUpdate();
+      dots(true,false);
+
+  }
+
 function switchCircuit(id) {
     scheduleBackup();
     console.log(id);
