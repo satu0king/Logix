@@ -121,7 +121,13 @@ function switchCircuit(id) {
 }
 
 function saveAsImg(name,imgtype) {
-    download(name+'.'+imgtype,simulationArea.canvas.toDataURL('image/' +imgtype));
+
+      var gh = simulationArea.canvas.toDataURL('image/' +imgtype);
+          var anchor = document.createElement('a');
+          anchor.href = gh;
+          anchor.download = name+'.'+imgtype;
+      anchor.click()
+
 }
 
 function undo(scope = globalScope) {
@@ -312,27 +318,10 @@ function loadScope(scope, data) {
     });
 }
 
-radiodisable = function(){
-  a = document.getElementsByName("format");
-  //console.log(a[2].selected);
-  /*b = document.getElementsByName("resolution");
-  for(var i = 0;i<a.length;i++){
-    b[i].setAttribute("disabled",true);
-  }*/
-  if(a[2].selected == true){
-    console.log("hello");
-    b = document.getElementsByName("resolution");
-    for(var i = 0;i<a.length;i++){
-      b[i].setAttribute("disabled",true);
-    }
-  }
-}
-
 
 createSaveAsImgPrompt = function(scope = globalScope) {
 $('#saveImageDialog').dialog({
         width: "auto",
-        open: radiodisable,
         buttons: [{
             text: "Render Circuit Image",
             click: function(){generateImage(); $(this).dialog("close");},
@@ -344,9 +333,11 @@ $('#saveImageDialog').dialog({
         $('input[name=transparent]').prop("disabled",false);
         var imgtype=$('input[name=format]:checked').val();
         if(imgtype=='svg'){
+            $('input[name=resolution][value=1]').click();
             $('input[name=resolution]').prop("disabled",true);
         }
         else if(imgtype!='png'){
+            $('input[name=transparent]').attr('checked', false);
             $('input[name=transparent]').prop("disabled",true);
         }
     });
@@ -357,12 +348,10 @@ function generateImage() {
     var imgtype = $('input[name=format]:checked').val();
     var view = $('input[name=view]:checked').val();
     var transparent = $('input[name=transparent]:checked').val();
-    var grid = $('input[name=grid]:checked').val();
     var resolution = $('input[name=resolution]:checked').val();
     console.log($('input[name=format]:checked').val());
     console.log($('input[name=view]:checked').val());
     console.log($('input[name=transparent]:checked').val());
-    console.log($('input[name=grid]:checked').val());
     console.log($('input[name=resolution]:checked').val());
 
       var backUpOx = simulationArea.ox;
@@ -376,12 +365,6 @@ function generateImage() {
       simulationArea.ox*=1/backUpScale;
       simulationArea.oy*=1/backUpScale;
 
-      simulationArea.scale=1;
-
-
-      var scope = globalScope;
-
-      console.log("DIM:",width,height);
       if(imgtype=='svg'){
               simulationArea.context = new C2S(width,height);
               resolution=1;
@@ -389,6 +372,14 @@ function generateImage() {
       else if (imgtype!='png') {
           transparent=false;
       }
+      
+      simulationArea.scale=resolution;
+
+
+      var scope = globalScope;
+
+      console.log("DIM:",width,height);
+
 
       if (view == "full") {
           var minX = 10000000;

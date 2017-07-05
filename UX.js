@@ -28,6 +28,11 @@ $(document).ready(function() {
     });
 // var dummyCounter=0;
     $( '#canvasArea' ).on( 'mousewheel', function ( event ) {
+        updateCanvas=true;
+        toBeUpdated=true;
+
+        scheduleUpdate();
+        // update();
 
         event.preventDefault()
          var deltaY = event.originalEvent.wheelDelta;
