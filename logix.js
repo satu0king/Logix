@@ -53,6 +53,17 @@ function scheduleUpdate(count = 0) {
 
 }
 
++$( '#canvasArea' ).on( 'mousewheel', function ( event ) {
+ +
+ +    var deltaY = event.originalEvent.wheelDeltaY;
+ +
+ +    var scrolledUp = deltaY < 0;
+ +    var scrolledDown = deltaY > 0;
+ +
+ +    if ( scrolledUp && simulationArea.scale < 4) { changeScale(.1); }
+ +    if ( scrolledDown && simulationArea.scale > 0.5) { changeScale(-.1); }
+ +});
+
 
 //fn to remove elem in array
 Array.prototype.clean = function(deleteValue) {
