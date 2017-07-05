@@ -10,8 +10,10 @@ $(document).ready(function() {
     });
 
     $('.logixModules').click(function(){
-        console.log(smartDropXX,smartDropYY)
+        console.log(smartDropXX,smartDropYY);
+        if(simulationArea.lastSelected&&simulationArea.lastSelected.newElement)simulationArea.lastSelected.delete();
         obj = new window[this.id]();//(simulationArea.mouseX,simulationArea.mouseY);
+        simulationArea.lastSelected=obj;
         // simulationArea.lastSelected=obj;
         // simulationArea.mouseDown=true;
         smartDropXX+=70;
@@ -24,6 +26,35 @@ $(document).ready(function() {
         window[this.id]();
 
     });
+// var dummyCounter=0;
+    $( '#canvasArea' ).on( 'mousewheel', function ( event ) {
+
+        event.preventDefault()
+         var deltaY = event.originalEvent.wheelDelta;
+        // dummyCounter++;
+         var scrolledUp = deltaY < 0;
+        var scrolledDown = deltaY > 0;
+        // if(dummyCounter!=3)return;
+        // dummyCounter=0;
+        if(event.originalEvent.ctrlKey){
+          if ( scrolledUp && simulationArea.scale > 0.5) { changeScale(-.1); }
+         if ( scrolledDown && simulationArea.scale < 4) { changeScale(.1); }
+        }
+        else{
+            if ( scrolledUp && simulationArea.scale < 4) { changeScale(.1); }
+           if ( scrolledDown && simulationArea.scale >0.5) { changeScale(-.1); }
+        }
+     });
+
+
+    var iconList=$('.icon');
+    // console.log(iconList)
+    for(var i=0;i<iconList.length;i++){
+        console.log(iconList[i].id);
+        $(iconList[i]).append('<img src="./img/'+iconList[i].id+'.svg"/>');
+        $(iconList[i]).append('<p class="img__description">'+iconList[i].id+
+        '</p>');
+    }
     // $('#saveAsImg').click(function(){
     //     saveAsImg();
     // });

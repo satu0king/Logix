@@ -1349,7 +1349,7 @@ function Power(x, y, scope = globalScope, bitWidth = 1) {
     this.directionFixed = true;
     this.rectangleObject = false;
     this.setDimensions(15, 15);
-    this.output1 = new Node(0, 20, 1, this);
+    this.output1 = new Node(0, 10, 1, this);
     this.output1.value = this.state;
     this.wasClicked = false;
     this.resolve = function() {
@@ -1379,16 +1379,16 @@ function Power(x, y, scope = globalScope, bitWidth = 1) {
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.lineWidth = simulationArea.scale*  3;
         ctx.fillStyle = "green";
-        moveTo(ctx, 0, 0, xx, yy, this.direction);
-        lineTo(ctx, -10, 10, xx, yy, this.direction);
-        lineTo(ctx, 10, 10, xx, yy, this.direction);
-        lineTo(ctx, 0, 0, xx, yy, this.direction);
+        moveTo(ctx, 0, -10, xx, yy, this.direction);
+        lineTo(ctx, -10, 0, xx, yy, this.direction);
+        lineTo(ctx, 10, 0, xx, yy, this.direction);
+        lineTo(ctx, 0, -10, xx, yy, this.direction);
         ctx.closePath();
         ctx.stroke();
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
-        moveTo(ctx, 0, 10, xx, yy, this.direction);
-        lineTo(ctx, 0, 20, xx, yy, this.direction);
+        moveTo(ctx, 0, 0, xx, yy, this.direction);
+        lineTo(ctx, 0, 10, xx, yy, this.direction);
         ctx.stroke();
 
     }
@@ -1831,7 +1831,7 @@ function VariableLed(x, y, scope = globalScope) {
 function Button(x, y, scope = globalScope, dir = "RIGHT") {
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.state = 0;
-    this.output1 = new Node(40, 0, 1, this);
+    this.output1 = new Node(30, 0, 1, this);
     this.wasClicked = false;
     this.rectangleObject = false;
     this.setDimensions(10, 10);
@@ -1870,7 +1870,7 @@ function Button(x, y, scope = globalScope, dir = "RIGHT") {
         ctx.beginPath();
 
         moveTo(ctx, 10, 0, xx, yy, this.direction);
-        lineTo(ctx, 40, 0, xx, yy, this.direction);
+        lineTo(ctx, 30, 0, xx, yy, this.direction);
         ctx.stroke();
 
         ctx.beginPath();
