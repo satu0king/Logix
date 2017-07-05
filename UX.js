@@ -10,8 +10,10 @@ $(document).ready(function() {
     });
 
     $('.logixModules').click(function(){
-        console.log(smartDropXX,smartDropYY)
+        console.log(smartDropXX,smartDropYY);
+        if(simulationArea.lastSelected&&simulationArea.lastSelected.newElement)simulationArea.lastSelected.delete();
         obj = new window[this.id]();//(simulationArea.mouseX,simulationArea.mouseY);
+        simulationArea.lastSelected=obj;
         // simulationArea.lastSelected=obj;
         // simulationArea.mouseDown=true;
         smartDropXX+=70;

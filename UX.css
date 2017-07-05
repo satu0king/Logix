@@ -1,7 +1,7 @@
 .side{
 /*display: inline-block;*/
 /*position: relative;*/
-width:260px;
+width:270px;
 height:100%;
 border: 2px solid;
 border-color: rgba(0, 0, 0, 0.5);
@@ -121,7 +121,7 @@ body {
     /*display: block;*/
     background-color: #f8f8f8;
     /*margin-top: 30px;*/
-    height:30%;
+    /*height:30%;*/
     padding-left: 5px;
     padding-right: 5px;
     padding-bottom:10px;
@@ -238,6 +238,8 @@ button.accordion {
     border: none;
     outline: none;
     transition: 0.4s;
+    border-radius: 0;
+
 }
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
@@ -251,7 +253,7 @@ button.accordion.active, button.accordion:hover {
     background-color: white;
     display: none;
     /*height:auto;*/
-    max-height: 60%;
+    max-height: 200px;
     overflow: scroll;
 }
 
