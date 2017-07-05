@@ -509,7 +509,7 @@ function SevenSegDisplay(x, y, scope = globalScope) {
         var xx = this.x;
         var yy = this.y;
 
-        this.customDrawSegment(18, -3, 18, -38, ["grey", "red"][this.value]);
+        this.customDrawSegment(18, -3, 18, -38, ["grey", "red"][this.b.value]);
         this.customDrawSegment(18, 3, 18, 38, ["grey", "red"][this.c.value]);
         this.customDrawSegment(-18, -3, -18, -38, ["grey", "red"][this.f.value]);
         this.customDrawSegment(-18, 3, -18, 38, ["grey", "red"][this.e.value]);
