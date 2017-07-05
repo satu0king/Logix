@@ -57,11 +57,11 @@ function generateSvg(){
         //
         // simulationArea.ox = (-minX + maxDimension+11)*resolution;
         // simulationArea.oy = (-minY + maxDimension-6)*resolution;
-        width = (maxX - minX + 2*maxDimension+10+10) * resolution;
-        height = (maxY - minY + 2*maxDimension+10+10) * resolution;
+        width = (maxX - minX + 2*maxDimension+10) * resolution;
+        height = (maxY - minY + 2*maxDimension+10) * resolution;
 
-        simulationArea.ox = (-minX + maxDimension+3)*resolution;
-        simulationArea.oy = (-minY + maxDimension+5+5)*resolution;
+        simulationArea.ox = (-minX + maxDimension+5)*resolution;
+        simulationArea.oy = (-minY + maxDimension+5)*resolution;
     }
     else{
         width=(width*resolution)/backUpScale;
