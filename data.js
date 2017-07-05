@@ -121,38 +121,7 @@ function switchCircuit(id) {
 }
 
 function saveAsImg(name,imgtype) {
-    //window.open(simulationArea.canvas.toDataURL('image/png'));
-    // var imageMimes = ['image/png', 'image/bmp', 'image/gif', 'image/jpeg', 'image/tiff']; //Extend as necessary
-    // var acceptedMimes = new Array();
-    // for (i = 0; i < imageMimes.length; i++) {
-    //     if (canvas.toDataURL(imageMimes[i]).search(imageMimes[i]) >= 0) {
-    //         acceptedMimes[acceptedMimes.length] = imageMimes[i];
-    //     }
-    // }
-    // CHECK ABOVE CODE
-    if(imgtype == "png"){
-      var gh = simulationArea.canvas.toDataURL('image/png');
-      //name = name || prompt("Enter imagename");
-      if (name != null) {
-          var filename = name;
-          var anchor = document.createElement('a');
-          anchor.href = gh;
-          anchor.download = filename + '.png';
-      }
-      anchor.click()
-    }
-  else{
-    var gh = simulationArea.canvas.toDataURL('image/jpeg');
-    //name = name || prompt("Enter imagename");
-    if (name != null) {
-        var filename = name;
-        var anchor = document.createElement('a');
-        anchor.href = gh;
-        anchor.download = filename + '.jpeg';
-    }
-    anchor.click()
-  }
-
+    download(name+'.'+imgtype,simulationArea.canvas.toDataURL('image/' +imgtype));
 }
 
 function undo(scope = globalScope) {
@@ -366,209 +335,134 @@ $('#saveImageDialog').dialog({
         open: radiodisable,
         buttons: [{
             text: "Render Circuit Image",
-            click: function() {
-                var imgtype = $('input[name=format]:checked').val();
-                var view = $('input[name=view]:checked').val();
-                var transparent = $('input[name=transparent]:checked').val();
-                var grid = $('input[name=grid]:checked').val();
-                var resolution = $('input[name=resolution]:checked').val();
-                console.log($('input[name=format]:checked').val());
-                console.log($('input[name=view]:checked').val());
-                console.log($('input[name=transparent]:checked').val());
-                console.log($('input[name=grid]:checked').val());
-                console.log($('input[name=resolution]:checked').val());
-                if(imgtype == "svg"){
-                  var backUpOx = simulationArea.ox;
-                  var backUpOy = simulationArea.oy;
-                  var backUpWidth = width
-                  var backUpHeight = height;
-                  var backUpScale = simulationArea.scale;
-                  backUpContextBackground = backgroundArea.context;
-                  backUpContextSimulation = simulationArea.context;
-                  backgroundArea.context = simulationArea.context;
-                  simulationArea.ox*=1/backUpScale;
-                  simulationArea.oy*=1/backUpScale;
-
-                  simulationArea.scale=1;
-
-                  $(this).dialog("close");
-                  var scope = globalScope;
-
-                  console.log("DIM:",width,height)
-                  if (view == "full") {
-                      var minX = 10000000;
-                      var minY = 10000000;
-                      var maxX = -10000000;
-                      var maxY = -10000000;
-                      for (var i = 0; i < scope.objects.length; i++)
-                          for (var j = 0; j < scope[scope.objects[i]].length; j++) {
-                              if (scope[scope.objects[i]][j].objectType !== "Wire") {
-                                  console.log("obj:",scope[scope.objects[i]][j])
-                                  minX = Math.min(minX, scope[scope.objects[i]][j].absX());
-                                  maxX = Math.max(maxX, scope[scope.objects[i]][j].absX());
-                                  minY = Math.min(minY, scope[scope.objects[i]][j].absY());
-                                  maxY = Math.max(maxY, scope[scope.objects[i]][j].absY());
-                              }
-                          }
-                      width = (maxX - minX + 400) * resolution;
-                      height = (maxY - minY + 400) * resolution;
-
-                      simulationArea.ox = (-minX + 200)*resolution;
-                      simulationArea.oy = (-minY + 200)*resolution;
-                  }
-                  else{
-                      width=(width*resolution)/backUpScale;
-                      height=(height*resolution)/backUpScale;
-                  }
-                  console.log("DIM:",width,height)
-                  simulationArea.ox=Math.round(simulationArea.ox);
-                  simulationArea.oy=Math.round(simulationArea.oy);
-
-                  simulationArea.canvas.width = width;
-                  simulationArea.canvas.height = height;
-                  backgroundArea.canvas.width = width;
-                  backgroundArea.canvas.height = height;
-                  simulationArea.context = new C2S(width,height);
-                  backgroundArea.context = simulationArea.context;
-
-                  simulationArea.clear();
-
-                  if (!transparent) {
-                      simulationArea.context.fillStyle = "white";
-                      simulationArea.context.rect(0, 0, width, height);
-                      simulationArea.context.fill();
-                  }
-
-                  for (var i = 0; i < scope.objects.length; i++)
-                      for (var j = 0; j < scope[scope.objects[i]].length; j++)
-                          scope[scope.objects[i]][j].draw();
-
-                  var mySerializedSVG = simulationArea.context.getSerializedSvg(); //true here, if you need to convert named to numbered entities.
-                  download(globalScope.name,mySerializedSVG);
-                  //If you really need to you can access the shadow inline SVG created by calling:
-                  // var svg = simulationArea.context.getSvg();
-                  // console.log(mySerializedSVG)
-                  // var filename = "test";
-                  // var anchor = document.createElement('a');
-                  // anchor.href = mySerializedSVG;
-                  // anchor.download = filename + '.svg';
-                  // anchor.click()
-
-
-                  // saveAsImg("z");
-                  width = backUpWidth
-                  height = backUpHeight
-                  console.log("DIM:",width,height)
-                  simulationArea.canvas.width = width;
-                  simulationArea.canvas.height = height;
-                  backgroundArea.canvas.width = width;
-                  backgroundArea.canvas.height = height;
-                  simulationArea.scale=backUpScale;
-                  backgroundArea.context = backUpContextBackground;
-                  simulationArea.context = backUpContextSimulation;
-                  simulationArea.ox = backUpOx
-                  simulationArea.oy = backUpOy;
-
-
-                    toBeUpdated=true;
-                    updateCanvas=true;
-                    scheduleUpdate();
-                    dots(true,false);
-
-                }
-
-                else{
-                  var backUpOx = simulationArea.ox;
-                  var backUpOy = simulationArea.oy;
-                  var backUpWidth = width
-                  var backUpHeight = height;
-                  var backUpScale = simulationArea.scale;
-                  backUpContext = backgroundArea.context;
-                  backgroundArea.context = simulationArea.context;
-                  simulationArea.ox*=resolution/backUpScale;
-                  simulationArea.oy*=resolution/backUpScale;
-
-                  simulationArea.scale=resolution;
-
-                  $(this).dialog("close");
-                  var scope = globalScope;
-
-                  console.log("DIM:",width,height)
-                  if (view == "full") {
-                      var minX = 10000000;
-                      var minY = 10000000;
-                      var maxX = -10000000;
-                      var maxY = -10000000;
-                      for (var i = 0; i < scope.objects.length; i++)
-                          for (var j = 0; j < scope[scope.objects[i]].length; j++) {
-                              if (scope[scope.objects[i]][j].objectType !== "Wire") {
-                                  console.log("obj:",scope[scope.objects[i]][j])
-                                  minX = Math.min(minX, scope[scope.objects[i]][j].absX());
-                                  maxX = Math.max(maxX, scope[scope.objects[i]][j].absX());
-                                  minY = Math.min(minY, scope[scope.objects[i]][j].absY());
-                                  maxY = Math.max(maxY, scope[scope.objects[i]][j].absY());
-                              }
-                          }
-                      width = (maxX - minX + 400) * resolution;
-                      height = (maxY - minY + 400) * resolution;
-
-                      simulationArea.ox = (-minX + 200)*resolution;
-                      simulationArea.oy = (-minY + 200)*resolution;
-                  }
-                  else{
-                      width=(width*resolution)/backUpScale;
-                      height=(height*resolution)/backUpScale;
-                  }
-                  console.log("DIM:",width,height)
-                  simulationArea.ox=Math.round(simulationArea.ox);
-                  simulationArea.oy=Math.round(simulationArea.oy);
-
-                  simulationArea.canvas.width = width;
-                  simulationArea.canvas.height = height;
-                  backgroundArea.canvas.width = width;
-                  backgroundArea.canvas.height = height;
-                  //simulationArea.context = new C2S(width,height);
-                  backgroundArea.context = simulationArea.context;
-
-                  simulationArea.clear();
-
-                  if (!transparent) {
-                      simulationArea.context.fillStyle = "white";
-                      simulationArea.context.rect(0, 0, width, height);
-                      simulationArea.context.fill();
-                  }
-
-                  for (var i = 0; i < scope.objects.length; i++)
-                      for (var j = 0; j < scope[scope.objects[i]].length; j++)
-                          scope[scope.objects[i]][j].draw();
-
-
-
-
-                  saveAsImg("test",imgtype);
-                  width = backUpWidth
-                  height = backUpHeight
-                  console.log("DIM:",width,height)
-                  simulationArea.canvas.width = width;
-                  simulationArea.canvas.height = height;
-                  backgroundArea.canvas.width = width;
-                  backgroundArea.canvas.height = height;
-                  simulationArea.scale=backUpScale;
-                  backgroundArea.context = backUpContext;
-                  simulationArea.ox = backUpOx
-                  simulationArea.oy = backUpOy;
-
-
-                    toBeUpdated=true;
-                    updateCanvas=true;
-                    scheduleUpdate();
-                    dots(true,false);
-
-                }
-
-            },
+            click: function(){generateImage(); $(this).dialog("close");},
         }]
 
     });
+    $("input[name=format]").change(function(){
+        $('input[name=resolution]').prop("disabled",false);
+        $('input[name=transparent]').prop("disabled",false);
+        var imgtype=$('input[name=format]:checked').val();
+        if(imgtype=='svg'){
+            $('input[name=resolution]').prop("disabled",true);
+        }
+        else if(imgtype!='png'){
+            $('input[name=transparent]').prop("disabled",true);
+        }
+    });
+}
+
+
+function generateImage() {
+    var imgtype = $('input[name=format]:checked').val();
+    var view = $('input[name=view]:checked').val();
+    var transparent = $('input[name=transparent]:checked').val();
+    var grid = $('input[name=grid]:checked').val();
+    var resolution = $('input[name=resolution]:checked').val();
+    console.log($('input[name=format]:checked').val());
+    console.log($('input[name=view]:checked').val());
+    console.log($('input[name=transparent]:checked').val());
+    console.log($('input[name=grid]:checked').val());
+    console.log($('input[name=resolution]:checked').val());
+
+      var backUpOx = simulationArea.ox;
+      var backUpOy = simulationArea.oy;
+      var backUpWidth = width
+      var backUpHeight = height;
+      var backUpScale = simulationArea.scale;
+      backUpContextBackground = backgroundArea.context;
+      backUpContextSimulation = simulationArea.context;
+      backgroundArea.context = simulationArea.context;
+      simulationArea.ox*=1/backUpScale;
+      simulationArea.oy*=1/backUpScale;
+
+      simulationArea.scale=1;
+
+
+      var scope = globalScope;
+
+      console.log("DIM:",width,height);
+      if(imgtype=='svg'){
+              simulationArea.context = new C2S(width,height);
+              resolution=1;
+      }
+      else if (imgtype!='png') {
+          transparent=false;
+      }
+
+      if (view == "full") {
+          var minX = 10000000;
+          var minY = 10000000;
+          var maxX = -10000000;
+          var maxY = -10000000;
+          for (var i = 0; i < scope.objects.length; i++)
+              for (var j = 0; j < scope[scope.objects[i]].length; j++) {
+                  if (scope[scope.objects[i]][j].objectType !== "Wire") {
+                      console.log("obj:",scope[scope.objects[i]][j])
+                      minX = Math.min(minX, scope[scope.objects[i]][j].absX());
+                      maxX = Math.max(maxX, scope[scope.objects[i]][j].absX());
+                      minY = Math.min(minY, scope[scope.objects[i]][j].absY());
+                      maxY = Math.max(maxY, scope[scope.objects[i]][j].absY());
+                  }
+              }
+          width = (maxX - minX + 400) * resolution;
+          height = (maxY - minY + 400) * resolution;
+
+          simulationArea.ox = (-minX + 200)*resolution;
+          simulationArea.oy = (-minY + 200)*resolution;
+      }
+      else{
+          width=(width*resolution)/backUpScale;
+          height=(height*resolution)/backUpScale;
+      }
+      console.log("DIM:",width,height)
+      simulationArea.ox=Math.round(simulationArea.ox);
+      simulationArea.oy=Math.round(simulationArea.oy);
+
+      simulationArea.canvas.width = width;
+      simulationArea.canvas.height = height;
+      backgroundArea.canvas.width = width;
+      backgroundArea.canvas.height = height;
+
+
+      backgroundArea.context = simulationArea.context;
+
+      simulationArea.clear();
+
+      if (!transparent) {
+          simulationArea.context.fillStyle = "white";
+          simulationArea.context.rect(0, 0, width, height);
+          simulationArea.context.fill();
+      }
+
+      for (var i = 0; i < scope.objects.length; i++)
+          for (var j = 0; j < scope[scope.objects[i]].length; j++)
+              scope[scope.objects[i]][j].draw();
+      if(imgtype=='svg'){
+          var mySerializedSVG = simulationArea.context.getSerializedSvg(); //true here, if you need to convert named to numbered entities.
+          download(globalScope.name+".svg",mySerializedSVG);
+      }
+      else{
+          saveAsImg(globalScope.name,imgtype)
+      }
+      width = backUpWidth
+      height = backUpHeight
+      console.log("DIM:",width,height)
+      simulationArea.canvas.width = width;
+      simulationArea.canvas.height = height;
+      backgroundArea.canvas.width = width;
+      backgroundArea.canvas.height = height;
+      simulationArea.scale=backUpScale;
+      backgroundArea.context = backUpContextBackground;
+      simulationArea.context = backUpContextSimulation;
+      simulationArea.ox = backUpOx
+      simulationArea.oy = backUpOy;
+
+
+        toBeUpdated=true;
+        updateCanvas=true;
+        scheduleUpdate();
+        dots(true,false);
+
 
 }
