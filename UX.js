@@ -31,8 +31,10 @@ $(document).ready(function() {
         updateCanvas=true;
         toBeUpdated=true;
 
-        scheduleUpdate();
-        // update();
+        // scheduleUpdate();
+        //INEFFICIENT CODE scheduleUpdate not working
+        updateCanvas=true;
+        update();
 
         event.preventDefault()
          var deltaY = event.originalEvent.wheelDelta;
