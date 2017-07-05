@@ -31,7 +31,6 @@ function dots(dots, transparentBackground) {
         ctx.rect(0, 0, canvasWidth, canvasHeight);
         ctx.fill();
     }
-    console.log(canvasWidth, canvasHeight)
 
     function drawPixel(x, y, r, g, b, a) {
         var index = (x + y * canvasWidth) * 4;

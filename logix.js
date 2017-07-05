@@ -54,6 +54,7 @@ function scheduleUpdate(count = 0) {
 }
 
 
+
 //fn to remove elem in array
 Array.prototype.clean = function(deleteValue) {
     for (var i = 0; i < this.length; i++) {
