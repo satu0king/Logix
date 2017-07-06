@@ -120,12 +120,12 @@ function switchCircuit(id) {
 
 }
 
-function saveAsImg(name,imgtype) {
+function saveAsImg(name,imgType) {
 
-      var gh = simulationArea.canvas.toDataURL('image/' +imgtype);
+      var gh = simulationArea.canvas.toDataURL('image/' +imgType);
           var anchor = document.createElement('a');
           anchor.href = gh;
-          anchor.download = name+'.'+imgtype;
+          anchor.download = name+'.'+imgType;
       anchor.click()
 
 }
@@ -328,15 +328,15 @@ $('#saveImageDialog').dialog({
         }]
 
     });
-    $("input[name=format]").change(function(){
+    $("input[name=imgType]").change(function(){
         $('input[name=resolution]').prop("disabled",false);
         $('input[name=transparent]').prop("disabled",false);
-        var imgtype=$('input[name=format]:checked').val();
-        if(imgtype=='svg'){
+        var imgType=$('input[name=imgType]:checked').val();
+        if(imgType=='svg'){
             $('input[name=resolution][value=1]').click();
             $('input[name=resolution]').prop("disabled",true);
         }
-        else if(imgtype!='png'){
+        else if(imgType!='png'){
             $('input[name=transparent]').attr('checked', false);
             $('input[name=transparent]').prop("disabled",true);
         }
@@ -345,11 +345,11 @@ $('#saveImageDialog').dialog({
 
 
 function generateImage() {
-    var imgtype = $('input[name=format]:checked').val();
+    var imgType = $('input[name=imgType]:checked').val();
     var view = $('input[name=view]:checked').val();
     var transparent = $('input[name=transparent]:checked').val();
     var resolution = $('input[name=resolution]:checked').val();
-    console.log($('input[name=format]:checked').val());
+    console.log($('input[name=imgType]:checked').val());
     console.log($('input[name=view]:checked').val());
     console.log($('input[name=transparent]:checked').val());
     console.log($('input[name=resolution]:checked').val());
@@ -365,14 +365,14 @@ function generateImage() {
       simulationArea.ox*=1/backUpScale;
       simulationArea.oy*=1/backUpScale;
 
-      if(imgtype=='svg'){
+      if(imgType=='svg'){
               simulationArea.context = new C2S(width,height);
               resolution=1;
       }
-      else if (imgtype!='png') {
+      else if (imgType!='png') {
           transparent=false;
       }
-      
+
       simulationArea.scale=resolution;
 
 
@@ -429,12 +429,12 @@ function generateImage() {
       for (var i = 0; i < scope.objects.length; i++)
           for (var j = 0; j < scope[scope.objects[i]].length; j++)
               scope[scope.objects[i]][j].draw();
-      if(imgtype=='svg'){
+      if(imgType=='svg'){
           var mySerializedSVG = simulationArea.context.getSerializedSvg(); //true here, if you need to convert named to numbered entities.
           download(globalScope.name+".svg",mySerializedSVG);
       }
       else{
-          saveAsImg(globalScope.name,imgtype)
+          saveAsImg(globalScope.name,imgType)
       }
       width = backUpWidth
       height = backUpHeight
