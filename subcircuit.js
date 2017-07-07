@@ -1,9 +1,9 @@
 function loadSubCircuit(savedData, scope) {
-    var v = new SubCircuit(savedData["x"], savedData["y"], scope, "RIGHT",savedData["id"], savedData);
+    var v = new SubCircuit(savedData["x"], savedData["y"], scope,savedData["id"], savedData);
 }
 
 //subCircuit
-function SubCircuit(x, y, scope = globalScope, dir = "RIGHT",id=undefined, savedData = undefined) {
+function SubCircuit(x, y, scope = globalScope,id=undefined, savedData = undefined) {
 
     this.id = id||prompt("Enter Id: ");
     if(scopeList[this.id].checkDependency(scope.id)){
@@ -11,7 +11,7 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT",id=undefined, saved
         return;
     }
 
-    CircuitElement.call(this, x, y, scope, dir, 1);
+    CircuitElement.call(this, x, y, scope, "RIGHT", 1);
     this.directionFixed = true;
     this.fixedBitWidth = true;
 
@@ -193,7 +193,7 @@ function SubCircuit(x, y, scope = globalScope, dir = "RIGHT",id=undefined, saved
 
         ctx = simulationArea.context;
 
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = globalScope.scale*  3;
         ctx.strokeStyle = "black"; //("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
         var xx = this.x;
