@@ -347,14 +347,7 @@ var simulationArea = {
             }
             // console.log()
             // update();
-            if (e.keyCode == 80){
-              for(var i=0;i<globalScope.outputs.length;i++){
-                  globalScope.outputs[i].plotValue=[[0,globalScope.outputs[i].state]];
-                }
-              simulationArea.timePlot=0;
-            }
-
-        })
+        });
         window.addEventListener('dblclick', function(e) {
             scheduleUpdate(1);
             if (simulationArea.lastSelected.dblclick !== undefined) {
