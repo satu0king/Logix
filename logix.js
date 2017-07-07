@@ -191,6 +191,8 @@ function setup() {
     width = document.getElementById("simulation").clientWidth;
     height = document.getElementById("simulation").clientHeight-document.getElementById("plot").clientHeight;
     document.getElementById("canvasArea").style.height=height;
+    plotArea.c.width = document.getElementById("plot").clientWidth;
+    plotArea.c.height = document.getElementById("plot").clientHeight
     // console.log(width);
     //setup simulationArea
     backgroundArea.setup();
@@ -212,6 +214,8 @@ function resetup() {
     simulationArea.canvas.height = height;
     backgroundArea.canvas.width = width;
     backgroundArea.canvas.height = height;
+    plotArea.c.width = document.getElementById("plot").clientWidth;
+    plotArea.c.height = document.getElementById("plot").clientHeight
     // simulationArea.setup();
     scheduleUpdate();
     dots(true, false);
