@@ -39,6 +39,7 @@ var plotArea = {
   count:0,
   specificTimeX:0,
   scale : 1,
+  pixel : 100,
   startTime : new Date(),
   endTime : new Date(),
   setup:function(){
@@ -52,7 +53,7 @@ var plotArea = {
       var time=this.stopWatch.ElapsedMilliseconds;
       this.c.width = window.plot.clientWidth;//innerWidth;
       this.c.height = window.plot.clientHeight;
-      this.ox = (time/this.unit - 5)*(this.c.width-80)/7;
+      this.ox = (time/this.unit - 8)*this.pixel;
       context = this.c.getContext("2d");
       context.fillStyle = 'black';
       context.fillRect(0, 0, this.c.width, this.c.height);
@@ -71,25 +72,25 @@ var plotArea = {
               context.strokeStyle = 'white';
               if(globalScope.Output[i].plotValue[j][1]==0 && globalScope.Output[i].bitWidth==1)
               {
-                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(30+i*15)-plotArea.oy);
 
                 context.stroke();
               }
               else if(globalScope.Output[i].bitWidth==1) {
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(30+i*15)-plotArea.oy);
                 context.stroke();
               }
               else {
-                context.moveTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7-plotArea.ox,55+30*i-plotArea.oy);
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7-10-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7+10-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7-plotArea.ox,55+30*i-plotArea.oy);
-                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7+10-plotArea.ox,2*(30+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7-10-plotArea.ox,2*(30+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/7-plotArea.ox,55+30*i-plotArea.oy);
-                mid = 80+((arr[j+1][0]+arr[j][0])/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/14;
+                context.moveTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
+                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-10-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
+                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-10-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
+                mid = 80+((arr[j+1][0]+arr[j][0])/Math.round(plotArea.unit*plotArea.scale))*this.pixel/2;
                 context.font="12px Georgia";
                 context.fillStyle = 'yellow';
                 context.fillText(arr[j][1],mid-plotArea.ox,57+30*i-plotArea.oy);
@@ -102,27 +103,29 @@ var plotArea = {
         }
       }
       // 2 rectangles showing the time and labels
-      context.fillStyle = 'white';
-      context.fillRect(0,0,75,this.c.height)
-      context.font="15px Georgia";
-      context.fillStyle = 'black';
-      for(var i=0;i<globalScope.Output.length;i++){
-        context.fillText(globalScope.Output[i].label,5,2*(30+i*15));
-      }
 
       context.fillStyle = 'white';
       context.fillRect(0, 0, this.c.width, 30);
       context.font="20px Georgia";
       context.fillStyle = 'black';
-      context.fillText("Time",2,20);
       for(var i=1; i*Math.round(plotArea.unit*plotArea.scale)<=time + Math.round(plotArea.unit*plotArea.scale) ;i++)
       {
-        if((this.c.width-80)/7*i-plotArea.ox >= (this.c.width-80)/7-2){
-        context.fillText(Math.round(plotArea.unit*plotArea.scale)*i+"ms",48+((this.c.width-80)/7)*i-plotArea.ox,20);
+        context.fillText(Math.round(plotArea.unit*plotArea.scale)*i+"ms",48+this.pixel*i-plotArea.ox,20);
+
       }
+
+      context.fillStyle = 'white';
+      context.fillRect(0,0,75,this.c.height);
+      context.font="15px Georgia";
+      context.fillStyle = 'black';
+      for(var i=0;i<globalScope.Output.length;i++){
+        context.fillText(globalScope.Output[i].label,5,2*(30+i*15));
       }
+      context.font="20px Georgia";
+      context.fillText("Time",7,20);
+
       // for yellow line to show specific time
-      var specificTime = (1.115*plotArea.specificTimeX+plotArea.ox-80)*10*Math.round(plotArea.unit*plotArea.scale)/(this.c.width-80);
+      var specificTime = (1.115*plotArea.specificTimeX+plotArea.ox-80)*Math.round(plotArea.unit*plotArea.scale)/(this.pixel);;
       context.strokeStyle = 'yellow';
       context.moveTo(1.115*plotArea.specificTimeX,0);
       context.lineTo(1.115*plotArea.specificTimeX,plotArea.c.height);
@@ -147,15 +150,15 @@ var plotArea = {
 // listen
   window.addEventListener('keydown', function(e) {
     if (e.keyCode == 37){
-      if(plotArea.ox >= (plotArea.c.width-80)/10){
-        plotArea.ox -= (plotArea.c.width-80)/10;
+      if(plotArea.ox >= this.pixel){
+        plotArea.ox -= this.pixel;
       }
       else{
         plotArea.ox = 0;
       }
     }
     if(e.keyCode == 39){
-          plotArea.ox += (plotArea.c.width-80)/10;
+          plotArea.ox += this.pixel;
       }
       if (e.keyCode == 38){
         if(plotArea.oy >= 15){
