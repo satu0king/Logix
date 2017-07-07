@@ -18,6 +18,7 @@ moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "Nan
 //All the combinational modules which give rise to an value(independently)
 inputList = ["Buffer", "Stepper", "Ground", "Power", "ConstantVal", "Input", "Clock", "Button"];
 
+//Scope object for each circuit level, globalScope for outer level
 scopeList = {};
 globalScope = undefined;
 
@@ -81,7 +82,7 @@ Array.prototype.contains = function(value) {
 
 
 
-//Scope object for each circuit level, globalScope for outer level
+
 
 function uniq(a) {
     var seen = {};
@@ -97,6 +98,10 @@ function Scope(name = "localScope") {
     this.root = new CircuitElement(0, 0, this, "RIGHT", 1);
     this.backups = [];
     this.timeStamp = new Date().getTime();
+
+    this.ox=0;
+    this.oy=0;
+    this.scale=1;
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)
@@ -174,8 +179,9 @@ function setup() {
     height = document.getElementById("canvasArea").clientHeight;
     // console.log(width);
     //setup simulationArea
-    simulationArea.setup();
     backgroundArea.setup();
+    simulationArea.setup();
+
     scheduleUpdate();
 
 
@@ -267,6 +273,7 @@ var backgroundArea = {
         dots(true, false);
     },
     clear: function() {
+        if(!this.context)return;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
@@ -278,12 +285,10 @@ var simulationArea = {
     clockState: 0,
     lastSelected: undefined,
     stack: [],
-    ox: 0,
-    oy: 0,
-    oy: 0,
+
     oldx: 0,
     oldy: 0,
-    scale: 1,
+
     multipleObjectSelections: [],
     copyList: [],
     shiftDown: false,
@@ -306,19 +311,7 @@ var simulationArea = {
         this.mouseDown = false;
         // this.shiftDown=false;
 
-        window.addEventListener('mousemove', function(e) {
-            // if(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height)simulationArea.mouseDown=false;
-            // return;
-            scheduleUpdate();
-            // toBeUpdated=true;
-            updateCanvas = true;
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            simulationArea.mouseRawX = (e.clientX - rect.left);
-            simulationArea.mouseRawY = (e.clientY - rect.top);
-            simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
 
-        });
     },
     changeClockTime(t) {
         clearInterval(this.ClockInterval);
@@ -327,6 +320,7 @@ var simulationArea = {
         this.ClockInterval = setInterval(clockTick, t);
     },
     clear: function() {
+        if(!this.context)return;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
@@ -422,12 +416,10 @@ function update(scope = globalScope) {
     } else if (simulationArea.lastSelected == scope.root && simulationArea.mouseDown) {
         //pane canvas
         if (!objectSelection) {
-            simulationArea.ox = (simulationArea.mouseRawX - simulationArea.mouseDownRawX) + simulationArea.oldx;
-            simulationArea.oy = (simulationArea.mouseRawY - simulationArea.mouseDownRawY) + simulationArea.oldy;
-            simulationArea.ox = Math.round(simulationArea.ox);
-            simulationArea.oy = Math.round(simulationArea.oy);
-            // smartDropX=Math.round(((200 - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            // smartDropY=Math.round(((30 - simulationArea.oy) / simulationArea.scale) / unit) * unit;
+            globalScope.ox = (simulationArea.mouseRawX - simulationArea.mouseDownRawX) + simulationArea.oldx;
+            globalScope.oy = (simulationArea.mouseRawY - simulationArea.mouseDownRawY) + simulationArea.oldy;
+            globalScope.ox = Math.round(globalScope.ox);
+            globalScope.oy = Math.round(globalScope.oy);
         }
         dots(true, false);
 
@@ -769,7 +761,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             ctx = simulationArea.context;
             ctx.strokeStyle = "black";
             ctx.fillStyle = "white";
-            ctx.lineWidth = simulationArea.scale * 3;
+            ctx.lineWidth = this.scope.scale * 3;
             ctx.beginPath();
             rect2(ctx, -this.leftDimensionX, -this.upDimensionY, this.leftDimensionX + this.rightDimensionX, this.upDimensionY + this.downDimensionY, this.x, this.y, [this.direction, "RIGHT"][+this.directionFixed]);
             if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";

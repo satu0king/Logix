@@ -103,7 +103,7 @@ function FlipFlop(x, y, scope=globalScope, dir="RIGHT", bitWidth=1) {
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
         // rect(ctx, xx - 20, yy - 20, 40, 40);
@@ -240,7 +240,7 @@ function TTY(x, y, scope=globalScope,rows=3,cols=32) {
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
         // rect(ctx, xx - this.elementWidth/2, yy - this.elementHeight/2, this.elementWidth, this.elementHeight);
@@ -400,7 +400,7 @@ function Keyboard(x, y, scope=globalScope,bufferSize=32) {
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
         moveTo(ctx, -this.elementWidth/2, this.elementHeight/2-15, xx, yy, this.direction);
@@ -451,13 +451,13 @@ function Clock(x, y, scope=globalScope, dir="RIGHT") {
         ctx = simulationArea.context;
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
 
         ctx.beginPath();
         ctx.strokeStyle = ["DarkGreen", "Lime"][this.state];
-        ctx.lineWidth = simulationArea.scale*  2;
+        ctx.lineWidth = this.scope.scale*  2;
         if (this.state == 0) {
             moveTo(ctx, -6, 0, xx, yy, this.direction);
             lineTo(ctx, -6, 6, xx, yy, this.direction);
