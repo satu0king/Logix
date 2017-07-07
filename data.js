@@ -164,6 +164,7 @@ function scheduleBackup(scope = globalScope) {
         scope.backups.push(backup);
         scope.timeStamp = new Date().getTime();
     }
+
     return backup;
 
     // }
@@ -205,9 +206,7 @@ function generateDependencyOrder() {
     }
 }
 
-
-function Save() {
-    // var data = backUp();
+function generateSaveData(){
     data = {}
     data["name"] = "DATA"; //prompt("EnterName:");
     data["timePeriod"] = simulationArea.timePeriod;
@@ -234,8 +233,13 @@ function Save() {
     // return;
 
     //covnvert to text
-    data = JSON.stringify(data)
-    console.log(data);
+    data = JSON.stringify(data);
+    return data;
+}
+function Save() {
+    // var data = backUp();
+
+    var data=generateSaveData();
 
     var http = new XMLHttpRequest();
     http.open("POST", "./index.php", true);
@@ -248,8 +252,12 @@ function Save() {
 }
 
 function load(data) {
-    $('#' + globalScope.id).remove();
-    delete scopeList[globalScope.id];
+    // $('#' + globalScope.id).remove();
+    // delete scopeList[globalScope.id];
+    globalScope=undefined;
+    scopeList={};
+    $('.circuits').remove();
+
     for (var i = 0; i < data.scopes.length; i++) {
         var scope = newCircuit(data.scopes[i].name, data.scopes[i].id);
         loadScope(scope, data.scopes[i]);
@@ -364,6 +372,12 @@ $('#insertSubcircuitDialog').dialog({
         }]
 
     });
+
+}
+
+window.onbeforeunload = function(){
+   localStorage.setItem("local",generateSaveData());
+   localStorage.setItem("localHash",window.location.hash);
 
 }
 

@@ -15,6 +15,7 @@ th, td {
     text-align: left;
     border:  1px solid #ddd;
 }
+
 #booleanTable{
     width:200px;
 }
@@ -131,12 +132,19 @@ body {
 
 }
 
+#canvasArea{
+    display: block;
+    position: relative;
+    /*height: 100%;*/
+    width: 100%;
+    background-color: red;
+}
 .effect1{
      box-shadow: 0 8px 4px -4px #777;
 }
 
 
-.canvasArea{
+.simulation{
     position: relative;
     width:auto;
       height:100%;
@@ -144,8 +152,20 @@ body {
        border-left:none;
        border-color: rgba(0, 0, 0, 0.5);
        overflow:hidden;
-/*background-color: green;*/
+background-color: green;
 }
+
+#plot{
+    position: absolute;
+    z-index: 2;
+    bottom: 0;
+    display: block;
+    height:150px;
+    width: 100%;
+    background-color: #eee;
+    /*background-blend-mode: color;*/
+}
+
 .left{
     float:left;
 }
