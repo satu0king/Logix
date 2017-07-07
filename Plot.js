@@ -27,7 +27,7 @@ StopWatch.prototype.Stop = function()
 function startPlot(){
     plotArea.stopWatch.Start();
     for(var i=0;i<globalScope.Output.length;i++)
-        globalScope.Output[i].plotValue=[];
+        globalScope.Output[i].plotValue=[[0,globalScope.Output[i].state]];
     play();
     addPlot();
 }
@@ -92,8 +92,11 @@ var plotArea = {
                 context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
                 mid = 80+((arr[j+1][0]+arr[j][0])/Math.round(plotArea.unit*plotArea.scale))*this.pixel/2;
                 context.font="12px Georgia";
-                context.fillStyle = 'yellow';
-                context.fillText(arr[j][1],mid-plotArea.ox,57+30*i-plotArea.oy);
+                context.fillStyle = 'white';
+                if((arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox <=0 && (arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox >=0){
+                    mid = 80+((arr[j+1][0]-3000)/Math.round(plotArea.unit*plotArea.scale))*this.pixel;
+                  }
+                context.fillText(arr[j+1][1],mid-plotArea.ox,57+30*i-plotArea.oy);  
                 context.stroke();
               }
             }
@@ -104,7 +107,7 @@ var plotArea = {
       }
       // 2 rectangles showing the time and labels
 
-      context.fillStyle = 'white';
+      context.fillStyle = 'yellow';
       context.fillRect(0, 0, this.c.width, 30);
       context.font="20px Georgia";
       context.fillStyle = 'black';
@@ -114,19 +117,20 @@ var plotArea = {
 
       }
 
-      context.fillStyle = 'white';
+      context.fillStyle = 'yellow';
       context.fillRect(0,0,75,this.c.height);
       context.font="15px Georgia";
       context.fillStyle = 'black';
       for(var i=0;i<globalScope.Output.length;i++){
         context.fillText(globalScope.Output[i].label,5,2*(30+i*15));
+        context.fillRect(0,2*(30+i*15)+4 , 75, 3);
       }
       context.font="20px Georgia";
-      context.fillText("Time",7,20);
+      context.fillText("Time",10,20);
 
       // for yellow line to show specific time
       var specificTime = (plotArea.specificTimeX+plotArea.ox-80)*Math.round(plotArea.unit*plotArea.scale)/(this.pixel);;
-      context.strokeStyle = 'yellow';
+      context.strokeStyle = 'white';
       context.moveTo(plotArea.specificTimeX,0);
       context.lineTo(plotArea.specificTimeX,plotArea.c.height);
       context.stroke();
@@ -139,6 +143,11 @@ var plotArea = {
         context.fillStyle = 'black';
         context.fillText(Math.round(specificTime),plotArea.specificTimeX - 20, 20);
       }
+      context.fillStyle = 'black';
+      context.fillRect(0, 0, 3, this.c.height);
+      context.fillRect(74, 0, 3, this.c.height);
+      context.fillRect(0, 0, this.c.width, 3);
+      context.fillRect(0, 27, this.c.width, 3);
   },
   clear: function(){
     context.clearRect(0,0,plotArea.c.width,plotArea.c.height);
