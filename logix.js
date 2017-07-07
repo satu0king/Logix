@@ -22,6 +22,7 @@ inputList = ["Buffer", "Stepper", "Ground", "Power", "ConstantVal", "Input", "Cl
 scopeList = {};
 globalScope = undefined;
 
+
 function showError(error) {
     // console.log("ERROR: " + error);
     errorDetected = true;
@@ -78,7 +79,6 @@ Array.prototype.extend = function(other_array) {
 Array.prototype.contains = function(value) {
     return this.indexOf(value) > -1
 };
-
 
 
 
@@ -194,6 +194,7 @@ function setup() {
     // console.log(width);
     //setup simulationArea
     backgroundArea.setup();
+    plotArea.setup();
     simulationArea.setup();
 
     scheduleUpdate();
@@ -228,6 +229,8 @@ function play(scope = globalScope, resetNodes = true) {
 
     // console.log("simulation");
     if (loading == true) return;
+
+    plotArea.stopWatch.Stop();
 
     if (resetNodes) {
         for (var i = 0; i < scope.allNodes.length; i++)
@@ -507,11 +510,6 @@ function update(scope = globalScope) {
     toBeUpdated = updateCanvas = false;
 }
 
-// function sort2(a1,a2){
-//     if(a1<=a2)
-//     return [a1,a2];
-//     return [a2,a1];
-// }
 
 
 

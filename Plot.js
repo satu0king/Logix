@@ -11,16 +11,40 @@ function addPlot(){
   },20);
 
 }
+
+StopWatch = function()
+{
+    this.StartMilliseconds = 0;
+    this.ElapsedMilliseconds = 0;
+}
+
+StopWatch.prototype.Start = function()
+{
+    this.StartMilliseconds = new Date().getTime();
+}
+
+StopWatch.prototype.Stop = function()
+{
+    this.ElapsedMilliseconds = new Date().getTime() - this.StartMilliseconds;
+}
+
+function startPlot(){
+    simulationArea
+}
 var plotArea = {
   ox : 0,
   oy : 0,
   unit : 0,
-  c : document.getElementById("plot"),
+  stopWatch:new StopWatch(),
+  c : document.getElementById("plotArea"),
   count:0,
   specificTimeX:0,
   scale : 1,
   startTime : new Date(),
   endTime : new Date(),
+  setup:function(){
+      stopWatch.start();
+  }
   plot : function(time)
   {
       this.c.width = window.innerWidth;
@@ -165,14 +189,6 @@ var plotArea = {
 
 document.getElementById("plotButton").addEventListener("click", addPlot);
 // html
-<canvas id="plot" style="position: absolute; left: 5%; top: 20%; z-index: 0; width:90%;height:60%"></canvas>
- <button class="button" id="plotButton">Plot</button>
+// <canvas id="plot" style="position: absolute; left: 5%; top: 20%; z-index: 0; width:90%;height:60%"></canvas>
+// <button class="button" id="plotButton">Plot</button>
  // output module.js
- this.plotValue = [];
- this.resolve = function() {
-      if(this.state!==this.inp1.value){
-        this.state = this.inp1.value;
-        this.plotValue.push([simulationArea.timePlot,this.state]);
-      }
-
-    }

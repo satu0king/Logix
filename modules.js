@@ -1405,6 +1405,16 @@ function Output(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1) {
     this.orientationFixed = false;
     this.setDimensions(this.bitWidth * 10, 10);
     this.inp1 = new Node(this.bitWidth * 10, 0, 0, this);
+    this.plotValue = [];
+
+    this.resolve = function() {
+        if(this.plotValue.length==0)
+           this.plotValue.push([plotArea.stopWatch.ElapsedMilliseconds,this.inp1.value]);
+        else if(this.plotValue[this.plotValue.length-1][0]==plotArea.stopWatch.ElapsedMilliseconds)
+           this.plotValue[this.plotValue.length-1][1]=this.inp1.value;
+        else
+           this.plotValue.push([plotArea.stopWatch.ElapsedMilliseconds,this.inp1.value]);
+    }
 
     this.customSave = function() {
         var data = {
