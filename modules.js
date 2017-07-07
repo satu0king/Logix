@@ -1189,10 +1189,12 @@ function Splitter(x, y, scope = globalScope, dir = "RIGHT", bitWidth = undefined
             lineTo(ctx, 20, -20 * i + this.yOffset, xx, yy, this.direction);
         }
         ctx.stroke();
+        ctx.beginPath();
         for (var i = this.splitCount - 1; i >= 0; i--) {
             fillText2(ctx, bitCount + ":" + (bitCount + this.bitWidthSplit[this.splitCount - i - 1]), 10, -20 * i + 14 + this.yOffset, xx, yy, this.direction);
             bitCount += this.bitWidthSplit[this.splitCount - i - 1];
         }
+        ctx.fill();
 
 
 
