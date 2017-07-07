@@ -79,7 +79,7 @@ window.addEventListener('keydown', function(e) {
         }
         if (e.key == "Shift") return;
     }
-    if (e.keyCode == 8) {
+    if (e.keyCode == 8 || e.key=="Delete") {
         if (simulationArea.lastSelected) simulationArea.lastSelected.delete();
         for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
             simulationArea.multipleObjectSelections[i].cleanDelete();
