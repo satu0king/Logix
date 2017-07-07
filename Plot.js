@@ -50,7 +50,6 @@ var plotArea = {
 
       this.stopWatch.Stop();
       var time=this.stopWatch.ElapsedMilliseconds;
-      this.ox=time-500;
       this.c.width = window.plot.clientWidth;//innerWidth;
       this.c.height = window.plot.clientHeight;
       context = this.c.getContext("2d");
