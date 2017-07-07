@@ -16,18 +16,18 @@ function generateSvg(){
     resolution=1;
     view = "full"
 
-    var backUpOx = simulationArea.ox;
-    var backUpOy = simulationArea.oy;
+    var backUpOx = globalScope.ox;
+    var backUpOy = globalScope.oy;
     var backUpWidth = width
     var backUpHeight = height;
-    var backUpScale = simulationArea.scale;
+    var backUpScale = globalScope.scale;
     backUpContextBackground = backgroundArea.context;
     backUpContextSimulation = simulationArea.context;
     backgroundArea.context = simulationArea.context;
-    simulationArea.ox*=resolution/backUpScale;
-    simulationArea.oy*=resolution/backUpScale;
+    globalScope.ox*=resolution/backUpScale;
+    globalScope.oy*=resolution/backUpScale;
 
-    simulationArea.scale=resolution;
+    globalScope.scale=resolution;
 
     var scope = globalScope;
 
@@ -56,21 +56,21 @@ function generateSvg(){
         // width = (maxX - minX + 60) * resolution;
         // height = (maxY - minY + 60) * resolution;
         //
-        // simulationArea.ox = (-minX + maxDimension+11)*resolution;
-        // simulationArea.oy = (-minY + maxDimension-6)*resolution;
+        // globalScope.ox = (-minX + maxDimension+11)*resolution;
+        // globalScope.oy = (-minY + maxDimension-6)*resolution;
         width = (maxX - minX + 2*maxDimension+10) * resolution;
         height = (maxY - minY + 2*maxDimension+10) * resolution;
 
-        simulationArea.ox = (-minX + maxDimension+5)*resolution;
-        simulationArea.oy = (-minY + maxDimension+5)*resolution;
+        globalScope.ox = (-minX + maxDimension+5)*resolution;
+        globalScope.oy = (-minY + maxDimension+5)*resolution;
     }
     else{
         width=(width*resolution)/backUpScale;
         height=(height*resolution)/backUpScale;
     }
     console.log("DIM:",width,height)
-    simulationArea.ox=Math.round(simulationArea.ox);
-    simulationArea.oy=Math.round(simulationArea.oy);
+    globalScope.ox=Math.round(globalScope.ox);
+    globalScope.oy=Math.round(globalScope.oy);
 
     simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
@@ -95,11 +95,11 @@ function generateSvg(){
     simulationArea.canvas.height = height;
     backgroundArea.canvas.width = width;
     backgroundArea.canvas.height = height;
-    simulationArea.scale=backUpScale;
+    globalScope.scale=backUpScale;
     backgroundArea.context = backUpContextBackground;
     simulationArea.context = backUpContextSimulation;
-    simulationArea.ox = backUpOx
-    simulationArea.oy = backUpOy;
+    globalScope.ox = backUpOx
+    globalScope.oy = backUpOy;
 
       toBeUpdated=true;
       updateCanvas=true;
@@ -135,10 +135,10 @@ function saveAsImg(name,imgType) {
 
 function undo(scope = globalScope) {
     if (scope.backups.length == 0) return;
-    var backupOx = simulationArea.ox;
-    var backupOy = simulationArea.oy;
-    simulationArea.ox = 0;
-    simulationArea.oy = 0;
+    var backupOx = globalScope.ox;
+    var backupOy = globalScope.oy;
+    globalScope.ox = 0;
+    globalScope.oy = 0;
     tempScope = new Scope(scope.name);
     loading = true;
     loadScope(tempScope, JSON.parse(scope.backups.pop()));
@@ -146,8 +146,8 @@ function undo(scope = globalScope) {
     tempScope.id = scope.id;
     scopeList[scope.id] = tempScope;
     globalScope = tempScope;
-    simulationArea.ox = backupOx;
-    simulationArea.oy = backupOy;
+    globalScope.ox = backupOx;
+    globalScope.oy = backupOy;
     loading = false;
 }
 //helper fn
@@ -346,6 +346,27 @@ $('#saveImageDialog').dialog({
     });
 }
 
+createSubCircuitPrompt = function(scope = globalScope) {
+    $('#insertSubcircuitDialog').empty();
+    for(id in scopeList){
+        if(!scopeList[id].checkDependency(scope.id))
+            $('#insertSubcircuitDialog').append('<p>'+scopeList[id].name+'<input type="radio" name="subCircuitId" value="'+id+'" />'+'</p>');
+    }
+$('#insertSubcircuitDialog').dialog({
+        width: "auto",
+        buttons: [{
+            text: "Insert SubCircuit",
+            click: function(){
+                if(!$("input[name=subCircuitId]:checked").val())return;
+                new SubCircuit(undefined,undefined,globalScope,$("input[name=subCircuitId]:checked").val());
+                $(this).dialog("close");
+            },
+        }]
+
+    });
+
+}
+
 
 function generateImage() {
     var imgType = $('input[name=imgType]:checked').val();
@@ -357,16 +378,16 @@ function generateImage() {
     console.log($('input[name=transparent]:checked').val());
     console.log($('input[name=resolution]:checked').val());
 
-      var backUpOx = simulationArea.ox;
-      var backUpOy = simulationArea.oy;
+      var backUpOx = globalScope.ox;
+      var backUpOy = globalScope.oy;
       var backUpWidth = width
       var backUpHeight = height;
-      var backUpScale = simulationArea.scale;
+      var backUpScale = globalScope.scale;
       backUpContextBackground = backgroundArea.context;
       backUpContextSimulation = simulationArea.context;
       backgroundArea.context = simulationArea.context;
-      simulationArea.ox*=1/backUpScale;
-      simulationArea.oy*=1/backUpScale;
+      globalScope.ox*=1/backUpScale;
+      globalScope.oy*=1/backUpScale;
 
       if(imgType=='svg'){
               simulationArea.context = new C2S(width,height);
@@ -376,7 +397,7 @@ function generateImage() {
           transparent=false;
       }
 
-      simulationArea.scale=resolution;
+      globalScope.scale=resolution;
 
 
       var scope = globalScope;
@@ -402,16 +423,16 @@ function generateImage() {
           width = (maxX - minX + 400) * resolution;
           height = (maxY - minY + 400) * resolution;
 
-          simulationArea.ox = (-minX + 200)*resolution;
-          simulationArea.oy = (-minY + 200)*resolution;
+          globalScope.ox = (-minX + 200)*resolution;
+          globalScope.oy = (-minY + 200)*resolution;
       }
       else{
           width=(width*resolution)/backUpScale;
           height=(height*resolution)/backUpScale;
       }
       console.log("DIM:",width,height)
-      simulationArea.ox=Math.round(simulationArea.ox);
-      simulationArea.oy=Math.round(simulationArea.oy);
+      globalScope.ox=Math.round(globalScope.ox);
+      globalScope.oy=Math.round(globalScope.oy);
 
       simulationArea.canvas.width = width;
       simulationArea.canvas.height = height;
@@ -446,11 +467,11 @@ function generateImage() {
       simulationArea.canvas.height = height;
       backgroundArea.canvas.width = width;
       backgroundArea.canvas.height = height;
-      simulationArea.scale=backUpScale;
+      globalScope.scale=backUpScale;
       backgroundArea.context = backUpContextBackground;
       simulationArea.context = backUpContextSimulation;
-      simulationArea.ox = backUpOx
-      simulationArea.oy = backUpOy;
+      globalScope.ox = backUpOx
+      globalScope.oy = backUpOy;
 
 
         toBeUpdated=true;
