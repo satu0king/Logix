@@ -17,7 +17,7 @@ $(document).ready(function() {
         // simulationArea.lastSelected=obj;
         // simulationArea.mouseDown=true;
         smartDropXX+=70;
-        if(smartDropXX/simulationArea.scale >width){
+        if(smartDropXX/globalScope.scale >width){
             smartDropXX=50;
             smartDropYY+=80;
         }
@@ -44,12 +44,12 @@ $(document).ready(function() {
         // if(dummyCounter!=3)return;
         // dummyCounter=0;
         if(event.originalEvent.ctrlKey){
-          if ( scrolledUp && simulationArea.scale > 0.5) { changeScale(-.1); }
-         if ( scrolledDown && simulationArea.scale < 4) { changeScale(.1); }
+          if ( scrolledUp && globalScope.scale > 0.5) { changeScale(-.1); }
+         if ( scrolledDown && globalScope.scale < 4) { changeScale(.1); }
         }
         else{
-            if ( scrolledUp && simulationArea.scale < 4) { changeScale(.1); }
-           if ( scrolledDown && simulationArea.scale >0.5) { changeScale(-.1); }
+            if ( scrolledUp && globalScope.scale < 4) { changeScale(.1); }
+           if ( scrolledDown && globalScope.scale >0.5) { changeScale(-.1); }
         }
      });
 

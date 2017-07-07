@@ -77,7 +77,7 @@ function AndGate(x, y, scope = globalScope, dir = "RIGHT", inputLength = 2, bitW
         ctx = simulationArea.context;
 
         ctx.beginPath();
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         ctx.strokeStyle = "black"; //("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
         var xx = this.x;
@@ -164,7 +164,7 @@ function NandGate(x, y, scope = globalScope, dir = "RIGHT", inputLength = 2, bit
 
         ctx = simulationArea.context;
         ctx.beginPath();
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         ctx.strokeStyle = "black";
         ctx.fillStyle = "white";
         var xx = this.x;
@@ -278,7 +278,7 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
 
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         ctx.fillStyle = "white";
         moveTo(ctx, -20 + xOff, -yOff * 10 * (this.inputSize / 2), xx, yy, this.direction);
         lineTo(ctx, -20 + xOff, 20 + yOff * 10 * (this.inputSize / 2 - 1), xx, yy, this.direction);
@@ -352,7 +352,7 @@ function XorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
 
         ctx = simulationArea.context;
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
 
         var xx = this.x;
         var yy = this.y;
@@ -431,7 +431,7 @@ function XnorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth
 
         ctx = simulationArea.context;
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
 
         var xx = this.x;
         var yy = this.y;
@@ -494,7 +494,7 @@ function SevenSegDisplay(x, y, scope = globalScope) {
         ctx = simulationArea.context;
         ctx.beginPath();
         ctx.strokeStyle = color;
-        ctx.lineWidth = simulationArea.scale*  5;
+        ctx.lineWidth = this.scope.scale*  5;
         xx = this.x;
         yy = this.y;
         moveTo(ctx, x1, y1, xx, yy, this.direction);
@@ -549,7 +549,7 @@ function HexDisplay(x, y, scope = globalScope) {
         ctx = simulationArea.context;
         ctx.beginPath();
         ctx.strokeStyle = color;
-        ctx.lineWidth = simulationArea.scale*  5;
+        ctx.lineWidth = this.scope.scale*  5;
         xx = this.x;
         yy = this.y;
 
@@ -566,7 +566,7 @@ function HexDisplay(x, y, scope = globalScope) {
         var yy = this.y;
 
         ctx.strokeStyle = "black";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         var a = b = c = d = e = f = g = 0;
         switch (this.inp.value) {
             case 0:
@@ -703,7 +703,7 @@ function OrGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth =
 
         ctx = simulationArea.context;
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
 
         var xx = this.x;
         var yy = this.y;
@@ -797,7 +797,7 @@ function NotGate(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
         ctx = simulationArea.context;
         ctx.strokeStyle = "black";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
 
         var xx = this.x;
         var yy = this.y;
@@ -859,7 +859,7 @@ function TriState(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
         ctx = simulationArea.context;
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
 
         var xx = this.x;
         var yy = this.y;
@@ -927,7 +927,7 @@ function Buffer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
         ctx = simulationArea.context;
         ctx.strokeStyle = ("rgba(200,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
 
         var xx = this.x;
         var yy = this.y;
@@ -987,7 +987,7 @@ function ControlledInverter(x, y, scope = globalScope, dir = "RIGHT", bitWidth =
 
         ctx = simulationArea.context;
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
 
         var xx = this.x;
         var yy = this.y;
@@ -1172,7 +1172,7 @@ function Splitter(x, y, scope = globalScope, dir = "RIGHT", bitWidth = undefined
 
         ctx = simulationArea.context;
         ctx.strokeStyle = ["black", "brown"][((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) + 0];
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
 
         var xx = this.x;
         var yy = this.y;
@@ -1259,7 +1259,7 @@ function Input(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         // ctx = simulationArea.context;
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
 
@@ -1326,7 +1326,7 @@ function Ground(x, y, scope = globalScope, bitWidth = 1) {
 
         ctx.beginPath();
         ctx.strokeStyle = ["black", "brown"][((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) + 0];
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
 
         var xx = this.x;
         var yy = this.y;
@@ -1377,7 +1377,7 @@ function Power(x, y, scope = globalScope, bitWidth = 1) {
 
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         ctx.fillStyle = "green";
         moveTo(ctx, 0, -10, xx, yy, this.direction);
         lineTo(ctx, -10, 0, xx, yy, this.direction);
@@ -1436,7 +1436,7 @@ function Output(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1) {
         ctx.beginPath();
         ctx.strokeStyle = ["blue", "red"][+(this.inp1.value == undefined)];
         ctx.fillStyle = "white";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
 
@@ -1534,7 +1534,7 @@ function BitSelector(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 2, sel
         ctx.beginPath();
         ctx.strokeStyle = ["blue", "red"][(this.state === undefined) + 0];
         ctx.fillStyle = "white";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
         rect(ctx, xx - 20, yy - 20, 40, 40);
@@ -1605,7 +1605,7 @@ function ConstantVal(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, sta
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
-        ctx.lineWidth = simulationArea.scale*  0.5;
+        ctx.lineWidth = this.scope.scale*  0.5;
         var xx = this.x;
         var yy = this.y;
 
@@ -1697,7 +1697,7 @@ function NorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
 
         ctx = simulationArea.context;
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
 
         var xx = this.x;
         var yy = this.y;
@@ -1746,7 +1746,7 @@ function DigitalLed(x, y, scope = globalScope) {
         var yy = this.y;
 
         ctx.strokeStyle = "#e3e4e5";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         ctx.beginPath();
         moveTo(ctx, -20, 0, xx, yy, this.direction);
         lineTo(ctx, -40, 0, xx, yy, this.direction);
@@ -1754,7 +1754,7 @@ function DigitalLed(x, y, scope = globalScope) {
 
         ctx.strokeStyle = "#d3d4d5";
         ctx.fillStyle = ["rgba(227,228,229,0.8)", "rgba(249,24,43,0.8)"][this.inp1.value || 0];
-        ctx.lineWidth = simulationArea.scale*  1;
+        ctx.lineWidth = this.scope.scale*  1;
 
         ctx.beginPath();
 
@@ -1799,7 +1799,7 @@ function VariableLed(x, y, scope = globalScope) {
         var yy = this.y;
 
         ctx.strokeStyle = "#353535";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         ctx.beginPath();
         moveTo(ctx, -20, 0, xx, yy, this.direction);
         lineTo(ctx, -40, 0, xx, yy, this.direction);
@@ -1808,7 +1808,7 @@ function VariableLed(x, y, scope = globalScope) {
         var alpha = c / 255;
         ctx.strokeStyle = "#090a0a";
         ctx.fillStyle = ["rgba(255,29,43," + alpha + ")", "rgba(227, 228, 229, 0.8)"][(c === undefined || c == 0) + 0];
-        ctx.lineWidth = simulationArea.scale*  1;
+        ctx.lineWidth = this.scope.scale*  1;
 
         ctx.beginPath();
 
@@ -1865,7 +1865,7 @@ function Button(x, y, scope = globalScope, dir = "RIGHT") {
         ctx.fillStyle = "#ddd";
 
         ctx.strokeStyle = "#353535";
-        ctx.lineWidth = simulationArea.scale*  5;
+        ctx.lineWidth = this.scope.scale*  5;
 
         ctx.beginPath();
 
@@ -1922,21 +1922,21 @@ function RGBLed(x, y, scope = globalScope) {
         var yy = this.y;
 
         ctx.strokeStyle = "green";
-        ctx.lineWidth = simulationArea.scale*  3;
+        ctx.lineWidth = this.scope.scale*  3;
         ctx.beginPath();
         moveTo(ctx, -20, 0, xx, yy, this.direction);
         lineTo(ctx, -40, 0, xx, yy, this.direction);
         ctx.stroke();
 
         ctx.strokeStyle = "red";
-        ctx.lineWidth = simulationArea.scale*  2;
+        ctx.lineWidth = this.scope.scale*  2;
         ctx.beginPath();
         moveTo(ctx, -20, -10, xx, yy, this.direction);
         lineTo(ctx, -40, -10, xx, yy, this.direction);
         ctx.stroke();
 
         ctx.strokeStyle = "blue";
-        ctx.lineWidth = simulationArea.scale*  2;
+        ctx.lineWidth = this.scope.scale*  2;
         ctx.beginPath();
         moveTo(ctx, -20, 10, xx, yy, this.direction);
         lineTo(ctx, -40, 10, xx, yy, this.direction);
@@ -1955,7 +1955,7 @@ function RGBLed(x, y, scope = globalScope) {
         ctx.strokeStyle = "#d3d4d5";
         ctx.fillStyle = ["rgba(" + a + ", " + b + ", " + c + ", 0.8)", "rgba(227, 228, 229, 0.8)"][((a === undefined || b === undefined || c === undefined)) + 0]
         //ctx.fillStyle = ["rgba(200, 200, 200, 0.3)","rgba(227, 228, 229, 0.8)"][((a === undefined || b === undefined || c === undefined) || (a == 0 && b == 0 && c == 0)) + 0];
-        ctx.lineWidth = simulationArea.scale*  1;
+        ctx.lineWidth = this.scope.scale*  1;
 
         ctx.beginPath();
 
@@ -2054,7 +2054,7 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
 
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = simulationArea.scale*  4;
+        ctx.lineWidth = this.scope.scale*  4;
         ctx.fillStyle = "white";
         moveTo(ctx, -20 + xOff, -yOff * 10 * (this.outputsize / 2), xx, yy, this.direction);
         lineTo(ctx, -20 + xOff, 20 + yOff * 10 * (this.outputsize / 2 - 1), xx, yy, this.direction);

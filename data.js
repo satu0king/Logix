@@ -8,6 +8,7 @@ function newCircuit(name, id) {
     $('.circuits').click(function() {
         switchCircuit(this.id)
     });
+    dots(true, false);
     return scope;
 }
 
@@ -116,7 +117,9 @@ function switchCircuit(id) {
     simulationArea.copyList = [];
     globalScope = scopeList[id];
     toBeUpdated = true;
-    scheduleUpdate();
+    scheduleBackup();
+    undo();
+    dots(true, false);
 
 }
 
