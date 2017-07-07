@@ -149,10 +149,17 @@ function setup() {
     // data = JSON.parse(SAP_DATA);
     // load(data);
     // retrieving data
-    if (parent.location.hash.length > 1) {
+    if(localStorage.getItem("local")&&localStorage.getItem("localHash")==window.location.hash){
+        var data=JSON.parse(localStorage.getItem("local"));
+        load(data);
+        simulationArea.changeClockTime(data["timePeriod"] || 500);
+        console.log(localStorage.getItem("localHash"));
+
+    }
+    if (window.location.hash.length > 1) {
 
         var http = new XMLHttpRequest();
-        hash = parent.location.hash.substr(1);
+        hash = window.location.hash.substr(1);
         // alert(hash);
         http.open("POST", "./index.php", true);
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -172,11 +179,18 @@ function setup() {
         }
 
     }
+    else if(localStorage.getItem("local")){
+        var data=JSON.parse(localStorage.getItem("local"));
+        load(data);
+        simulationArea.changeClockTime(data["timePeriod"] || 500);
+
+    }
     // return;
 
     toBeUpdated = true;
-    width = document.getElementById("canvasArea").clientWidth;
-    height = document.getElementById("canvasArea").clientHeight;
+    width = document.getElementById("simulation").clientWidth;
+    height = document.getElementById("simulation").clientHeight-document.getElementById("plot").clientHeight;
+    document.getElementById("canvasArea").style.height=height;
     // console.log(width);
     //setup simulationArea
     backgroundArea.setup();
@@ -190,9 +204,10 @@ function setup() {
 
 //to resize window
 function resetup() {
-    width = document.getElementById("canvasArea").clientWidth;
-    height = document.getElementById("canvasArea").clientHeight;
-    simulationArea.canvas.width = width;
+    width = document.getElementById("simulation").clientWidth;
+    height = document.getElementById("simulation").clientHeight-document.getElementById("plot").clientHeight;
+    document.getElementById("canvasArea").style.height=height;
+        simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
     backgroundArea.canvas.width = width;
     backgroundArea.canvas.height = height;
@@ -202,6 +217,7 @@ function resetup() {
 }
 
 window.onresize = resetup;
+window.onorientationchange = resetup;
 
 //for mobiles
 window.addEventListener('orientationchange', resetup);

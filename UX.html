@@ -14,10 +14,12 @@
 <body onload="setup()">
 
 <div class="toolbar" id="toolbar">
+<div class="toolbarButton logixButton" id="clearProject" >New Project</div>
 <div class="toolbarButton logixButton" id="Save">Save</div>
 <div class="toolbarButton logixButton" id="createSaveAsImgPrompt" >Download Image</div>
 <div class="toolbarButton logixButton" id="newCircuit">New Circuit +</div>
 <div class="toolbarButton logixButton" id="createSubCircuitPrompt">Insert SubCircuit</div>
+
 <div class="toolbarButton logixButton" id="createCombinationalAnalysisPrompt">Combinational Analysis</div>
 </div>
 
@@ -92,13 +94,21 @@
         </div>
 
     </div>
-    <div class="canvasArea" id="canvasArea">
+    <div class="simulation" id="simulation" >
         <div id="errorMessageDiv" >
         </div>
-     <canvas id="backgroundArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-     <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%;height:100%"></canvas>
+
+
+        <div class="canvasArea" id="canvasArea">
+            <canvas id="backgroundArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+            <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%;height:100%"></canvas>
+        </div>
+        <div id="plot" >
+
+        </div>
 
      </div>
+
      <div id="combinationalAnalysis" title="BooleanLogicTable">
      <div id="saveImageDialog" style="display:none;">
        <p>
