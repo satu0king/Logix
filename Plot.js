@@ -125,19 +125,19 @@ var plotArea = {
       context.fillText("Time",7,20);
 
       // for yellow line to show specific time
-      var specificTime = (1.115*plotArea.specificTimeX+plotArea.ox-80)*Math.round(plotArea.unit*plotArea.scale)/(this.pixel);;
+      var specificTime = (plotArea.specificTimeX+plotArea.ox-80)*Math.round(plotArea.unit*plotArea.scale)/(this.pixel);;
       context.strokeStyle = 'yellow';
-      context.moveTo(1.115*plotArea.specificTimeX,0);
-      context.lineTo(1.115*plotArea.specificTimeX,plotArea.c.height);
+      context.moveTo(plotArea.specificTimeX,0);
+      context.lineTo(plotArea.specificTimeX,plotArea.c.height);
       context.stroke();
       if(1.115*plotArea.specificTimeX >= 80){
         context.fillStyle = 'black';
-        context.fillRect(1.115*plotArea.specificTimeX - 30, 0, 60, 30);
+        context.fillRect(plotArea.specificTimeX - 30, 0, 60, 30);
         context.fillStyle = 'red';
-        context.fillRect(1.115*plotArea.specificTimeX - 25, 2, 50, 26);
+        context.fillRect(plotArea.specificTimeX - 25, 2, 50, 26);
         context.font="20px Georgia";
         context.fillStyle = 'black';
-        context.fillText(Math.round(specificTime),1.115*plotArea.specificTimeX - 20, 20);
+        context.fillText(Math.round(specificTime),plotArea.specificTimeX - 20, 20);
       }
   },
   clear: function(){
@@ -189,10 +189,10 @@ var plotArea = {
         }
       }
   });
-  // window.addEventListener('mousedown', function(e) {
-  //   var rect = plotArea.c.getBoundingClientRect();
-  //   plotArea.specificTimeX = e.clientX - rect.left;
-  // });
+  window.addEventListener('mousedown', function(e) {
+    var rect = plotArea.c.getBoundingClientRect();
+    plotArea.specificTimeX = e.clientX - rect.left;
+  });
 
 // document.getElementById("plotButton").addEventListener("click", addPlot);
 // html
