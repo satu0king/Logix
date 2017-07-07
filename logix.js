@@ -149,10 +149,17 @@ function setup() {
     // data = JSON.parse(SAP_DATA);
     // load(data);
     // retrieving data
-    if (parent.location.hash.length > 1) {
+    if(localStorage.getItem("local")&&localStorage.getItem("localHash")==window.location.hash){
+        var data=JSON.parse(localStorage.getItem("local"));
+        load(data);
+        simulationArea.changeClockTime(data["timePeriod"] || 500);
+        console.log(localStorage.getItem("localHash"));
+
+    }
+    if (window.location.hash.length > 1) {
 
         var http = new XMLHttpRequest();
-        hash = parent.location.hash.substr(1);
+        hash = window.location.hash.substr(1);
         // alert(hash);
         http.open("POST", "./index.php", true);
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -170,6 +177,12 @@ function setup() {
                 // globalScope.backups.push(backUp(globalScope));
             }
         }
+
+    }
+    else if(localStorage.getItem("local")){
+        var data=JSON.parse(localStorage.getItem("local"));
+        load(data);
+        simulationArea.changeClockTime(data["timePeriod"] || 500);
 
     }
     // return;
