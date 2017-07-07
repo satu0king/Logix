@@ -96,7 +96,7 @@ var plotArea = {
                 if((arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox <=0 && (arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox >=0){
                     mid = 80+((arr[j+1][0]-3000)/Math.round(plotArea.unit*plotArea.scale))*this.pixel;
                   }
-                context.fillText(arr[j+1][1],mid-plotArea.ox,57+30*i-plotArea.oy);  
+                context.fillText(arr[j+1][1],mid-plotArea.ox,57+30*i-plotArea.oy);
                 context.stroke();
               }
             }
@@ -136,13 +136,14 @@ var plotArea = {
       context.stroke();
       if(1.115*plotArea.specificTimeX >= 80){
         context.fillStyle = 'black';
-        context.fillRect(plotArea.specificTimeX - 30, 0, 60, 30);
+        context.fillRect(plotArea.specificTimeX - 35, 0, 70, 30);
         context.fillStyle = 'red';
-        context.fillRect(plotArea.specificTimeX - 25, 2, 50, 26);
+        context.fillRect(plotArea.specificTimeX - 30, 2, 60, 26);
         context.font="20px Georgia";
         context.fillStyle = 'black';
-        context.fillText(Math.round(specificTime),plotArea.specificTimeX - 20, 20);
+        context.fillText(Math.round(specificTime),plotArea.specificTimeX - 28, 20);
       }
+      // borders
       context.fillStyle = 'black';
       context.fillRect(0, 0, 3, this.c.height);
       context.fillRect(74, 0, 3, this.c.height);
