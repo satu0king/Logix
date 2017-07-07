@@ -175,8 +175,9 @@ function setup() {
     // return;
 
     toBeUpdated = true;
-    width = document.getElementById("canvasArea").clientWidth;
-    height = document.getElementById("canvasArea").clientHeight;
+    width = document.getElementById("simulation").clientWidth;
+    height = document.getElementById("simulation").clientHeight-document.getElementById("plot").clientHeight;
+    document.getElementById("canvasArea").style.height=height;
     // console.log(width);
     //setup simulationArea
     backgroundArea.setup();
@@ -190,9 +191,10 @@ function setup() {
 
 //to resize window
 function resetup() {
-    width = document.getElementById("canvasArea").clientWidth;
-    height = document.getElementById("canvasArea").clientHeight;
-    simulationArea.canvas.width = width;
+    width = document.getElementById("simulation").clientWidth;
+    height = document.getElementById("simulation").clientHeight-document.getElementById("plot").clientHeight;
+    document.getElementById("canvasArea").style.height=height;
+        simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
     backgroundArea.canvas.width = width;
     backgroundArea.canvas.height = height;
@@ -202,6 +204,7 @@ function resetup() {
 }
 
 window.onresize = resetup;
+window.onorientationchange = resetup;
 
 //for mobiles
 window.addEventListener('orientationchange', resetup);

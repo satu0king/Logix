@@ -8,6 +8,10 @@ $(document).ready(function() {
     handles: 'e',
         minWidth:200,
     });
+    $( "#plot" ).resizable({
+    handles: 'n',
+        minHeight:200,
+    });
 
     $('.logixModules').click(function(){
         console.log(smartDropXX,smartDropYY);
