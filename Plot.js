@@ -2,7 +2,7 @@ function addPlot(){
   plotArea.ox = 0;
   plotArea.oy = 0;
   plotArea.count = 0;
-  plotArea.unit = parseInt(prompt("Enter unit of time(in milli seconds)"));
+  plotArea.unit = 200;//parseInt(prompt("Enter unit of time(in milli seconds)"));
   timeOutPlot = setInterval(function(){
     plotArea.plot();
   },20);
@@ -25,7 +25,7 @@ StopWatch.prototype.Stop = function()
 }
 
 function startPlot(){
-    plotArea.stopWatch.Start();
+    // plotArea.stopWatch.Start();
     play();
     addPlot();
 }
@@ -45,11 +45,11 @@ var plotArea = {
   },
   plot : function()
   {
-      this.stopWatch.Stop();
 
+      this.stopWatch.Stop();
       var time=this.stopWatch.ElapsedMilliseconds;
-      this.c.width = window.innerWidth;
-      this.c.height = window.innerHeight;
+      this.c.width = window.plot.clientHeight;//innerWidth;
+      this.c.height = window.plot.clientWidth;
       context = this.c.getContext("2d");
       context.fillStyle = 'black';
       context.fillRect(0, 0, this.c.width, this.c.height);

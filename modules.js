@@ -1408,19 +1408,22 @@ function Output(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1) {
     this.plotValue = [];
 
     this.resolve = function() {
-        if(this.plotValue.length&&this.plotValue[this.plotValue.length-1][0]==plotArea.stopWatch.ElapsedMilliseconds)
+
+        var time=plotArea.stopWatch.ElapsedMilliseconds;
+        console.log("DEB:",time);
+        if(this.plotValue.length&&this.plotValue[this.plotValue.length-1][0]==time)
             this.plotValue.pop();
 
         if(this.plotValue.length==0){
-            this.plotValue.push([plotArea.stopWatch.ElapsedMilliseconds,this.inp1.value]);
+            this.plotValue.push([time,this.inp1.value]);
             return;
         }
 
 
         if(this.plotValue[this.plotValue.length-1][1]==this.inp1.value)
-           this.plotValue[this.plotValue.length-1][0]=plotArea.stopWatch.ElapsedMillisecond;
+           this.plotValue[this.plotValue.length-1][0]=time;
         else
-           this.plotValue.push([plotArea.stopWatch.ElapsedMilliseconds,this.inp1.value]);
+           this.plotValue.push([time,this.inp1.value]);
     }
 
     this.customSave = function() {
