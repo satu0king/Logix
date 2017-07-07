@@ -2,7 +2,7 @@ function addPlot(){
   plotArea.ox = 0;
   plotArea.oy = 0;
   plotArea.count = 0;
-  plotArea.unit = 200;//parseInt(prompt("Enter unit of time(in milli seconds)"));
+  plotArea.unit = 1000;//parseInt(prompt("Enter unit of time(in milli seconds)"));
   timeOutPlot = setInterval(function(){
     plotArea.plot();
   },20);
