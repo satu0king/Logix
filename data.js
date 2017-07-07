@@ -12,6 +12,13 @@ function newCircuit(name, id) {
     return scope;
 }
 
+function clearProject(){
+    globalScope=undefined;
+    scopeList={};
+    $('.circuits').remove();
+    newCircuit("main");
+
+}
 function generateSvg(){
     resolution=1;
     view = "full"
@@ -137,6 +144,7 @@ function undo(scope = globalScope) {
     if (scope.backups.length == 0) return;
     var backupOx = globalScope.ox;
     var backupOy = globalScope.oy;
+    var backupScale = globalScope.scale;
     globalScope.ox = 0;
     globalScope.oy = 0;
     tempScope = new Scope(scope.name);
@@ -148,6 +156,7 @@ function undo(scope = globalScope) {
     globalScope = tempScope;
     globalScope.ox = backupOx;
     globalScope.oy = backupOy;
+    globalScope.scale = backupScale;
     loading = false;
 }
 //helper fn
