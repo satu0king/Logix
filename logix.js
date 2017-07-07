@@ -39,6 +39,7 @@ function openInNewTab(url) {
 
 function scheduleUpdate(count = 0) {
     // return;
+    // console.log(willBeUpdated,toBeUpdated,);
     if (count) {
         for (var i = 0; i < count; i++)
             setTimeout(update, 10 + 50 * i);
@@ -379,10 +380,10 @@ function copyPaste(copyList) {
 // fn to change scale (zoom) - It also shifts origin so that the position
 //of the object in focus doent changeB
 function update(scope = globalScope) {
-
+    willBeUpdated = false;
     if (loading == true) return;
     // console.log("UPDATE");
-    willBeUpdated = false;
+
     var updated = false;
     simulationArea.hover = false;
     // wireToBeChecked=true;
