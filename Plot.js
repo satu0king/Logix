@@ -25,7 +25,9 @@ StopWatch.prototype.Stop = function()
 }
 
 function startPlot(){
-    // plotArea.stopWatch.Start();
+    plotArea.stopWatch.Start();
+    for(var i=0;i<globalScope.Output.length;i++)
+        globalScope.Output[i].plotValue=[];
     play();
     addPlot();
 }
@@ -48,8 +50,9 @@ var plotArea = {
 
       this.stopWatch.Stop();
       var time=this.stopWatch.ElapsedMilliseconds;
-      this.c.width = window.plot.clientHeight;//innerWidth;
-      this.c.height = window.plot.clientWidth;
+      this.ox=time-500;
+      this.c.width = window.plot.clientWidth;//innerWidth;
+      this.c.height = window.plot.clientHeight;
       context = this.c.getContext("2d");
       context.fillStyle = 'black';
       context.fillRect(0, 0, this.c.width, this.c.height);

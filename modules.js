@@ -1410,7 +1410,7 @@ function Output(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1) {
     this.resolve = function() {
 
         var time=plotArea.stopWatch.ElapsedMilliseconds;
-        console.log("DEB:",time);
+        // console.log("DEB:",time);
         if(this.plotValue.length&&this.plotValue[this.plotValue.length-1][0]==time)
             this.plotValue.pop();
 
