@@ -1408,10 +1408,17 @@ function Output(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1) {
     this.plotValue = [];
 
     this.resolve = function() {
-        if(this.plotValue.length==0)
-           this.plotValue.push([plotArea.stopWatch.ElapsedMilliseconds,this.inp1.value]);
-        else if(this.plotValue[this.plotValue.length-1][0]==plotArea.stopWatch.ElapsedMilliseconds)
-           this.plotValue[this.plotValue.length-1][1]=this.inp1.value;
+        if(this.plotValue.length&&this.plotValue[this.plotValue.length-1][0]==plotArea.stopWatch.ElapsedMilliseconds)
+            this.plotValue.pop();
+
+        if(this.plotValue.length==0){
+            this.plotValue.push([plotArea.stopWatch.ElapsedMilliseconds,this.inp1.value]);
+            return;
+        }
+
+
+        if(this.plotValue[this.plotValue.length-1][1]==this.inp1.value)
+           this.plotValue[this.plotValue.length-1][0]=plotArea.stopWatch.ElapsedMillisecond;
         else
            this.plotValue.push([plotArea.stopWatch.ElapsedMilliseconds,this.inp1.value]);
     }

@@ -2,14 +2,10 @@ function addPlot(){
   plotArea.ox = 0;
   plotArea.oy = 0;
   plotArea.count = 0;
-  plotArea.endTime = new Date();
-  var time = plotArea.endTime - plotArea.startTime;
-  console.log(time);
   plotArea.unit = parseInt(prompt("Enter unit of time(in milli seconds)"));
   timeOutPlot = setInterval(function(){
-    plotArea.plot(time);
+    plotArea.plot();
   },20);
-
 }
 
 StopWatch = function()
@@ -29,13 +25,14 @@ StopWatch.prototype.Stop = function()
 }
 
 function startPlot(){
-    simulationArea
+    plotArea.stopWatch.Start();
+    play();
+    addPlot();
 }
 var plotArea = {
   ox : 0,
   oy : 0,
   unit : 0,
-  stopWatch:new StopWatch(),
   c : document.getElementById("plotArea"),
   count:0,
   specificTimeX:0,
@@ -43,19 +40,23 @@ var plotArea = {
   startTime : new Date(),
   endTime : new Date(),
   setup:function(){
-      stopWatch.start();
-  }
-  plot : function(time)
+      this.stopWatch =new StopWatch()
+      this.stopWatch.Start();
+  },
+  plot : function()
   {
+      this.stopWatch.Stop();
+
+      var time=this.stopWatch.ElapsedMilliseconds;
       this.c.width = window.innerWidth;
       this.c.height = window.innerHeight;
       context = this.c.getContext("2d");
       context.fillStyle = 'black';
       context.fillRect(0, 0, this.c.width, this.c.height);
-      for(var i=0;i<globalScope.outputs.length;i++)
+      for(var i=0;i<globalScope.Output.length;i++)
       {
         context.moveTo(80-plotArea.ox,2*(30+i*15)-plotArea.oy);
-        var arr=globalScope.outputs[i].plotValue;
+        var arr=globalScope.Output[i].plotValue;
         if(plotArea.count==i){
           arr.push([time,arr[arr.length-1][1]]);
           plotArea.count+=1;
@@ -65,7 +66,7 @@ var plotArea = {
             if(arr[j][0]<=time)
             {
               context.strokeStyle = 'white';
-              if(globalScope.outputs[i].plotValue[j][1]==1 && globalScope.outputs[i].bitWidth==1)
+              if(globalScope.Output[i].plotValue[j][1]==1 && globalScope.Output[i].bitWidth==1)
               {
                 context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/10-plotArea.ox,2*(25+i*15)-plotArea.oy);
                 context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/10-plotArea.ox,2*(25+i*15)-plotArea.oy);
@@ -73,7 +74,7 @@ var plotArea = {
 
                 context.stroke();
               }
-              else if(globalScope.outputs[i].bitWidth==1) {
+              else if(globalScope.Output[i].bitWidth==1) {
                 context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*(this.c.width-80)/10-plotArea.ox,2*(30+i*15)-plotArea.oy);
                 context.stroke();
               }
@@ -102,8 +103,8 @@ var plotArea = {
       context.fillRect(0,0,75,this.c.height)
       context.font="15px Georgia";
       context.fillStyle = 'black';
-      for(var i=0;i<globalScope.outputs.length;i++){
-        context.fillText(globalScope.outputs[i].label,5,2*(30+i*15));
+      for(var i=0;i<globalScope.Output.length;i++){
+        context.fillText(globalScope.Output[i].label,5,2*(30+i*15));
       }
 
       context.fillStyle = 'white';
@@ -177,17 +178,17 @@ var plotArea = {
     }
     if (e.keyCode == 80){
       plotArea.startTime = new Date();
-      for(var i=0;i<globalScope.outputs.length;i++){
-              globalScope.outputs[i].plotValue=[[0,globalScope.outputs[i].state]];
+      for(var i=0;i<globalScope.Output.length;i++){
+              globalScope.Output[i].plotValue=[[0,globalScope.Output[i].state]];
         }
       }
   });
-  window.addEventListener('mousedown', function(e) {
-    var rect = plotArea.c.getBoundingClientRect();
-    plotArea.specificTimeX = e.clientX - rect.left;
-  });
+  // window.addEventListener('mousedown', function(e) {
+  //   var rect = plotArea.c.getBoundingClientRect();
+  //   plotArea.specificTimeX = e.clientX - rect.left;
+  // });
 
-document.getElementById("plotButton").addEventListener("click", addPlot);
+// document.getElementById("plotButton").addEventListener("click", addPlot);
 // html
 // <canvas id="plot" style="position: absolute; left: 5%; top: 20%; z-index: 0; width:90%;height:60%"></canvas>
 // <button class="button" id="plotButton">Plot</button>
