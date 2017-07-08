@@ -48,8 +48,8 @@ var plotArea = {
   setup:function(){
       this.stopWatch =new StopWatch()
       this.stopWatch.Start();
-      this.context=this.c.getContext("2d");
-    //   console.log(this.context);
+      this.ctx=this.c.getContext("2d");
+    //   console.log(this.ctx);
       startPlot();
       this.timeOutPlot = setInterval(function(){
         plotArea.plot();
@@ -60,9 +60,15 @@ var plotArea = {
 
       this.stopWatch.Stop();
       var time=this.stopWatch.ElapsedMilliseconds;
-      this.c.width = window.plot.clientWidth;//innerWidth;
-      this.c.height = 100+globalScope.Output.length*50;//window.plot.clientHeight;
-      document.getElementById('plot').style.height = this.c.height;
+      this.c.width = window.plot.clientWidth; //innerWidth;
+
+      this.c.height=Math.min(Math.max(50 + (globalScope.Output.length)*30,0),500);
+
+      if(document.getElementById("plot").style.height!=this.c.height+"px"){
+          document.getElementById("plot").style.height = this.c.height ;
+          resetup();
+          console.log(document.getElementById("plot").style.height,this.c.height);
+      }
 
       if(this.scroll){
         this.ox = Math.max(0,(time/this.unit)*this.pixel -this.c.width+70);
@@ -73,7 +79,7 @@ var plotArea = {
           if(this.ox<0)plotArea.scrollAcc=-0.2+0.2*this.ox;
           if(Math.abs(this.ox)<0.5)this.ox=0;
       }
-      var ctx = this.context;
+      var ctx = this.ctx;
       this.clear(ctx);
       ctx.fillStyle = 'black';
       ctx.fillRect(0, 0, this.c.width, this.c.height);
@@ -153,12 +159,17 @@ var plotArea = {
       ctx.font="15px Georgia";
       ctx.fillStyle = 'black';
       for(var i=0;i<globalScope.Output.length;i++){
-        ctx.fillText(globalScope.Output[i].label,5,2*(25+i*15));
-        ctx.fillRect(0,2*(13+i*15)+4 , 75, 3);
+        ctx.fillText(globalScope.Output[i].label,5,2*(25+i*15) - plotArea.oy);
+        ctx.fillRect(0,2*(13+i*15)+4 - plotArea.oy, 75, 3);
       }
+      ctx.fillStyle = '#eee';
+      ctx.fillRect(0,0,75,30);
+      ctx.fillStyle = 'black';
       ctx.font="16px Georgia";
       ctx.fillText("Time",10,20);
-
+      ctx.strokeStyle = 'black';
+      ctx.moveTo(0,25);
+      ctx.lineTo(75,25);
       // for yellow line to show specific time
       var specificTime = (plotArea.specificTimeX+plotArea.ox-80)*Math.round(plotArea.unit*plotArea.scale)/(this.pixel);;
       ctx.strokeStyle = 'white';
