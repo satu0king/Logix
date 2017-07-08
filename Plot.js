@@ -42,6 +42,7 @@ var plotArea = {
   pixel : 100,
   startTime : new Date(),
   endTime : new Date(),
+  checkScroll : 0,
   setup:function(){
       this.stopWatch =new StopWatch()
       this.stopWatch.Start();
@@ -53,7 +54,9 @@ var plotArea = {
       var time=this.stopWatch.ElapsedMilliseconds;
       this.c.width = window.plot.clientWidth;//innerWidth;
       this.c.height = window.plot.clientHeight;
-      this.ox = (time/this.unit - 8)*this.pixel;
+      if(this.checkScroll == 0){
+        this.ox = (time/this.unit - 8)*this.pixel;
+      }
       context = this.c.getContext("2d");
       context.fillStyle = 'black';
       context.fillRect(0, 0, this.c.width, this.c.height);
@@ -160,15 +163,15 @@ var plotArea = {
 // listen
   window.addEventListener('keydown', function(e) {
     if (e.keyCode == 37){
-      if(plotArea.ox >= this.pixel){
-        plotArea.ox -= this.pixel;
+      if(plotArea.ox >= this.unit){
+        plotArea.ox -= this.unit;
       }
       else{
         plotArea.ox = 0;
       }
     }
     if(e.keyCode == 39){
-          plotArea.ox += this.pixel;
+          plotArea.ox += this.unit;
       }
       if (e.keyCode == 38){
         if(plotArea.oy >= 15){
@@ -183,6 +186,12 @@ var plotArea = {
     }
     if (e.keyCode == 48){
       plotArea.clear();
+    }
+    if (e.keyCode == 49){
+      plotArea.checkScroll = 1;
+    }
+    if (e.keyCode == 50){
+      plotArea.checkScroll = 0;
     }
     if (e.keyCode == 189){
         plotArea.scale *=2;
