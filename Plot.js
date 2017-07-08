@@ -146,7 +146,7 @@ var plotArea = {
       context.fillStyle = 'black';
       for(var i=1; i*Math.round(plotArea.unit*plotArea.scale)<=time + Math.round(plotArea.unit*plotArea.scale) ;i++)
       {
-        context.fillText(Math.round(plotArea.unit*plotArea.scale)*i/1000+"s",48+this.pixel*i-plotArea.ox,20);
+        context.fillText(Math.round(plotArea.unit*plotArea.scale)*i/1000+"s",70+this.pixel*i-plotArea.ox,20);
 
       }
 
@@ -172,9 +172,9 @@ var plotArea = {
         context.fillRect(plotArea.specificTimeX - 35, 0, 70, 30);
         context.fillStyle = 'red';
         context.fillRect(plotArea.specificTimeX - 30, 2, 60, 26);
-        context.font="20px Georgia";
+        context.font="12px Georgia";
         context.fillStyle = 'black';
-        context.fillText(Math.round(specificTime),plotArea.specificTimeX - 28, 20);
+        context.fillText(Math.round(specificTime)+"ms",plotArea.specificTimeX - 25, 20);
       }
       // borders
       context.strokeStyle = 'black';
