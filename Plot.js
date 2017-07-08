@@ -3,7 +3,7 @@ function addPlot(){
   plotArea.oy = 0;
   plotArea.count = 0;
   plotArea.unit = 1000;//parseInt(prompt("Enter unit of time(in milli seconds)"));
-
+  plotArea.specificTimeX = 0;
 
 }
 
@@ -62,7 +62,7 @@ var plotArea = {
       var time=this.stopWatch.ElapsedMilliseconds;
       this.c.width = window.plot.clientWidth;//innerWidth;
       this.c.height = 100+globalScope.Output.length*50;//window.plot.clientHeight;
-      window.plot.clientHeight=this.c.height
+      document.getElementById('plot').style.height = this.c.height;
 
       if(this.scroll){
         this.ox = Math.max(0,(time/this.unit)*this.pixel -this.c.width+70);
@@ -146,7 +146,6 @@ var plotArea = {
       for(var i=1; i*Math.round(plotArea.unit*plotArea.scale)<=time + Math.round(plotArea.unit*plotArea.scale) ;i++)
       {
         ctx.fillText(Math.round(plotArea.unit*plotArea.scale)*i/1000+"s",48+this.pixel*i-plotArea.ox,20);
-
       }
 
       ctx.fillStyle = '#eee';
@@ -171,9 +170,9 @@ var plotArea = {
         ctx.fillRect(plotArea.specificTimeX - 35, 0, 70, 30);
         ctx.fillStyle = 'red';
         ctx.fillRect(plotArea.specificTimeX - 30, 2, 60, 26);
-        ctx.font="20px Georgia";
+        ctx.font="12px Georgia";
         ctx.fillStyle = 'black';
-        ctx.fillText(Math.round(specificTime),plotArea.specificTimeX - 28, 20);
+        ctx.fillText(Math.round(specificTime)+"ms",plotArea.specificTimeX - 25, 20);
       }
       // borders
       ctx.strokeStyle = 'black';
