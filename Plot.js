@@ -29,6 +29,7 @@ function startPlot(){
     for(var i=0;i<globalScope.Output.length;i++)
         globalScope.Output[i].plotValue=[[0,globalScope.Output[i].inp1.value]];
     // play();
+    plotArea.scroll=1;
     addPlot();
 }
 var plotArea = {
@@ -42,7 +43,7 @@ var plotArea = {
   pixel : 100,
   startTime : new Date(),
   endTime : new Date(),
-  checkScroll : 0,
+  scroll : 1,
   setup:function(){
       this.stopWatch =new StopWatch()
       this.stopWatch.Start();
@@ -59,8 +60,13 @@ var plotArea = {
       this.c.width = window.plot.clientWidth;//innerWidth;
       this.c.height = window.plot.clientHeight;
 
-      if(this.checkScroll == 0){
+      if(this.scroll){
         this.ox = Math.max(0,(time/this.unit)*this.pixel -this.c.width+70);
+      }
+      else if(!plotArea.mouseDown){
+          this.ox-=plotArea.scrollAcc;
+          plotArea.scrollAcc*=0.95;
+          if(this.ox<0)plotArea.scrollAcc=-0.5+0.2*this.ox;
       }
       context = this.c.getContext("2d");
       this.clear();
@@ -246,9 +252,41 @@ var plotArea = {
       }
   });
   document.getElementById("plotArea").addEventListener('mousedown', function(e) {
+
     var rect = plotArea.c.getBoundingClientRect();
-    plotArea.specificTimeX = e.clientX - rect.left;
+    var x=e.clientX - rect.left;
+    plotArea.scrollAcc=0;
+    if(e.shiftKey){
+        plotArea.specificTimeX = x;
+    }
+    else{
+        plotArea.scroll=0;
+        plotArea.mouseDown=true;
+
+        plotArea.prevX=x;
+        console.log("HIT");
+    }
   });
+  document.getElementById("plotArea").addEventListener('mouseup', function(e) {
+
+    plotArea.mouseDown=false;
+  });
+
+  document.getElementById("plotArea").addEventListener('mousemove', function(e) {
+
+    var rect = plotArea.c.getBoundingClientRect();
+    var x=e.clientX - rect.left;
+    if(!e.shiftKey&&plotArea.mouseDown){
+        plotArea.ox-=x-plotArea.prevX;
+        plotArea.scrollAcc=x-plotArea.prevX;
+        plotArea.prevX=x;
+        // plotArea.ox=Math.max(0,plotArea.ox)
+    }
+    else{
+        plotArea.mouseDown=false;
+    }
+  });
+
 
 // document.getElementById("plotButton").addEventListener("click", addPlot);
 // html
