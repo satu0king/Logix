@@ -31,31 +31,31 @@ $(document).ready(function() {
 
     });
 // var dummyCounter=0;
-    $( '#canvasArea' ).on( 'mousewheel', function ( event ) {
-        updateCanvas=true;
-        // toBeUpdated=true;
-
-        // scheduleUpdate();
-        //INEFFICIENT CODE scheduleUpdate not working
-        updateCanvas=true;
-        update();
-
-        event.preventDefault()
-         var deltaY = event.originalEvent.wheelDelta;
-        // dummyCounter++;
-         var scrolledUp = deltaY < 0;
-        var scrolledDown = deltaY > 0;
-        // if(dummyCounter!=3)return;
-        // dummyCounter=0;
-        if(event.originalEvent.ctrlKey){
-          if ( scrolledUp && globalScope.scale > 0.5) { changeScale(-.1); }
-         if ( scrolledDown && globalScope.scale < 4) { changeScale(.1); }
-        }
-        else{
-            if ( scrolledUp && globalScope.scale < 4) { changeScale(.1); }
-           if ( scrolledDown && globalScope.scale >0.5) { changeScale(-.1); }
-        }
-     });
+    // $( '#canvasArea' ).on( 'mousewheel', function ( event ) {
+    //     updateCanvas=true;
+    //     // toBeUpdated=true;
+    //
+    //     // scheduleUpdate();
+    //     //INEFFICIENT CODE scheduleUpdate not working
+    //     updateCanvas=true;
+    //     update();
+    //
+    //     event.preventDefault()
+    //      var deltaY = event.originalEvent.wheelDelta;
+    //     // dummyCounter++;
+    //      var scrolledUp = deltaY < 0;
+    //     var scrolledDown = deltaY > 0;
+    //     // if(dummyCounter!=3)return;
+    //     // dummyCounter=0;
+    //     if(event.originalEvent.ctrlKey){
+    //       if ( scrolledUp && globalScope.scale > 0.5) { changeScale(-.1); }
+    //      if ( scrolledDown && globalScope.scale < 4) { changeScale(.1); }
+    //     }
+    //     else{
+    //         if ( scrolledUp && globalScope.scale < 4) { changeScale(.1); }
+    //        if ( scrolledDown && globalScope.scale >0.5) { changeScale(-.1); }
+    //     }
+    //  });
 
 
     var iconList=$('.icon');
