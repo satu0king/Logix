@@ -8,10 +8,10 @@ $(document).ready(function() {
     handles: 'e',
         minWidth:200,
     });
-    $( "#plot" ).resizable({
-    handles: 'n',
-        minHeight:200,
-    });
+    // $( "#plot" ).resizable({
+    // handles: 'n',
+    //     minHeight:200,
+    // });
 
     $('.logixModules').click(function(){
         console.log(smartDropXX,smartDropYY);
@@ -31,23 +31,20 @@ $(document).ready(function() {
 
     });
 // var dummyCounter=0;
-    $( '#canvasArea' ).on( 'mousewheel', function ( event ) {
+    window.addEventListener('mousewheel', function ( event ) {
         updateCanvas=true;
-        toBeUpdated=true;
+        // toBeUpdated=true;
 
-        // scheduleUpdate();
-        //INEFFICIENT CODE scheduleUpdate not working
-        updateCanvas=true;
-        update();
+
 
         event.preventDefault()
-         var deltaY = event.originalEvent.wheelDelta;
+         var deltaY = event.wheelDelta;
         // dummyCounter++;
          var scrolledUp = deltaY < 0;
         var scrolledDown = deltaY > 0;
         // if(dummyCounter!=3)return;
         // dummyCounter=0;
-        if(event.originalEvent.ctrlKey){
+        if(event.ctrlKey){
           if ( scrolledUp && globalScope.scale > 0.5) { changeScale(-.1); }
          if ( scrolledDown && globalScope.scale < 4) { changeScale(.1); }
         }
@@ -55,7 +52,12 @@ $(document).ready(function() {
             if ( scrolledUp && globalScope.scale < 4) { changeScale(.1); }
            if ( scrolledDown && globalScope.scale >0.5) { changeScale(-.1); }
         }
-     });
+
+        updateCanvas=true;
+        //INEFFICIENT CODE scheduleUpdate not working
+        // scheduleUpdate();
+        update()
+    });
 
 
     var iconList=$('.icon');
