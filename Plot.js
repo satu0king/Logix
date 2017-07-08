@@ -78,8 +78,9 @@ var plotArea = {
       context.lineWidth = 2;
       for(var i=0;i<globalScope.Output.length;i++)
       {
-        context.moveTo(80-plotArea.ox,2*(30+i*15)-plotArea.oy);
+
         var arr=globalScope.Output[i].plotValue;
+        // context.moveTo(80-plotArea.ox,2*(30+i*15-5*arr[0][1])-plotArea.oy);
         // if(plotArea.count==i){
         //   arr.push([time,arr[arr.length-1][1]]);
         //   plotArea.count+=1;
@@ -114,12 +115,13 @@ var plotArea = {
                 // context.stroke();
               }
               else {
+                context.beginPath();
                 context.moveTo(80+(end*unit)-plotArea.ox,55+30*i-plotArea.oy);
-                context.lineTo(80+(end*unit)-10-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(start*unit)+10-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(end*unit)-5-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(start*unit)+5-plotArea.ox,2*(25+i*15)-plotArea.oy);
                 context.lineTo(80+(start*unit)-plotArea.ox,55+30*i-plotArea.oy);
-                context.lineTo(80+(start*unit)+10-plotArea.ox,2*(30+i*15)-plotArea.oy);
-                context.lineTo(80+(end*unit)-10-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(start*unit)+5-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(end*unit)-5-plotArea.ox,2*(30+i*15)-plotArea.oy);
                 context.lineTo(80+(end*unit)-plotArea.ox,55+30*i-plotArea.oy);
                 mid = 80+((end+start)/Math.round(plotArea.unit*plotArea.scale))*this.pixel/2;
                 context.font="12px Georgia";
@@ -205,53 +207,53 @@ var plotArea = {
 }
 
 // listen
-  window.addEventListener('keydown', function(e) {
-    if (e.keyCode == 37){
-      if(plotArea.ox >= this.unit){
-        plotArea.ox -= this.unit;
-      }
-      else{
-        plotArea.ox = 0;
-      }
-    }
-    if(e.keyCode == 39){
-          plotArea.ox += this.unit;
-      }
-      if (e.keyCode == 38){
-        if(plotArea.oy >= 15){
-        plotArea.oy -= 15;
-      }
-      else{
-        plotArea.oy = 0;
-      }
-    }
-    if (e.keyCode == 40){
-      plotArea.oy += 15;
-    }
-    if (e.keyCode == 48){
-      plotArea.clear();
-    }
-    if (e.keyCode == 49){
-      plotArea.checkScroll = 1;
-    }
-    if (e.keyCode == 50){
-      plotArea.checkScroll = 0;
-    }
-    if (e.keyCode == 189){
-        plotArea.scale *=2;
-    }
-    if (e.keyCode == 187){
-      if (Math.round(plotArea.unit*plotArea.scale)>=2){
-        plotArea.scale /=2;
-      }
-    }
-    if (e.keyCode == 80){
-      plotArea.startTime = new Date();
-      for(var i=0;i<globalScope.Output.length;i++){
-              globalScope.Output[i].plotValue=[[0,globalScope.Output[i].state]];
-        }
-      }
-  });
+  // window.addEventListener('keydown', function(e) {
+  //   if (e.keyCode == 37){
+  //     if(plotArea.ox >= this.unit){
+  //       plotArea.ox -= this.unit;
+  //     }
+  //     else{
+  //       plotArea.ox = 0;
+  //     }
+  //   }
+  //   if(e.keyCode == 39){
+  //         plotArea.ox += this.unit;
+  //     }
+  //     if (e.keyCode == 38){
+  //       if(plotArea.oy >= 15){
+  //       plotArea.oy -= 15;
+  //     }
+  //     else{
+  //       plotArea.oy = 0;
+  //     }
+  //   }
+  //   if (e.keyCode == 40){
+  //     plotArea.oy += 15;
+  //   }
+  //   if (e.keyCode == 48){
+  //     plotArea.clear();
+  //   }
+  //   if (e.keyCode == 49){
+  //     plotArea.checkScroll = 1;
+  //   }
+  //   if (e.keyCode == 50){
+  //     plotArea.checkScroll = 0;
+  //   }
+  //   if (e.keyCode == 189){
+  //       plotArea.scale *=2;
+  //   }
+  //   if (e.keyCode == 187){
+  //     if (Math.round(plotArea.unit*plotArea.scale)>=2){
+  //       plotArea.scale /=2;
+  //     }
+  //   }
+  //   if (e.keyCode == 80){
+  //     plotArea.startTime = new Date();
+  //     for(var i=0;i<globalScope.Output.length;i++){
+  //             globalScope.Output[i].plotValue=[[0,globalScope.Output[i].state]];
+  //       }
+  //     }
+  // });
   document.getElementById("plotArea").addEventListener('mousedown', function(e) {
 
     var rect = plotArea.c.getBoundingClientRect();
@@ -285,6 +287,9 @@ var plotArea = {
     }
     else{
         plotArea.mouseDown=false;
+
+
+
     }
   });
 
