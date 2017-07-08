@@ -61,8 +61,11 @@ var plotArea = {
       if(globalScope.Output.length < 5){  //window.plot.clientHeight;
       this.c.height = 160;
       }
-      else{
+      else if(globalScope.Output.length <= 15){
         this.c.height = 160 + (globalScope.Output.length - 4)*30;
+      }
+      else {
+        this.c.height = 490;
       }
       document.getElementById("plot").style.height = this.c.height + "px";
       window.plot.clientHeight=this.c.height
@@ -161,12 +164,17 @@ var plotArea = {
       context.font="15px Georgia";
       context.fillStyle = 'black';
       for(var i=0;i<globalScope.Output.length;i++){
-        context.fillText(globalScope.Output[i].label,5,2*(25+i*15));
-        context.fillRect(0,2*(13+i*15)+4 , 75, 3);
+        context.fillText(globalScope.Output[i].label,5,2*(25+i*15) - plotArea.oy);
+        context.fillRect(0,2*(13+i*15)+4 - plotArea.oy, 75, 3);
       }
+      context.fillStyle = '#eee';
+      context.fillRect(0,0,75,30);
+      context.fillStyle = 'black';
       context.font="16px Georgia";
       context.fillText("Time",10,20);
-
+      context.strokeStyle = 'black';
+      context.moveTo(0,25);
+      context.lineTo(75,25);
       // for yellow line to show specific time
       var specificTime = (plotArea.specificTimeX+plotArea.ox-80)*Math.round(plotArea.unit*plotArea.scale)/(this.pixel);;
       context.strokeStyle = 'white';
