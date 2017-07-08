@@ -3,10 +3,10 @@ function addPlot(){
   plotArea.oy = 0;
   plotArea.count = 0;
   plotArea.unit = 1000;//parseInt(prompt("Enter unit of time(in milli seconds)"));
-  timeOutPlot = setInterval(function(){
-    plotArea.plot();
-  },20);
+
+
 }
+
 
 StopWatch = function()
 {
@@ -46,6 +46,10 @@ var plotArea = {
   setup:function(){
       this.stopWatch =new StopWatch()
       this.stopWatch.Start();
+      startPlot();
+      this.timeOutPlot = setInterval(function(){
+        plotArea.plot();
+    },100);
   },
   plot : function()
   {
@@ -56,12 +60,15 @@ var plotArea = {
       this.c.height = window.plot.clientHeight;
 
       if(this.checkScroll == 0){
-        this.ox = (time/this.unit)*this.pixel -this.c.width+70;
+        this.ox = Math.max(0,(time/this.unit)*this.pixel -this.c.width+70);
       }
       context = this.c.getContext("2d");
       this.clear();
       context.fillStyle = 'black';
       context.fillRect(0, 0, this.c.width, this.c.height);
+      var unit= (this.pixel/(plotArea.unit*plotArea.scale))
+      context.strokeStyle = 'cyan';
+      context.lineWidth = 2;
       for(var i=0;i<globalScope.Output.length;i++)
       {
         context.moveTo(80-plotArea.ox,2*(30+i*15)-plotArea.oy);
@@ -70,6 +77,8 @@ var plotArea = {
         //   arr.push([time,arr[arr.length-1][1]]);
         //   plotArea.count+=1;
         // }
+        // console.log(start,end)
+
 
         for(var j=0;j<arr.length;j++)
         {
@@ -83,32 +92,32 @@ var plotArea = {
             {
 
 
-              console.log(start,end)
-              context.strokeStyle = 'white';
+
               if(globalScope.Output[i].plotValue[j][1]==1 && globalScope.Output[i].bitWidth==1)
               {
-                context.lineTo(80+(start/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(start*unit)-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(end*unit)-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                // context.lineTo(80+(end*unit)-plotArea.ox,2*(30+i*15)-plotArea.oy);
 
-                context.stroke();
+                // context.stroke();
               }
               else if(globalScope.Output[i].bitWidth==1) {
-                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(30+i*15)-plotArea.oy);
-                context.stroke();
+                context.lineTo(80+(start*unit)-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(end*unit)-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                // context.stroke();
               }
               else {
-                context.moveTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
-                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-10-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(start/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(start/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
-                context.lineTo(80+(start/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox,2*(30+i*15)-plotArea.oy);
-                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-10-plotArea.ox,2*(30+i*15)-plotArea.oy);
-                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
+                context.moveTo(80+(end*unit)-plotArea.ox,55+30*i-plotArea.oy);
+                context.lineTo(80+(end*unit)-10-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(start*unit)+10-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(start*unit)-plotArea.ox,55+30*i-plotArea.oy);
+                context.lineTo(80+(start*unit)+10-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(end*unit)-10-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(end*unit)-plotArea.ox,55+30*i-plotArea.oy);
                 mid = 80+((end+start)/Math.round(plotArea.unit*plotArea.scale))*this.pixel/2;
                 context.font="12px Georgia";
                 context.fillStyle = 'white';
-                if((start/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox <=0 && (end/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox >=0){
+                if((start*unit)+10-plotArea.ox <=0 && (end*unit)+10-plotArea.ox >=0){
                     mid = 80+((end-3000)/Math.round(plotArea.unit*plotArea.scale))*this.pixel;
                   }
                 context.fillText(arr[j][1],mid-plotArea.ox,57+30*i-plotArea.oy);
@@ -119,28 +128,30 @@ var plotArea = {
               break;
             }
         }
+        context.stroke();
+        context.beginPath();
       }
       // 2 rectangles showing the time and labels
 
-      context.fillStyle = 'yellow';
+      context.fillStyle = '#eee';
       context.fillRect(0, 0, this.c.width, 30);
       context.font="14px Georgia";
       context.fillStyle = 'black';
       for(var i=1; i*Math.round(plotArea.unit*plotArea.scale)<=time + Math.round(plotArea.unit*plotArea.scale) ;i++)
       {
-        context.fillText(Math.round(plotArea.unit*plotArea.scale)*i+"ms",48+this.pixel*i-plotArea.ox,20);
+        context.fillText(Math.round(plotArea.unit*plotArea.scale)*i/1000+"s",48+this.pixel*i-plotArea.ox,20);
 
       }
 
-      context.fillStyle = 'yellow';
+      context.fillStyle = '#eee';
       context.fillRect(0,0,75,this.c.height);
       context.font="15px Georgia";
       context.fillStyle = 'black';
       for(var i=0;i<globalScope.Output.length;i++){
-        context.fillText(globalScope.Output[i].label,5,2*(30+i*15));
-        context.fillRect(0,2*(30+i*15)+4 , 75, 3);
+        context.fillText(globalScope.Output[i].label,5,2*(25+i*15));
+        context.fillRect(0,2*(13+i*15)+4 , 75, 3);
       }
-      context.font="20px Georgia";
+      context.font="16px Georgia";
       context.fillText("Time",10,20);
 
       // for yellow line to show specific time
@@ -159,11 +170,25 @@ var plotArea = {
         context.fillText(Math.round(specificTime),plotArea.specificTimeX - 28, 20);
       }
       // borders
-      context.fillStyle = 'black';
-      context.fillRect(0, 0, 3, this.c.height);
-      context.fillRect(74, 0, 3, this.c.height);
-      context.fillRect(0, 0, this.c.width, 3);
-      context.fillRect(0, 27, this.c.width, 3);
+      context.strokeStyle = 'black';
+      context.lineWidth = 2;
+      context.beginPath();
+      context.moveTo(0,0);
+      context.lineTo(0,this.c.height);
+    //   context.fillRect(0, 0, 3, this.c.height);
+
+    context.moveTo(74,0);
+    context.lineTo(74,this.c.height);
+    //   context.fillRect(74, 0, 3, this.c.height);
+
+    context.moveTo(0,0);
+    context.lineTo(this.c.width,0);
+    //   context.fillRect(0, 0, this.c.width, 3);
+
+    // context.moveTo(0,27);
+    // context.lineTo(this.c.width,27);
+    //   context.fillRect(0, 27, this.c.width, 3);
+      context.stroke();
   },
   clear: function(){
     context.clearRect(0,0,plotArea.c.width,plotArea.c.height);
