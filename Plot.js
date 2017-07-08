@@ -58,7 +58,8 @@ var plotArea = {
       this.stopWatch.Stop();
       var time=this.stopWatch.ElapsedMilliseconds;
       this.c.width = window.plot.clientWidth;//innerWidth;
-      this.c.height = window.plot.clientHeight;
+      this.c.height = 100+globalScope.Output.length*50;//window.plot.clientHeight;
+      window.plot.clientHeight=this.c.height
 
       if(this.scroll){
         this.ox = Math.max(0,(time/this.unit)*this.pixel -this.c.width+70);
