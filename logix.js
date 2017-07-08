@@ -1,6 +1,7 @@
 var width;
-
 var height;
+
+
 uniqueIdCounter = 0;
 unit = 10;
 toBeUpdated = true;
@@ -10,7 +11,8 @@ willBeUpdated = false;
 objectSelection = false;
 errorDetected = false;
 // var backups = []
-loading = false
+loading = false;
+projectSaved = true;
 //Exact same name as object constructor
 moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer", "Buffer", "SubCircuit"];
 
@@ -80,10 +82,6 @@ Array.prototype.contains = function(value) {
     return this.indexOf(value) > -1
 };
 
-
-
-
-
 function uniq(a) {
     var seen = {};
     return a.filter(function(item) {
@@ -99,9 +97,9 @@ function Scope(name = "localScope") {
     this.backups = [];
     this.timeStamp = new Date().getTime();
 
-    this.ox=0;
-    this.oy=0;
-    this.scale=1;
+    this.ox = 0;
+    this.oy = 0;
+    this.scale = 1;
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)
@@ -142,49 +140,12 @@ function Scope(name = "localScope") {
 
 //fn to setup environment
 function setup() {
+    projectName = undefined;
+    projectId = generateId();
     // globalScope = new Scope("globalScope"); //enabling scope
     // scopeList.push(globalScope);
     newCircuit("Main");
-    data = {}
-    // data = JSON.parse(SAP_DATA);
-    // load(data);
-    // retrieving data
-    if(localStorage.getItem("local")&&localStorage.getItem("localHash")==window.location.hash){
-        var data=JSON.parse(localStorage.getItem("local"));
-        load(data);
-        simulationArea.changeClockTime(data["timePeriod"] || 500);
-        console.log(localStorage.getItem("localHash"));
 
-    }
-    if (window.location.hash.length > 1) {
-
-        var http = new XMLHttpRequest();
-        hash = window.location.hash.substr(1);
-        // alert(hash);
-        http.open("POST", "./index.php", true);
-        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        var params = "retrieve=" + hash; // probably use document.getElementById(...).value
-        http.send(params);
-        http.onload = function() {
-            // console.log(http.responseText);
-            if (http.responseText == "ERROR") alert("Error: could not load ");
-            else {
-                console.log(http.responseText);
-                data = JSON.parse(http.responseText);
-                console.log("From Server:" + data);
-                load(data);
-                simulationArea.changeClockTime(data["timePeriod"] || 500);
-                // globalScope.backups.push(backUp(globalScope));
-            }
-        }
-
-    }
-    else if(localStorage.getItem("local")){
-        var data=JSON.parse(localStorage.getItem("local"));
-        load(data);
-        simulationArea.changeClockTime(data["timePeriod"] || 500);
-
-    }
     // return;
 
     toBeUpdated = true;
@@ -198,8 +159,57 @@ function setup() {
     backgroundArea.setup();
     plotArea.setup();
     simulationArea.setup();
+    // update();
+    dots();
+    // scheduleUpdate();
 
-    scheduleUpdate();
+    data = {}
+    // data = JSON.parse(SAP_DATA);
+    // load(data);
+    // retrieving data
+    // if(localStorage.getItem(window.location.hash)){
+    //     var data=JSON.parse(localStorage.getItem("local"));
+    //     load(data);
+    //     simulationArea.changeClockTime(data["timePeriod"] || 500);
+    //     // console.log(localStorage.getItem("localHash"));
+    //
+    // }
+    setTimeout(function(){
+        if (window.location.hash.length > 1) {
+
+            var http = new XMLHttpRequest();
+            hash = window.location.hash.substr(1);
+            // alert(hash);
+            http.open("POST", "./index.php", true);
+            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            var params = "retrieve=" + hash; // probably use document.getElementById(...).value
+            http.send(params);
+            http.onload = function() {
+                // console.log(http.responseText);
+                if (http.responseText == "ERROR") alert("Error: could not load ");
+                else {
+                    console.log(http.responseText);
+                    data = JSON.parse(http.responseText);
+                    console.log("From Server:" + data);
+                    load(data);
+                    simulationArea.changeClockTime(data["timePeriod"] || 500);
+                    // globalScope.backups.push(backUp(globalScope));
+                }
+            }
+
+        } else if (localStorage.getItem("recover")) {
+
+
+            var data = JSON.parse(localStorage.getItem("recover"));
+            if (confirm("Would you like to recover: " + data.name)) {
+                load(data);
+            }
+            localStorage.removeItem("recover");
+
+        }
+    },10);
+
+
 
 
 
@@ -208,9 +218,9 @@ function setup() {
 //to resize window
 function resetup() {
     width = document.getElementById("simulation").clientWidth;
-    height = document.getElementById("simulation").clientHeight-document.getElementById("plot").clientHeight;
-    document.getElementById("canvasArea").style.height=height;
-        simulationArea.canvas.width = width;
+    height = document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight;
+    document.getElementById("canvasArea").style.height = height;
+    simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
     backgroundArea.canvas.width = width;
     backgroundArea.canvas.height = height;
@@ -297,7 +307,7 @@ var backgroundArea = {
         dots(true, false);
     },
     clear: function() {
-        if(!this.context)return;
+        if (!this.context) return;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
@@ -344,7 +354,7 @@ var simulationArea = {
         this.ClockInterval = setInterval(clockTick, t);
     },
     clear: function() {
-        if(!this.context)return;
+        if (!this.context) return;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }

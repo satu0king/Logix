@@ -31,6 +31,7 @@ $(document).ready(function() {
 
     });
 // var dummyCounter=0;
+<<<<<<< HEAD
     // $( '#canvasArea' ).on( 'mousewheel', function ( event ) {
     //     updateCanvas=true;
     //     // toBeUpdated=true;
@@ -56,6 +57,35 @@ $(document).ready(function() {
     //        if ( scrolledDown && globalScope.scale >0.5) { changeScale(-.1); }
     //     }
     //  });
+=======
+    window.addEventListener('mousewheel', function ( event ) {
+        updateCanvas=true;
+        // toBeUpdated=true;
+
+
+
+        event.preventDefault()
+         var deltaY = event.wheelDelta;
+        // dummyCounter++;
+         var scrolledUp = deltaY < 0;
+        var scrolledDown = deltaY > 0;
+        // if(dummyCounter!=3)return;
+        // dummyCounter=0;
+        if(event.ctrlKey){
+          if ( scrolledUp && globalScope.scale > 0.5) { changeScale(-.1); }
+         if ( scrolledDown && globalScope.scale < 4) { changeScale(.1); }
+        }
+        else{
+            if ( scrolledUp && globalScope.scale < 4) { changeScale(.1); }
+           if ( scrolledDown && globalScope.scale >0.5) { changeScale(-.1); }
+        }
+
+        updateCanvas=true;
+        //INEFFICIENT CODE scheduleUpdate not working
+        // scheduleUpdate();
+        update()
+    });
+>>>>>>> master
 
 
     var iconList=$('.icon');

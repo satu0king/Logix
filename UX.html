@@ -14,8 +14,11 @@
 <body onload="setup()">
 
 <div class="toolbar" id="toolbar">
-<div class="toolbarButton logixButton" id="clearProject" >New Project</div>
-<div class="toolbarButton logixButton" id="Save">Save</div>
+<div class="toolbarButton logixButton right" id="clearProject" >Clear Project</div>
+<div class="toolbarButton logixButton " id="newProject" >New Project</div>
+<div class="toolbarButton logixButton" id="save">Save Online</div>
+<div class="toolbarButton logixButton" id="saveOffline">Save Offline</div>
+<div class="toolbarButton logixButton" id="createOpenLocalPrompt">Open Offline</div>
 <div class="toolbarButton logixButton" id="createSaveAsImgPrompt" >Download Image</div>
 <div class="toolbarButton logixButton" id="newCircuit">New Circuit +</div>
 <div class="toolbarButton logixButton" id="createSubCircuitPrompt">Insert SubCircuit</div>
@@ -91,8 +94,7 @@
             </div>
         </div>
 
-        <div class="moduleProperty effect1" id="moduleProperty">
-        </div>
+        <div class="moduleProperty effect1" id="moduleProperty"></div>
 
     </div>
     <div class="simulation" id="simulation" >
@@ -110,8 +112,8 @@
 
      </div>
 
-     <div id="combinationalAnalysis" title="BooleanLogicTable">
-     <div id="saveImageDialog" style="display:none;">
+     <div id="combinationalAnalysis"  style="display:none;" title="BooleanLogicTable">
+     <div id="saveImageDialog" style="display:none;" title="Render Image">
        <p>
         PNG: <input type="radio" name="imgType" value="png" checked="checked" />
          JPEG: <input type="radio" name="imgType" value="jpeg" />
@@ -137,7 +139,9 @@
 
      </div>
 
-     <div id="insertSubcircuitDialog" style="display:none;">
+     <div id="insertSubcircuitDialog" style="display:none;"  title="Insert SubCircuit">
+
+     <div id="openProjectDialog" style="display:none;"  title="Open Project">
 
      </div>
 </div>

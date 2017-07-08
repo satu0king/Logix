@@ -19,6 +19,15 @@ function clearProject(){
     newCircuit("main");
 
 }
+function newProject(verify){
+
+    if(verify||projectSaved||!checkToSave()||confirm("What you like to start a new project? Any unsaved chanegs will be lost.")){
+        clearProject();
+        projectName = undefined;
+        projectId = generateId();
+    }
+
+}
 function generateSvg(){
     resolution=1;
     view = "full"
@@ -164,20 +173,38 @@ function extract(obj) {
     return obj.saveObject();
 }
 
+function checkIfBackup(scope){
+    for(var i=0;i<scope.objects.length;i++)
+        if(scope[scope.objects[i]].length)return true;
+    return false;
+}
 function scheduleBackup(scope = globalScope) {
     // return;
     // setTimeout(function(){
+    if(!checkIfBackup(scope))return;
+
     var backup = JSON.stringify(backUp(scope));
     // if(backups.length==0||backups[backups.length-1]!=backup){
     if (scope.backups.length == 0 || scope.backups[scope.backups.length - 1] != backup) {
         scope.backups.push(backup);
         scope.timeStamp = new Date().getTime();
+        projectSaved=false;
     }
 
     return backup;
 
     // }
     // }, 1000);
+}
+
+function generateId() {
+  var id = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 10; i++)
+    id += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return id;
 }
 
 //fn to create save data
@@ -215,10 +242,12 @@ function generateDependencyOrder() {
     }
 }
 
-function generateSaveData(){
-    data = {}
-    data["name"] = "DATA"; //prompt("EnterName:");
+function generateSaveData(name) {
+    data = {};
+    data["name"] = projectName||name||prompt("Enter Project Name:")||"Untitled";
+    projectName=data["name"];
     data["timePeriod"] = simulationArea.timePeriod;
+    data["projectId"]=projectId;
     data.scopes = []
     var dependencyList = {};
     var completed = {};
@@ -245,7 +274,8 @@ function generateSaveData(){
     data = JSON.stringify(data);
     return data;
 }
-function Save() {
+function save() {
+    projectSaved=true;
     // var data = backUp();
 
     var data=generateSaveData();
@@ -263,6 +293,11 @@ function Save() {
 function load(data) {
     // $('#' + globalScope.id).remove();
     // delete scopeList[globalScope.id];
+
+    projectId=data.projectId;
+    projectName=data.name;
+    if(data.name=="Untitled:Recovered")
+        projectName=undefined;
     globalScope=undefined;
     scopeList={};
     $('.circuits').remove();
@@ -271,6 +306,7 @@ function load(data) {
         var scope = newCircuit(data.scopes[i].name, data.scopes[i].id);
         loadScope(scope, data.scopes[i]);
     }
+    simulationArea.changeClockTime(data["timePeriod"] || 500);
 }
 
 function loadModule(data, scope) {
@@ -340,7 +376,7 @@ function loadScope(scope, data) {
 
 
 createSaveAsImgPrompt = function(scope = globalScope) {
-$('#saveImageDialog').dialog({
+    $('#saveImageDialog').dialog({
         width: "auto",
         buttons: [{
             text: "Render Circuit Image",
@@ -363,6 +399,26 @@ $('#saveImageDialog').dialog({
     });
 }
 
+createOpenLocalPrompt = function() {
+    $('#openProjectDialog').empty();
+    var projectList=JSON.parse(localStorage.getItem("projectList"));
+    for(id in projectList){
+        $('#openProjectDialog').append('<p>'+projectList[id]+'<input type="radio" name="projectId" value="'+id+'" />'+'</p>');
+    }
+$('#openProjectDialog').dialog({
+        width: "auto",
+        buttons: [{
+            text: "Open Project",
+            click: function(){
+                if(!$("input[name=projectId]:checked").val())return;
+                load(JSON.parse(localStorage.getItem($("input[name=projectId]:checked").val())));
+                $(this).dialog("close");
+            },
+        }]
+
+    });
+
+}
 createSubCircuitPrompt = function(scope = globalScope) {
     $('#insertSubcircuitDialog').empty();
     for(id in scopeList){
@@ -384,9 +440,36 @@ $('#insertSubcircuitDialog').dialog({
 
 }
 
+function saveOffline(){
+    projectSaved=true;
+    // localStorage.removeItem("previousProjectId");
+    var data=generateSaveData();
+    localStorage.setItem(projectId,data);
+    var temp=JSON.parse(localStorage.getItem("projectList"))||{};
+    temp[projectId]=projectName;
+    localStorage.setItem("projectList",JSON.stringify(temp));
+}
+function checkToSave(){
+    var save=false
+    for(id in scopeList){
+        save|=checkIfBackup(scopeList[id]);
+    }
+    return save;
+}
 window.onbeforeunload = function(){
-   localStorage.setItem("local",generateSaveData());
-   localStorage.setItem("localHash",window.location.hash);
+  if(projectSaved)return;
+
+
+   if(!checkToSave())return;
+
+   // localStorage.setItem("previousProjectId",projectId);
+   var data=generateSaveData("Untitled:Recovered");
+   localStorage.setItem("recover",data);
+   // localStorage.setItem(projectId,data);
+   // var temp=JSON.parse(localStorage.getItem("projectList"))||[];
+   // if(!temp.contains(projectId))
+   //     temp.push(projectId);
+   // localStorage.setItem("projectList",JSON.stringify(temp));
 
 }
 
