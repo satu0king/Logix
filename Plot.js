@@ -3,7 +3,7 @@ function addPlot(){
   plotArea.oy = 0;
   plotArea.count = 0;
   plotArea.unit = 1000;//parseInt(prompt("Enter unit of time(in milli seconds)"));
-
+  plotArea.specificTimeX = 0;
 
 }
 
