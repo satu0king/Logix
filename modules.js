@@ -1419,9 +1419,8 @@ function Output(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1) {
             return;
         }
 
-
         if(this.plotValue[this.plotValue.length-1][1]==this.inp1.value)
-           this.plotValue[this.plotValue.length-1][0]=time;
+           return;
         else
            this.plotValue.push([time,this.inp1.value]);
     }

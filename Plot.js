@@ -27,8 +27,8 @@ StopWatch.prototype.Stop = function()
 function startPlot(){
     plotArea.stopWatch.Start();
     for(var i=0;i<globalScope.Output.length;i++)
-        globalScope.Output[i].plotValue=[[0,globalScope.Output[i].state]];
-    play();
+        globalScope.Output[i].plotValue=[];//[[0,globalScope.Output[i].state]];
+    // play();
     addPlot();
 }
 var plotArea = {
@@ -54,10 +54,12 @@ var plotArea = {
       var time=this.stopWatch.ElapsedMilliseconds;
       this.c.width = window.plot.clientWidth;//innerWidth;
       this.c.height = window.plot.clientHeight;
+
       if(this.checkScroll == 0){
         this.ox = (time/this.unit - 8)*this.pixel;
       }
       context = this.c.getContext("2d");
+      this.clear();
       context.fillStyle = 'black';
       context.fillRect(0, 0, this.c.width, this.c.height);
       for(var i=0;i<globalScope.Output.length;i++)
@@ -155,7 +157,7 @@ var plotArea = {
   },
   clear: function(){
     context.clearRect(0,0,plotArea.c.width,plotArea.c.height);
-    clearInterval(timeOutPlot);
+    // clearInterval(timeOutPlot);
   }
 
 }
@@ -208,7 +210,7 @@ var plotArea = {
         }
       }
   });
-  window.addEventListener('mousedown', function(e) {
+  document.getElementById("plotArea").addEventListener('mousedown', function(e) {
     var rect = plotArea.c.getBoundingClientRect();
     plotArea.specificTimeX = e.clientX - rect.left;
   });
