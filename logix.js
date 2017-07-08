@@ -229,6 +229,7 @@ window.addEventListener('orientationchange', resetup);
 
 //Main fn that resolves circuit
 function play(scope = globalScope, resetNodes = true) {
+    // throw("ERROR");
     if (errorDetected) return;
 
     // console.log("simulation");

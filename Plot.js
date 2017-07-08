@@ -27,7 +27,7 @@ StopWatch.prototype.Stop = function()
 function startPlot(){
     plotArea.stopWatch.Start();
     for(var i=0;i<globalScope.Output.length;i++)
-        globalScope.Output[i].plotValue=[];//[[0,globalScope.Output[i].state]];
+        globalScope.Output[i].plotValue=[[0,globalScope.Output[i].inp1.value]];
     // play();
     addPlot();
 }
@@ -56,7 +56,7 @@ var plotArea = {
       this.c.height = window.plot.clientHeight;
 
       if(this.checkScroll == 0){
-        this.ox = (time/this.unit - 8)*this.pixel;
+        this.ox = (time/this.unit)*this.pixel -this.c.width+70;
       }
       context = this.c.getContext("2d");
       this.clear();
@@ -66,42 +66,52 @@ var plotArea = {
       {
         context.moveTo(80-plotArea.ox,2*(30+i*15)-plotArea.oy);
         var arr=globalScope.Output[i].plotValue;
-        if(plotArea.count==i){
-          arr.push([time,arr[arr.length-1][1]]);
-          plotArea.count+=1;
-        }
-        for(var j=0;j<arr.length-1;j++)
+        // if(plotArea.count==i){
+        //   arr.push([time,arr[arr.length-1][1]]);
+        //   plotArea.count+=1;
+        // }
+
+        for(var j=0;j<arr.length;j++)
         {
-            if(arr[j][0]<=time)
+            var start=arr[j][0];
+            if(j+1==arr.length)
+              var end=time;
+            else
+              var end=arr[j+1][0];
+
+            if(start<=time)
             {
+
+
+              console.log(start,end)
               context.strokeStyle = 'white';
-              if(globalScope.Output[i].plotValue[j][1]==0 && globalScope.Output[i].bitWidth==1)
+              if(globalScope.Output[i].plotValue[j][1]==1 && globalScope.Output[i].bitWidth==1)
               {
-                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(start/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(30+i*15)-plotArea.oy);
 
                 context.stroke();
               }
               else if(globalScope.Output[i].bitWidth==1) {
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,2*(30+i*15)-plotArea.oy);
                 context.stroke();
               }
               else {
-                context.moveTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-10-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox,2*(25+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
-                context.lineTo(80+(arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox,2*(30+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-10-plotArea.ox,2*(30+i*15)-plotArea.oy);
-                context.lineTo(80+(arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
-                mid = 80+((arr[j+1][0]+arr[j][0])/Math.round(plotArea.unit*plotArea.scale))*this.pixel/2;
+                context.moveTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
+                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-10-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(start/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox,2*(25+i*15)-plotArea.oy);
+                context.lineTo(80+(start/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
+                context.lineTo(80+(start/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-10-plotArea.ox,2*(30+i*15)-plotArea.oy);
+                context.lineTo(80+(end/Math.round(plotArea.unit*plotArea.scale))*this.pixel-plotArea.ox,55+30*i-plotArea.oy);
+                mid = 80+((end+start)/Math.round(plotArea.unit*plotArea.scale))*this.pixel/2;
                 context.font="12px Georgia";
                 context.fillStyle = 'white';
-                if((arr[j][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox <=0 && (arr[j+1][0]/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox >=0){
-                    mid = 80+((arr[j+1][0]-3000)/Math.round(plotArea.unit*plotArea.scale))*this.pixel;
+                if((start/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox <=0 && (end/Math.round(plotArea.unit*plotArea.scale))*this.pixel+10-plotArea.ox >=0){
+                    mid = 80+((end-3000)/Math.round(plotArea.unit*plotArea.scale))*this.pixel;
                   }
-                context.fillText(arr[j+1][1],mid-plotArea.ox,57+30*i-plotArea.oy);
+                context.fillText(arr[j][1],mid-plotArea.ox,57+30*i-plotArea.oy);
                 context.stroke();
               }
             }
@@ -114,7 +124,7 @@ var plotArea = {
 
       context.fillStyle = 'yellow';
       context.fillRect(0, 0, this.c.width, 30);
-      context.font="20px Georgia";
+      context.font="14px Georgia";
       context.fillStyle = 'black';
       for(var i=1; i*Math.round(plotArea.unit*plotArea.scale)<=time + Math.round(plotArea.unit*plotArea.scale) ;i++)
       {
