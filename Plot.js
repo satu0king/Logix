@@ -57,8 +57,14 @@ var plotArea = {
 
       this.stopWatch.Stop();
       var time=this.stopWatch.ElapsedMilliseconds;
-      this.c.width = window.plot.clientWidth;//innerWidth;
-      this.c.height = 100+globalScope.Output.length*50;//window.plot.clientHeight;
+      this.c.width = window.plot.clientWidth; //innerWidth;
+      if(globalScope.Output.length < 5){  //window.plot.clientHeight;
+      this.c.height = 160;
+      }
+      else{
+        this.c.height = 160 + (globalScope.Output.length - 4)*30;
+      }
+      document.getElementById("plot").style.height = this.c.height + "px";
       window.plot.clientHeight=this.c.height
 
       if(this.scroll){
