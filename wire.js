@@ -1,17 +1,22 @@
 //wire object
 function Wire(node1, node2, scope) {
 
+    this.objectType = "Wire";
     //if data changes
     this.updateData = function() {
         this.node1 = node1;
         this.scope = scope;
         this.node2 = node2;
         this.type = "horizontal";
-        this.x1 = node1.absX();
-        this.y1 = node1.absY();
-        this.x2 = node2.absX();
-        this.y2 = node2.absY();
+        this.x1 = this.node1.absX();
+        this.y1 = this.node1.absY();
+        this.x2 = this.node2.absX();
+        this.y2 = this.node2.absY();
         if (this.x1 == this.x2) this.type = "vertical";
+    }
+
+    this.updateScope=function(scope){
+        this.scope=scope;
     }
 
     this.updateData();
@@ -27,12 +32,21 @@ function Wire(node1, node2, scope) {
 
     this.update = function() {
 
+        if(this.node1.absX()==this.node2.absX()){
+            this.x1=this.x2=this.node1.absX();
+            this.type="vertical";
+        }
+        else if(this.node1.absY()==this.node2.absY()){
+            this.y1=this.y2=this.node1.absY();
+            this.type="horizontal";
+        }
+
         var updated = false;
         if (wireToBeChecked && this.checkConnections()) {
             this.delete();
             return;
         } // SLOW , REMOVE
-        if (simulationArea.mouseDown == true && simulationArea.selected == false && this.checkWithin(simulationArea.mouseDownX, simulationArea.mouseDownY)) {
+        if (simulationArea.shiftDown==false&&simulationArea.mouseDown == true && simulationArea.selected == false && this.checkWithin(simulationArea.mouseDownX, simulationArea.mouseDownY)) {
             simulationArea.selected = true;
             simulationArea.lastSelected = this;
             var n = new Node(simulationArea.mouseDownX, simulationArea.mouseDownY, 2, this.scope.root);
@@ -77,14 +91,16 @@ function Wire(node1, node2, scope) {
     }
     this.draw = function() {
         ctx = simulationArea.context;
+
         var color;
-        if (this.node1.value == undefined)
+        if (this.node1.value == undefined||this.node2.value == undefined)
             color = "red";
         else if (this.node1.bitWidth == 1)
             color = ["red", "DarkGreen", "Lime"][this.node1.value + 1];
         else
             color = "black";
-        drawLine(ctx, this.node1.absX(), this.node1.absY(), this.node2.absX(), this.node2.absY(), color, 3);
+        drawLine(ctx, this.node1.absX(), this.node1.absY(), this.node2.absX(), this.node2.absY(), color, 2);
+
     }
 
     // checks if node lies on wire
