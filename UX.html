@@ -24,6 +24,7 @@
 <div class="toolbarButton logixButton" id="createSubCircuitPrompt">Insert SubCircuit</div>
 
 <div class="toolbarButton logixButton" id="createCombinationalAnalysisPrompt">Combinational Analysis</div>
+<div class="toolbarButton logixButton" id="startPlot">Start Plot</div>
 </div>
 
 <div>
@@ -99,7 +100,7 @@
 
     </div>
     <div class="simulation" id="simulation" >
-        <div id="errorMessageDiv" >
+        <div id="MessageDiv" >
         </div>
 
 
@@ -108,7 +109,7 @@
             <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%;height:100%"></canvas>
         </div>
         <div id="plot" >
-
+            <canvas id="plotArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%"></canvas>
         </div>
 
      </div>
@@ -150,6 +151,7 @@
 
  <!-- <script src="./SAP_DATA.js"></script> -->
  <script src="./logix.js"></script>
+ <script src="./Plot.js"></script>
  <script src="./Node.js"></script>
  <script src="./wire.js"></script>
  <script src="./subcircuit.js"></script>

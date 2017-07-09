@@ -24,14 +24,25 @@ inputList = ["Buffer", "Stepper", "Ground", "Power", "ConstantVal", "Input", "Cl
 scopeList = {};
 globalScope = undefined;
 
+
 function showError(error) {
     // console.log("ERROR: " + error);
     errorDetected = true;
     var id = Math.floor(Math.random() * 10000);
-    $('#errorMessageDiv').append("<div class='errorMessage' id='" + id + "'> " + error + "</div>");
+    $('#MessageDiv').append("<div class='errorMessage' id='" + id + "'> " + error + "</div>");
     setTimeout(function() {
         $('#' + id).fadeOut()
     }, 1500);
+    // console.log("<div class='errorMessage'>"+error+"</div>");
+}
+function showMessage(mes) {
+    // console.log("ERROR: " + error);
+    errorDetected = true;
+    var id = Math.floor(Math.random() * 10000);
+    $('#MessageDiv').append("<div class='normalMessage' id='" + id + "'> " + mes + "</div>");
+    setTimeout(function() {
+        $('#' + id).fadeOut()
+    }, 2500);
     // console.log("<div class='errorMessage'>"+error+"</div>");
 }
 
@@ -149,11 +160,14 @@ function setup() {
 
     toBeUpdated = true;
     width = document.getElementById("simulation").clientWidth;
-    height = document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight;
-    document.getElementById("canvasArea").style.height = height;
+    height = document.getElementById("simulation").clientHeight-document.getElementById("plot").clientHeight;
+    document.getElementById("canvasArea").style.height=height;
+    plotArea.c.width = document.getElementById("plot").clientWidth;
+    plotArea.c.height = document.getElementById("plot").clientHeight
     // console.log(width);
     //setup simulationArea
     backgroundArea.setup();
+    plotArea.setup();
     simulationArea.setup();
     // update();
     dots();
@@ -220,8 +234,11 @@ function resetup() {
     simulationArea.canvas.height = height;
     backgroundArea.canvas.width = width;
     backgroundArea.canvas.height = height;
+    plotArea.c.width = document.getElementById("plot").clientWidth;
+    plotArea.c.height = document.getElementById("plot").clientHeight
     // simulationArea.setup();
-    scheduleUpdate();
+    updateCanvas=true;
+    update(); // INEFFICENT
     dots(true, false);
 }
 
@@ -233,10 +250,13 @@ window.addEventListener('orientationchange', resetup);
 
 //Main fn that resolves circuit
 function play(scope = globalScope, resetNodes = true) {
+    // throw("ERROR");
     if (errorDetected) return;
 
     // console.log("simulation");
     if (loading == true) return;
+
+    plotArea.stopWatch.Stop();
 
     if (resetNodes) {
         for (var i = 0; i < scope.allNodes.length; i++)
@@ -270,6 +290,9 @@ function play(scope = globalScope, resetNodes = true) {
             return;
         }
     }
+
+    for(var i=0;i<scope.Flag.length;i++)
+        scope.Flag[i].setPlotValue();
     // for (var i = 0; i < scope.SubCircuit.length; i++) {
     //     if(!scope.SubCircuit[i].isResolvable())
     //         {
@@ -332,7 +355,7 @@ var simulationArea = {
         this.canvas.height = height;
         this.context = this.canvas.getContext("2d");
         // this.interval = setInterval(update, 100);
-        this.ClockInterval = setInterval(clockTick, 500);
+        // this.ClockInterval = setInterval(clockTick, 500);
         this.mouseDown = false;
         // this.shiftDown=false;
 
@@ -516,11 +539,6 @@ function update(scope = globalScope) {
     toBeUpdated = updateCanvas = false;
 }
 
-// function sort2(a1,a2){
-//     if(a1<=a2)
-//     return [a1,a2];
-//     return [a2,a1];
-// }
 
 
 
