@@ -227,7 +227,8 @@ function resetup() {
     plotArea.c.width = document.getElementById("plot").clientWidth;
     plotArea.c.height = document.getElementById("plot").clientHeight
     // simulationArea.setup();
-    scheduleUpdate();
+    updateCanvas=true;
+    update(); // INEFFICENT
     dots(true, false);
 }
 

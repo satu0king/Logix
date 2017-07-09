@@ -10,7 +10,7 @@ $(document).ready(function() {
     });
     // $( "#plot" ).resizable({
     // handles: 'n',
-    //     minHeight:200,
+    //     // minHeight:200,
     // });
 
     $('.logixModules').click(function(){

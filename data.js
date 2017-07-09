@@ -201,7 +201,7 @@ function generateId() {
   var id = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (var i = 0; i < 10; i++)
+  for (var i = 0; i < 20; i++)
     id += possible.charAt(Math.floor(Math.random() * possible.length));
 
   return id;
@@ -296,7 +296,7 @@ function load(data) {
 
     projectId=data.projectId;
     projectName=data.name;
-    if(data.name=="Untitled:Recovered")
+    if(data.name=="Untitled")
         projectName=undefined;
     globalScope=undefined;
     scopeList={};
@@ -463,7 +463,7 @@ window.onbeforeunload = function(){
    if(!checkToSave())return;
 
    // localStorage.setItem("previousProjectId",projectId);
-   var data=generateSaveData("Untitled:Recovered");
+   var data=generateSaveData("Untitled");
    localStorage.setItem("recover",data);
    // localStorage.setItem(projectId,data);
    // var temp=JSON.parse(localStorage.getItem("projectList"))||[];
