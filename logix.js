@@ -29,10 +29,20 @@ function showError(error) {
     // console.log("ERROR: " + error);
     errorDetected = true;
     var id = Math.floor(Math.random() * 10000);
-    $('#errorMessageDiv').append("<div class='errorMessage' id='" + id + "'> " + error + "</div>");
+    $('#MessageDiv').append("<div class='errorMessage' id='" + id + "'> " + error + "</div>");
     setTimeout(function() {
         $('#' + id).fadeOut()
     }, 1500);
+    // console.log("<div class='errorMessage'>"+error+"</div>");
+}
+function showMessage(mes) {
+    // console.log("ERROR: " + error);
+    errorDetected = true;
+    var id = Math.floor(Math.random() * 10000);
+    $('#MessageDiv').append("<div class='normalMessage' id='" + id + "'> " + mes + "</div>");
+    setTimeout(function() {
+        $('#' + id).fadeOut()
+    }, 2500);
     // console.log("<div class='errorMessage'>"+error+"</div>");
 }
 
