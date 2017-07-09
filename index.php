@@ -9,6 +9,7 @@ if(isset($_POST["data"])){
   $data=$_POST["data"];
   for($i=0;$i<=10;$i+=1){
     $hash=generateRandomString();
+    // echo $data;
     $query="INSERT INTO `logix`(`HASHKEY`, `DATA`) VALUES ('$hash','$data')";
     $result = mysqli_query($myConnection,$query);
     if($result)break;
@@ -27,5 +28,5 @@ else if(isset($_POST["retrieve"])){
   exit();
 }
 else
-require("index.html");
+require("UX.html");
 ?>

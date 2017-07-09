@@ -1,21 +1,16 @@
 function clockTick() {
-    globalScope.clockTick();
-    play()
+    if(errorDetected)return;
+
     updateCanvas=true;
     toBeUpdated = true;
     scheduleUpdate();
+    globalScope.clockTick();
+    play();
+
 }
 
-function loadFlipFlop(data, scope) {
-    var v = new FlipFlop(data["x"], data["y"], scope, data["dir"], data["bitWidth"]);
-    v.clockInp = replace(v.clockInp, data["clockInp"]);
-    v.dInp = replace(v.dInp, data["dInp"]);
-    v.qOutput = replace(v.qOutput, data["qOutput"]);
-    v.reset = replace(v.reset, data["reset"]);
-    v.en = replace(v.en, data["en"]);
-}
 
-function FlipFlop(x, y, scope, dir, bitWidth) {
+function FlipFlop(x, y, scope=globalScope, dir="RIGHT", bitWidth=1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     // this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
     // this.direction = dir;
@@ -108,7 +103,7 @@ function FlipFlop(x, y, scope, dir, bitWidth) {
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
         // rect(ctx, xx - 20, yy - 20, 40, 40);
@@ -125,21 +120,14 @@ function FlipFlop(x, y, scope, dir, bitWidth) {
         ctx.fillStyle = "green";
         ctx.textAlign = "center";
         fillText(ctx, this.slaveState.toString(16), xx, yy + 5);
-        ctx.stroke();
+        ctx.fill();
 
     }
 }
 
-function loadTTY(data, scope) {
-    var v = new TTY(data["x"], data["y"], scope, data["dir"], data["rows"],data["cols"]);
-    v.clockInp = replace(v.clockInp, data["clockInp"]);
-    v.asciiInp = replace(v.asciiInp, data["asciiInp"]);
-    v.reset = replace(v.reset, data["reset"]);
-    v.en = replace(v.en, data["en"]);
-}
 
-function TTY(x, y, scope, dir,rows,cols) {
-    CircuitElement.call(this, x, y, scope, dir, 1);
+function TTY(x, y, scope=globalScope,rows=3,cols=32) {
+    CircuitElement.call(this, x, y, scope, "RIGHT", 1);
     this.directionFixed=true;
     this.fixedBitWidth=true;
     this.cols=cols||parseInt(prompt("Enter cols:"));
@@ -162,6 +150,40 @@ function TTY(x, y, scope, dir,rows,cols) {
 
     this.data="";
     this.buffer="";
+
+    this.changeRowSize=function(size){
+        if(size==undefined||size<1||size>10)return;
+        if(this.rows==size)return;
+        var obj=new window[this.objectType](this.x,this.y,this.scope,size,this.cols);
+        this.delete();
+        simulationArea.lastSelected=obj;
+        return obj;
+    }
+    this.changeColSize=function(size){
+        if(size==undefined||size<20||size>100)return;
+        if(this.cols==size)return;
+        var obj=new window[this.objectType](this.x,this.y,this.scope,this.rows,size);
+        this.delete();
+        simulationArea.lastSelected=obj;
+        return obj;
+    }
+    this.mutableProperties={
+        "cols":{
+            name:"Columns",
+            type:"number",
+            max:"100",
+            min:"20",
+            func:"changeColSize",
+        },
+        "rows":{
+            name:"Rows",
+            type:"number",
+            max:"10",
+            min:"1",
+            func:"changeRowSize",
+        }
+    }
+
     // this.newBitWidth = function(bitWidth) {
     //
     // }
@@ -208,7 +230,7 @@ function TTY(x, y, scope, dir,rows,cols) {
             asciiInp: findNode(this.asciiInp),
             reset: findNode(this.reset),
             en: findNode(this.en)},
-            constructorParamaters:[this.direction,this.rows,this.cols],
+            constructorParamaters:[this.rows,this.cols],
         }
         return data;
     }
@@ -218,7 +240,7 @@ function TTY(x, y, scope, dir,rows,cols) {
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
         // rect(ctx, xx - this.elementWidth/2, yy - this.elementHeight/2, this.elementWidth, this.elementHeight);
@@ -243,7 +265,7 @@ function TTY(x, y, scope, dir,rows,cols) {
             lineData+=' '.repeat(this.cols-lineData.length);
             fillText3(ctx, lineData, 0, startY+(i/this.cols)*15+9,xx,yy,fontSize=15,font="Courier New",textAlign="center");
         }
-        ctx.stroke();
+        ctx.fill();
 
     }
     // this.delete = function() {
@@ -256,17 +278,10 @@ function TTY(x, y, scope, dir,rows,cols) {
     // }
 }
 
-function loadKeyboard(data, scope) {
-    var v = new Keyboard(data["x"], data["y"], scope, data["dir"], data["bufferSize"]);
-    v.clockInp = replace(v.clockInp, data["clockInp"]);
-    v.asciiOutput = replace(v.asciiOutput, data["asciiOutput"]);
-    v.reset = replace(v.reset, data["reset"]);
-    v.en = replace(v.en, data["en"]);
-    v.available = replace(v.available, data["available"]);
-}
 
-function Keyboard(x, y, scope, dir,bufferSize) {
-    CircuitElement.call(this, x, y, scope, dir, 1);
+function Keyboard(x, y, scope=globalScope,bufferSize=32) {
+
+    CircuitElement.call(this, x, y, scope,"RIGHT", 1);
     this.directionFixed=true;
     this.fixedBitWidth=true;
 
@@ -284,12 +299,25 @@ function Keyboard(x, y, scope, dir,bufferSize) {
     this.prevClockState = 0;
     this.buffer="";
     this.bufferOutValue=undefined;
-    // this.newBitWidth = function(bitWidth) {
-    //
-    // }
-    // this.dblclick=function(){
-    //
-    // }
+
+    this.changeBufferSize=function(size){
+        if(size==undefined||size<20||size>100)return;
+        if(this.bufferSize==size)return;
+        var obj=new window[this.objectType](this.x,this.y,this.scope,size);
+        this.delete();
+        simulationArea.lastSelected=obj;
+        return obj;
+    }
+    this.mutableProperties={
+        "bufferSize":{
+            name:"Buffer Size",
+            type:"number",
+            max:"100",
+            min:"20",
+            func:"changeBufferSize",
+        }
+    }
+
     this.keyDown=function(key){
         this.buffer+=key;
         if(this.buffer.length>this.bufferSize)
@@ -362,7 +390,7 @@ function Keyboard(x, y, scope, dir,bufferSize) {
             available: findNode(this.available),
             reset: findNode(this.reset),
             en: findNode(this.en)},
-            constructorParamaters:[this.direction,this.bufferSize]
+            constructorParamaters:[this.bufferSize]
         }
         return data;
     }
@@ -372,7 +400,7 @@ function Keyboard(x, y, scope, dir,bufferSize) {
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
         moveTo(ctx, -this.elementWidth/2, this.elementHeight/2-15, xx, yy, this.direction);
@@ -386,17 +414,12 @@ function Keyboard(x, y, scope, dir,bufferSize) {
         ctx.textAlign = "center";
         var lineData=this.buffer+' '.repeat(this.bufferSize-this.buffer.length);
         fillText3(ctx, lineData, 0,+5,xx,yy,fontSize=15,font="Courier New",textAlign="center");
-        ctx.stroke();
+        ctx.fill();
     }
 }
 
-function loadClock(data, scope) {
-    var v = new Clock(data["x"], data["y"], scope, data["dir"]);
-    v.output1 = replace(v.output1, data["output1"]);
 
-}
-
-function Clock(x, y, scope, dir) {
+function Clock(x, y, scope=globalScope, dir="RIGHT") {
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.fixedBitWidth=true;
     this.output1 = new Node(10, 0, 1, this, 1);
@@ -408,7 +431,6 @@ function Clock(x, y, scope, dir) {
         var data = {
             nodes:{output1: findNode(this.output1)},
             constructorParamaters:[this.direction],
-
         }
         return data;
     }
@@ -429,13 +451,13 @@ function Clock(x, y, scope, dir) {
         ctx = simulationArea.context;
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.fillStyle = "white";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
         var yy = this.y;
 
         ctx.beginPath();
         ctx.strokeStyle = ["DarkGreen", "Lime"][this.state];
-        ctx.lineWidth = 2;
+        ctx.lineWidth = this.scope.scale*  2;
         if (this.state == 0) {
             moveTo(ctx, -6, 0, xx, yy, this.direction);
             lineTo(ctx, -6, 6, xx, yy, this.direction);

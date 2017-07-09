@@ -51,6 +51,8 @@ function extractNode(x, scope, parent) {
 //input node=0
 //intermediate node =2
 function Node(x, y, type, parent, bitWidth = undefined) {
+
+
     this.objectType = "Node";
     this.id = 'node' + uniqueIdCounter;
     uniqueIdCounter++;
@@ -58,12 +60,15 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     if (type != 2 && this.parent.nodeList !== undefined)
         this.parent.nodeList.push(this);
     // console.log(this.parent.nodeList);
-    this.leftx = x;
+
     if (bitWidth == undefined) {
         this.bitWidth = parent.bitWidth;
     } else {
         this.bitWidth = bitWidth;
     }
+    this.prevx=undefined;
+    this.prevy=undefined;
+    this.leftx = x;
     this.lefty = y;
     this.x = x;
     this.y = y;
@@ -97,6 +102,28 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     this.refresh();
 
+    this.updateScope=function(scope){
+        this.scope=scope;
+
+    }
+
+    this.converToIntermediate=function(){
+        this.type=2;
+        this.x=this.absX();
+        this.y=this.absY();
+        this.parent=this.scope.root;
+        this.scope.nodes.push(this);
+    }
+
+    this.startDragging=function(){
+        this.oldx = this.x;
+        this.oldy = this.y;
+    }
+    this.drag=function(){
+        this.x = this.oldx + simulationArea.mouseX - simulationArea.mouseDownX;
+        this.y = this.oldy + simulationArea.mouseY - simulationArea.mouseDownY;
+    }
+
     this.saveObject = function() {
 
         if (this.type == 2) {
@@ -127,6 +154,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     this.absY = function() {
         return this.y + this.parent.y;
     }
+
 
 
     this.isResolvable = function() {
@@ -180,8 +208,8 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     }
 
     this.draw = function() {
-        if (this.isHover())
-            console.log(this, this.id);
+        // if (this.isHover())
+        //     console.log(this, this.id);
 
         var ctx = simulationArea.context;
 
@@ -202,9 +230,12 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         }
         // if (this.type != 2) {
 
-        var color = (this.bitWidth != 1 || this.value == undefined) ? "black" : ["green", "lightgreen"][this.value];
-        if (this.type == 1 || this.type == 0) color = "green";
-        drawCircle(ctx, this.absX(), this.absY(), 3, color);
+        var color = "black";
+        if(this.bitWidth==1)color= ["green", "lightgreen"][this.value];
+        if(this.value==undefined)color="red";
+        if(this.type==2)
+        drawCircle(ctx, this.absX(), this.absY(), 2, color);
+        else drawCircle(ctx, this.absX(), this.absY(), 3, "green");
         // }
 
         if (this.highlighted || simulationArea.lastSelected == this || (this.isHover() && !simulationArea.selected && !simulationArea.shiftDown) || simulationArea.multipleObjectSelections.contains(this)) {
@@ -245,6 +276,12 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         }
 
         if (simulationArea.mouseDown && (this.clicked)) {
+
+            if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
+                for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+                    simulationArea.multipleObjectSelections[i].drag();
+                }
+            }
 
             if (this.type == 2) {
                 //console.log(this.absY(),simulationArea.mouseDownY,simulationArea.mouseDownX-this.parent.x);
@@ -290,6 +327,13 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
         if (this.clicked && !this.wasClicked) {
             this.wasClicked = true;
+            // this.drag();
+            if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
+                for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+                    simulationArea.multipleObjectSelections[i].startDragging();
+                }
+            }
+
             if (this.type == 2) {
                 if (simulationArea.shiftDown) {
                     simulationArea.lastSelected = undefined;
@@ -420,8 +464,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     }
 
     this.isHover = function() {
-        if (distance(this.absX(), this.absY(), simulationArea.mouseX, simulationArea.mouseY) <= this.radius * 1.5) return true;
-        return false;
+        return this.absX()==simulationArea.mouseX&&this.absY()==simulationArea.mouseY;
     }
 
     this.nodeConnect = function() {
@@ -451,9 +494,6 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         }
 
     }
-
-
-    this.prevx = this.absX();
-    this.prevy = this.absY();
+    this.cleanDelete=this.delete;
 
 }
