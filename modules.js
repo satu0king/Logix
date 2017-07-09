@@ -2151,19 +2151,39 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         var xx = this.x;
         var yy = this.y;
 
-        rect2(ctx, -40, -10, 80, 20, xx, yy, "RIGHT");
+        rect2(ctx, -80, -14, 120, 30, xx, yy, "RIGHT");
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
         ctx.stroke();
 
+        var xOff = ctx.measureText(this.identifier).width/this.scope.scale;
 
         ctx.beginPath();
-        ctx.fillStyle = "blue";
+        rect2(ctx, -55-(xOff/2), -9, xOff+10, 20, xx, yy, "RIGHT");
+        ctx.fillStyle="black"
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
         ctx.textAlign = "center";
+        ctx.fillStyle = "white";
         if(this.inp1.value!==undefined)
             fillText(ctx, this.identifier +":"+this.inp1.value.toString(16), this.x, this.y + 4,14);
         else
-            fillText(ctx,  this.identifier +":"+"x", this.x, this.y + 4,14);
+            fillText(ctx, this.identifier, xx-50, yy+5 ,14);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.textAlign = "center";
+
+        ctx.fillStyle = ["blue", "red"][+(this.inp1.value == undefined)];
+        if(this.inp1.value!==undefined)
+            fillText(ctx, this.inp1.value.toString(16), xx+25, yy + 5,14);
+
+        else
+            fillText(ctx, "X", xx+25, yy+5 ,14);
+        fillText(ctx,":", xx-12+(xOff/4), yy+5 ,14);
+        ctx.stroke();
         ctx.fill();
     }
 
