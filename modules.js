@@ -1405,25 +1405,25 @@ function Output(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1) {
     this.orientationFixed = false;
     this.setDimensions(this.bitWidth * 10, 10);
     this.inp1 = new Node(this.bitWidth * 10, 0, 0, this);
-    this.plotValue = [];
+    // this.plotValues = [];
 
-    this.resolve = function() {
-
-        var time=plotArea.stopWatch.ElapsedMilliseconds;
-        // console.log("DEB:",time);
-        if(this.plotValue.length&&this.plotValue[this.plotValue.length-1][0]==time)
-            this.plotValue.pop();
-
-        if(this.plotValue.length==0){
-            this.plotValue.push([time,this.inp1.value]);
-            return;
-        }
-
-        if(this.plotValue[this.plotValue.length-1][1]==this.inp1.value)
-           return;
-        else
-           this.plotValue.push([time,this.inp1.value]);
-    }
+    // this.resolve = function() {
+    //
+    //     var time=plotArea.stopWatch.ElapsedMilliseconds;
+    //     // console.log("DEB:",time);
+    //     if(this.plotValues.length&&this.plotValues[this.plotValues.length-1][0]==time)
+    //         this.plotValues.pop();
+    //
+    //     if(this.plotValues.length==0){
+    //         this.plotValues.push([time,this.inp1.value]);
+    //         return;
+    //     }
+    //
+    //     if(this.plotValues[this.plotValues.length-1][1]==this.inp1.value)
+    //        return;
+    //     else
+    //        this.plotValues.push([time,this.inp1.value]);
+    // }
 
     this.customSave = function() {
         var data = {
@@ -2099,13 +2099,29 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
     this.directionFixed = true;
     this.orientationFixed = false;
     this.identifier=identifier||("F"+this.scope.Flag.length);
+    this.plotValues=[];
+    this.inp1 = new Node(40, 0, 0, this);
+    this.setPlotValue=function(){
+        var time=plotArea.stopWatch.ElapsedMilliseconds;
+        // console.log("DEB:",time);
+        if(this.plotValues.length&&this.plotValues[this.plotValues.length-1][0]==time)
+            this.plotValues.pop();
 
-    this.input = new Node(40, 0, 0, this);
+        if(this.plotValues.length==0){
+            this.plotValues.push([time,this.inp1.value]);
+            return;
+        }
+
+        if(this.plotValues[this.plotValues.length-1][1]==this.inp1.value)
+           return;
+        else
+           this.plotValues.push([time,this.inp1.value]);
+    }
     this.customSave = function() {
         var data = {
             constructorParamaters: [this.direction,this.bitWidth],
             nodes: {
-                input: findNode(this.input),
+                inp1: findNode(this.inp1),
             },
             values: {
                 identifier: this.identifier
@@ -2152,8 +2168,8 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         ctx.beginPath();
         ctx.fillStyle = "blue";
         ctx.textAlign = "center";
-        if(this.input.value!==undefined)
-            fillText(ctx, this.identifier +":"+this.input.value.toString(16), this.x, this.y + 4,14);
+        if(this.inp1.value!==undefined)
+            fillText(ctx, this.identifier +":"+this.inp1.value.toString(16), this.x, this.y + 4,14);
         else
             fillText(ctx,  this.identifier +":"+"x", this.x, this.y + 4,14);
         ctx.fill();
@@ -2162,15 +2178,15 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
     this.newDirection = function(dir) {
         if (dir == this.direction) return;
         this.direction = dir;
-        this.input.refresh();
+        this.inp1.refresh();
         if (dir == "RIGHT" || dir == "LEFT") {
-            this.input.leftx = 40;
-            this.input.lefty = 0;
+            this.inp1.leftx = 40;
+            this.inp1.lefty = 0;
         } else {
-            this.input.leftx = 10; //10*this.bitWidth;
-            this.input.lefty = 0;
+            this.inp1.leftx = 10; //10*this.bitWidth;
+            this.inp1.lefty = 0;
         }
-        this.input.refresh();
+        this.inp1.refresh();
     }
 
 }

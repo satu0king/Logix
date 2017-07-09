@@ -26,8 +26,8 @@ StopWatch.prototype.Stop = function()
 
 function startPlot(){
     plotArea.stopWatch.Start();
-    for(var i=0;i<globalScope.Output.length;i++)
-        globalScope.Output[i].plotValue=[[0,globalScope.Output[i].inp1.value]];
+    for(var i=0;i<globalScope.Flag.length;i++)
+        globalScope.Flag[i].plotValues=[[0,globalScope.Flag[i].inp1.value]];
     // play();
     plotArea.scroll=1;
     addPlot();
@@ -62,7 +62,7 @@ var plotArea = {
       var time=this.stopWatch.ElapsedMilliseconds;
       this.c.width = window.plot.clientWidth; //innerWidth;
 
-      this.c.height=Math.min(Math.max(90 + (globalScope.Output.length)*30,0),300);
+      this.c.height=Math.min(Math.max(90 + (globalScope.Flag.length)*30,0),300);
 
       if(document.getElementById("plot").style.height!=this.c.height+"px"){
           document.getElementById("plot").style.height = this.c.height ;
@@ -86,10 +86,10 @@ var plotArea = {
       var unit= (this.pixel/(plotArea.unit*plotArea.scale))
       ctx.strokeStyle = 'cyan';
       ctx.lineWidth = 2;
-      for(var i=0;i<globalScope.Output.length;i++)
+      for(var i=0;i<globalScope.Flag.length;i++)
       {
 
-        var arr=globalScope.Output[i].plotValue;
+        var arr=globalScope.Flag[i].plotValues;
         // ctx.moveTo(80-plotArea.ox,2*(30+i*15-5*arr[0][1])-plotArea.oy);
         // if(plotArea.count==i){
         //   arr.push([time,arr[arr.length-1][1]]);
@@ -111,10 +111,30 @@ var plotArea = {
 
 
 
-              if(globalScope.Output[i].bitWidth==1)
+              if(globalScope.Flag[i].bitWidth==1)
               {
-                ctx.lineTo(80+(start*unit)-plotArea.ox,2*(30+i*15-5*arr[j][1])-plotArea.oy);
-                ctx.lineTo(80+(end*unit)-plotArea.ox,2*(30+i*15-5*arr[j][1])-plotArea.oy);
+
+                if(arr[j][1]!==undefined){
+
+                  if(ctx.strokeStyle=="#000000"){
+                      ctx.stroke()
+                      ctx.beginPath();
+                      ctx.lineWidth=2;
+                    //   ctx.moveTo(80+(start*unit)-plotArea.ox,2*(30+i*15-yOff)-plotArea.oy)
+                      ctx.strokeStyle="cyan";
+                  }
+                  var yOff=5*arr[j][1];
+                }
+                else{
+                    ctx.stroke();
+                    ctx.beginPath();
+                    // ctx.moveTo(80+(start*unit)-plotArea.ox,2*(30+i*15-yOff)-plotArea.oy);
+                    ctx.lineWidth=12;
+                    ctx.strokeStyle = '#000000'; // DIABLED Z STATE FOR NOW
+                    yOff=2.5;
+                }
+                ctx.lineTo(80+(start*unit)-plotArea.ox,2*(30+i*15-yOff)-plotArea.oy);
+                ctx.lineTo(80+(end*unit)-plotArea.ox,2*(30+i*15-yOff)-plotArea.oy);
               }
               else {
                 ctx.beginPath();
@@ -132,7 +152,7 @@ var plotArea = {
                     mid = 80+((end-3000)/Math.round(plotArea.unit*plotArea.scale))*this.pixel;
                   }
 
-                ctx.fillText(arr[j][1],mid-plotArea.ox,57+30*i-plotArea.oy);
+                ctx.fillText(arr[j][1]||"x",mid-plotArea.ox,57+30*i-plotArea.oy);
                 ctx.stroke();
               }
             }
@@ -158,8 +178,8 @@ var plotArea = {
       ctx.fillRect(0,0,75,this.c.height);
       ctx.font="15px Georgia";
       ctx.fillStyle = 'black';
-      for(var i=0;i<globalScope.Output.length;i++){
-        ctx.fillText(globalScope.Output[i].label,5,2*(25+i*15) - plotArea.oy);
+      for(var i=0;i<globalScope.Flag.length;i++){
+        ctx.fillText(globalScope.Flag[i].identifier,5,2*(25+i*15) - plotArea.oy);
         ctx.fillRect(0,2*(13+i*15)+4 - plotArea.oy, 75, 3);
       }
       ctx.fillStyle = '#eee';

@@ -280,6 +280,9 @@ function play(scope = globalScope, resetNodes = true) {
             return;
         }
     }
+
+    for(var i=0;i<scope.Flag.length;i++)
+        scope.Flag[i].setPlotValue();
     // for (var i = 0; i < scope.SubCircuit.length; i++) {
     //     if(!scope.SubCircuit[i].isResolvable())
     //         {
