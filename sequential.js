@@ -170,14 +170,14 @@ function TTY(x, y, scope=globalScope,rows=3,cols=32) {
     this.mutableProperties={
         "cols":{
             name:"Columns",
-            type:"int",
+            type:"number",
             max:"100",
             min:"20",
             func:"changeColSize",
         },
         "rows":{
             name:"Rows",
-            type:"int",
+            type:"number",
             max:"10",
             min:"1",
             func:"changeRowSize",
@@ -311,7 +311,7 @@ function Keyboard(x, y, scope=globalScope,bufferSize=32) {
     this.mutableProperties={
         "bufferSize":{
             name:"Buffer Size",
-            type:"int",
+            type:"number",
             max:"100",
             min:"20",
             func:"changeBufferSize",

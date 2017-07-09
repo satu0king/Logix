@@ -227,7 +227,7 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
     this.mutableProperties = {
         "controlSignalSize": {
             name: "Control Signal Size",
-            type: "int",
+            type: "number",
             max: "32",
             min: "1",
             func: "changeControlSignalSize",
@@ -1520,7 +1520,7 @@ function BitSelector(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 2, sel
     this.mutableProperties = {
         "selectorBitWidth": {
             name: "Selector Bit Width: ",
-            type: "int",
+            type: "number",
             max: "32",
             min: "1",
             func: "changeSelectorBitWidth",
@@ -2018,7 +2018,7 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
     this.mutableProperties = {
         "controlSignalSize": {
             name: "Control Signal Size",
-            type: "int",
+            type: "number",
             max: "32",
             min: "1",
             func: "changeControlSignalSize",
@@ -2089,6 +2089,88 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
     }
+}
 
+function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
+
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.setDimensions(40, 10);
+    this.rectangleObject=false;
+    this.directionFixed = true;
+    this.orientationFixed = false;
+    this.identifier=identifier||("F"+this.scope.Flag.length);
+
+    this.input = new Node(40, 0, 0, this);
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.direction,this.bitWidth],
+            nodes: {
+                input: findNode(this.input),
+            },
+            values: {
+                identifier: this.identifier
+            }
+        }
+        return data;
+    }
+    this.changeControlSignalSize = function(size) {
+        if (size == undefined || size < 1 || size > 32) return;
+        if (this.controlSignalSize == size) return;
+        var obj = new window[this.objectType](this.x, this.y, this.scope, this.direction, this.bitWidth, size);
+        this.cleanDelete();
+        simulationArea.lastSelected = obj;
+        return obj;
+    }
+    this.setIdentifier=function(id=""){
+        if(id.length==0)return;
+        this.identifier=id;
+    }
+    this.mutableProperties = {
+        "identifier": {
+            name: "Debug Flag identifier",
+            type: "text",
+            maxlength: "5",
+            func: "setIdentifier",
+        },
+    }
+
+    this.customDraw = function() {
+        ctx = simulationArea.context;
+        ctx.beginPath();
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.fillStyle = "white";
+        ctx.lineWidth = this.scope.scale*1;
+        var xx = this.x;
+        var yy = this.y;
+
+        rect2(ctx, -40, -10, 80, 20, xx, yy, "RIGHT");
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+
+
+        ctx.beginPath();
+        ctx.fillStyle = "blue";
+        ctx.textAlign = "center";
+        if(this.input.value!==undefined)
+            fillText(ctx, this.identifier +":"+this.input.value.toString(16), this.x, this.y + 4,14);
+        else
+            fillText(ctx,  this.identifier +":"+"x", this.x, this.y + 4,14);
+        ctx.fill();
+    }
+
+    this.newDirection = function(dir) {
+        if (dir == this.direction) return;
+        this.direction = dir;
+        this.input.refresh();
+        if (dir == "RIGHT" || dir == "LEFT") {
+            this.input.leftx = 40;
+            this.input.lefty = 0;
+        } else {
+            this.input.leftx = 10; //10*this.bitWidth;
+            this.input.lefty = 0;
+        }
+        this.input.refresh();
+    }
 
 }
