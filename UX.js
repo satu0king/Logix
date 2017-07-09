@@ -10,7 +10,7 @@ $(document).ready(function() {
     });
     // $( "#plot" ).resizable({
     // handles: 'n',
-    //     minHeight:200,
+    //     // minHeight:200,
     // });
 
     $('.logixModules').click(function(){
@@ -127,11 +127,15 @@ function showProperties(obj){
     if(obj.mutableProperties){
         for( attr in obj.mutableProperties){
             var prop=obj.mutableProperties[attr];
-            if(obj.mutableProperties[attr].type=="int"){
+            if(obj.mutableProperties[attr].type=="number"){
                 var s="<p>" +prop.name+ "<input class='objectPropertyAttribute' type='number'  name='"+prop.func+"' min='"+(prop.min||0)+"' max='"+(prop.max||200)+"' value="+obj[attr]+"></p>";
-                // console.log(s);
                 $('#moduleProperty').append(s);
             }
+            else if(obj.mutableProperties[attr].type=="text"){
+                var s="<p>" +prop.name+ "<input class='objectPropertyAttribute' type='text'  name='"+prop.func+"' maxlength='"+(prop.maxlength||200)+"' value="+obj[attr]+"></p>";
+                $('#moduleProperty').append(s);
+            }
+
         }
     }
 
@@ -139,7 +143,7 @@ function showProperties(obj){
 
     $(".objectPropertyAttribute").on("change keyup paste click", function(){
         // return;
-        console.log(this.name,this.value);
+        console.log(this.name+":"+this.value);
         scheduleUpdate();
         updateCanvas = true;
         wireToBeChecked = 1;
