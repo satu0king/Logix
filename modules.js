@@ -2132,8 +2132,8 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         ctx.beginPath();
         ctx.textAlign = "center";
         ctx.fillStyle = "white";
-        if(this.input.value!==undefined)
-            fillText(ctx, this.identifier, xx-50, yy + 5,14);
+        if(this.inp1.value!==undefined)
+            fillText(ctx, this.identifier +":"+this.inp1.value.toString(16), this.x, this.y + 4,14);
         else
             fillText(ctx, this.identifier, xx-50, yy+5 ,14);
         ctx.fill();
@@ -2153,24 +2153,15 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
     this.newDirection = function(dir) {
         if (dir == this.direction) return;
         this.direction = dir;
-        this.input.refresh();
-        if (dir == "RIGHT") {
-            this.input.leftx = 40;
-            this.input.lefty = 0;
+        this.inp1.refresh();
+        if (dir == "RIGHT" || dir == "LEFT") {
+            this.inp1.leftx = 40;
+            this.inp1.lefty = 0;
+        } else {
+            this.inp1.leftx = 10; //10*this.bitWidth;
+            this.inp1.lefty = 0;
         }
-        else if (dir == "LEFT") {
-            this.input.leftx = 80;
-            this.input.lefty = 0;
-        }
-        else if (dir == "UP") {
-            this.input.leftx = 14;
-            this.input.lefty = -15;
-        }
-        else {
-            this.input.leftx = 16;
-            this.input.lefty = -15;
-        }
-        this.input.refresh();
+        this.inp1.refresh();
     }
 
 }
