@@ -17,6 +17,7 @@ function clearProject(){
     scopeList={};
     $('.circuits').remove();
     newCircuit("main");
+    showMessage("Your project is as good as new!");
 
 }
 function newProject(verify){
@@ -25,6 +26,7 @@ function newProject(verify){
         clearProject();
         projectName = undefined;
         projectId = generateId();
+        showMessage("New Project has been created!");
     }
 
 }
@@ -287,6 +289,7 @@ function save() {
     http.send(params);
     http.onload = function() {
         window.location.hash = http.responseText; // assign hash key
+        showMessage("We have saved your project: "+projectName+" in our servers.");
     }
 }
 
@@ -448,6 +451,7 @@ function saveOffline(){
     var temp=JSON.parse(localStorage.getItem("projectList"))||{};
     temp[projectId]=projectName;
     localStorage.setItem("projectList",JSON.stringify(temp));
+    showMessage("We have saved your project: "+projectName+" in your browser's localStorage");
 }
 function checkToSave(){
     var save=false
