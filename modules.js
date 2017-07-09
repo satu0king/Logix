@@ -2129,14 +2129,6 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         }
         return data;
     }
-    this.changeControlSignalSize = function(size) {
-        if (size == undefined || size < 1 || size > 32) return;
-        if (this.controlSignalSize == size) return;
-        var obj = new window[this.objectType](this.x, this.y, this.scope, this.direction, this.bitWidth, size);
-        this.cleanDelete();
-        simulationArea.lastSelected = obj;
-        return obj;
-    }
     this.setIdentifier=function(id=""){
         if(id.length==0)return;
         this.identifier=id;
