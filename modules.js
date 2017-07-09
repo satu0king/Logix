@@ -2094,14 +2094,6 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         }
         return data;
     }
-    this.changeControlSignalSize = function(size) {
-        if (size == undefined || size < 1 || size > 32) return;
-        if (this.controlSignalSize == size) return;
-        var obj = new window[this.objectType](this.x, this.y, this.scope, this.direction, this.bitWidth, size);
-        this.cleanDelete();
-        simulationArea.lastSelected = obj;
-        return obj;
-    }
     this.setIdentifier=function(id=""){
         if(id.length==0)return;
         this.identifier=id;
@@ -2124,19 +2116,37 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         var xx = this.x;
         var yy = this.y;
 
-        rect2(ctx, -40, -10, 80, 20, xx, yy, "RIGHT");
+        rect2(ctx, -80, -14, 120, 30, xx, yy, "RIGHT");
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
         ctx.stroke();
 
+        var xOff = ctx.measureText(this.identifier).width/this.scope.scale;
 
         ctx.beginPath();
-        ctx.fillStyle = "blue";
+        rect2(ctx, -55-(xOff/2), -9, xOff+10, 20, xx, yy, "RIGHT");
+        ctx.fillStyle="black"
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
         ctx.textAlign = "center";
+        ctx.fillStyle = "white";
         if(this.input.value!==undefined)
-            fillText(ctx, this.identifier +":"+this.input.value.toString(16), this.x, this.y + 4,14);
+            fillText(ctx, this.identifier, xx-50, yy + 5,14);
         else
-            fillText(ctx,  this.identifier +":"+"x", this.x, this.y + 4,14);
+            fillText(ctx, this.identifier, xx-50, yy+5 ,14);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.textAlign = "center";
+        ctx.fillStyle = ["blue", "red"][+(this.input.value == undefined)];
+        if(this.input.value!==undefined)
+            fillText(ctx, this.input.value.toString(16), xx+25, yy + 5,14);
+        else
+            fillText(ctx, "X", xx+25, yy+5 ,14);
+        fillText(ctx,":", xx-12+(xOff/4), yy+5 ,14);
+        ctx.stroke();
         ctx.fill();
     }
 
@@ -2144,12 +2154,21 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         if (dir == this.direction) return;
         this.direction = dir;
         this.input.refresh();
-        if (dir == "RIGHT" || dir == "LEFT") {
+        if (dir == "RIGHT") {
             this.input.leftx = 40;
             this.input.lefty = 0;
-        } else {
-            this.input.leftx = 10; //10*this.bitWidth;
+        }
+        else if (dir == "LEFT") {
+            this.input.leftx = 80;
             this.input.lefty = 0;
+        }
+        else if (dir == "UP") {
+            this.input.leftx = 14;
+            this.input.lefty = -15;
+        }
+        else {
+            this.input.leftx = 16;
+            this.input.lefty = -15;
         }
         this.input.refresh();
     }
