@@ -31,6 +31,7 @@ function addControlledInverter() {
 }
 
 function addInput() {
+    // console.log("hello?");
     var a = new Input(200, 150, globalScope, "RIGHT");
 }
 
@@ -95,15 +96,33 @@ function addNand() {
 }
 
 function addXor() {
-    var or = new XorGate(200, 150, globalScope, "RIGHT", prompt("No of inputs:"));
+    var a = new XorGate(200, 150, globalScope, "RIGHT", prompt("No of inputs:"));
 }
 
 function addXnor() {
-    var or = new XnorGate(200, 150, globalScope, "RIGHT", prompt("No of inputs:"));
+    var a = new XnorGate(200, 150, globalScope, "RIGHT", prompt("No of inputs:"));
 }
 
 function addDigitalLed(){
-    var or = new DigitalLed(200, 150, globalScope, "UP");
+    var a = new DigitalLed(200, 150, globalScope, "UP");
+}
+
+function addVariableLed(){
+    var a = new VariableLed(200, 150, globalScope, "UP");
+}
+
+function addRGBLed(){
+    var or = new RGBLed(200, 150, globalScope, "UP");
+}
+
+function addStepper(){
+    var a = new Stepper(200, 150, globalScope,"RIGHT");
+}
+function addButton(){
+    var a = new Button(200, 150, globalScope, "RIGHT");
+}
+function addDemultiplexer() {
+    var a = new Demultiplexer(200, 150, globalScope, "RIGHT");
 }
 document.getElementById("powerButton").addEventListener("click", addPower);
 document.getElementById("bitSelectorButton").addEventListener("click", addBitSelector);
@@ -128,9 +147,13 @@ document.getElementById("saveButton").addEventListener("click", Save);
 document.getElementById("splitterButton").addEventListener("click", addSplitter);
 document.getElementById("constantValButton").addEventListener("click", addConstantVal);
 document.getElementById("NAND").addEventListener("click", addNand);
-
 document.getElementById("xorButton").addEventListener("click", addXor);
 document.getElementById("xnorButton").addEventListener("click", addXnor);
 document.getElementById("keyboardButton").addEventListener("click", addKeyboard);
 document.getElementById("norButton").addEventListener("click", addNor);
 document.getElementById("digitalledButton").addEventListener("click", addDigitalLed);
+document.getElementById("variableledButton").addEventListener("click", addVariableLed);
+document.getElementById("stepperButton").addEventListener("click", addStepper);
+document.getElementById("buttonButton").addEventListener("click", addButton);
+document.getElementById("rgbledButton").addEventListener("click", addRGBLed);
+document.getElementById("demultiplexerButton").addEventListener("click", addDemultiplexer);
