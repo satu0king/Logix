@@ -2070,6 +2070,53 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
     }
+}
+
+function Flag(x, y, scope = globalScope, dir = "RIGHT") {
+
+    CircuitElement.call(this, x, y, scope, dir, 8);
+    this.setDimensions(20, 20);
+    this.rectangleObject=false;
+
+    this.input = new Node(20, 0, 0, this, 8);
+    this.state = 0;
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.direction],
+            nodes: {
+                input: findNode(this.input),
+            },
+            values: {
+                state: this.state
+            }
+        }
+        return data;
+    }
+    this.customDraw = function() {
+        ctx = simulationArea.context;
+        ctx.beginPath();
+        ctx.strokeStyle = ("rgba(0,0,0,1)");
+        ctx.fillStyle = "white";
+        ctx.lineWidth = this.scope.scale*  0.5;
+        var xx = this.x;
+        var yy = this.y;
+
+        rect2(ctx, -20, -20, 40, 40, xx, yy, "RIGHT");
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
 
 
+        ctx.beginPath();
+        ctx.fillStyle = "green";
+        ctx.textAlign = "center";
+        var bin = this.state; //dec2bin(this.state,this.bitWidth);
+        fillText(ctx, this.state.toString(16), this.x, this.y + 5);      
+        ctx.fill();
+    }
+
+    this.resolve = function() {
+        console.log("input:",this.input.value)
+        this.state=this.input.value;
+    }
 }
