@@ -2151,7 +2151,7 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         var xx = this.x;
         var yy = this.y;
 
-        rect2(ctx, -80, -14, 120, 30, xx, yy, "RIGHT");
+        rect2(ctx, -80, -20, 120, 40, xx, yy, "RIGHT");
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
         ctx.stroke();
@@ -2159,7 +2159,7 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         var xOff = ctx.measureText(this.identifier).width/this.scope.scale;
 
         ctx.beginPath();
-        rect2(ctx, -55-(xOff/2), -9, xOff+10, 20, xx, yy, "RIGHT");
+        rect2(ctx, -55-(xOff/2), -12, xOff+10, 25, xx, yy, "RIGHT");
         ctx.fillStyle="black"
         ctx.fill();
         ctx.stroke();
@@ -2168,18 +2168,16 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         ctx.textAlign = "center";
         ctx.fillStyle = "white";
         if(this.inp1.value!==undefined)
-            fillText(ctx, this.identifier +":"+this.inp1.value.toString(16), this.x, this.y + 4,14);
+            fillText(ctx, this.identifier, xx-50, yy + 5,14);
         else
             fillText(ctx, this.identifier, xx-50, yy+5 ,14);
         ctx.fill();
 
         ctx.beginPath();
         ctx.textAlign = "center";
-
         ctx.fillStyle = ["blue", "red"][+(this.inp1.value == undefined)];
         if(this.inp1.value!==undefined)
             fillText(ctx, this.inp1.value.toString(16), xx+25, yy + 5,14);
-
         else
             fillText(ctx, "X", xx+25, yy+5 ,14);
         fillText(ctx,":", xx-12+(xOff/4), yy+5 ,14);
@@ -2191,12 +2189,21 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         if (dir == this.direction) return;
         this.direction = dir;
         this.inp1.refresh();
-        if (dir == "RIGHT" || dir == "LEFT") {
+        if (dir == "RIGHT") {
             this.inp1.leftx = 40;
             this.inp1.lefty = 0;
-        } else {
-            this.inp1.leftx = 10; //10*this.bitWidth;
+        }
+        else if (dir == "LEFT") {
+            this.inp1.leftx = 80;
             this.inp1.lefty = 0;
+        }
+        else if (dir == "UP") {
+            this.inp1.leftx = 20;
+            this.inp1.lefty = -10;
+        }
+        else {
+            this.inp1.leftx = 20;
+            this.inp1.lefty = -10;
         }
         this.inp1.refresh();
     }
