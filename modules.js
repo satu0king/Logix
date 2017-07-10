@@ -2145,8 +2145,8 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
     this.customDraw = function() {
         ctx = simulationArea.context;
         ctx.beginPath();
-        ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.fillStyle = "white";
+        ctx.strokeStyle = "grey";
+        ctx.fillStyle = "#fcfcfc";
         ctx.lineWidth = this.scope.scale*1;
         var xx = this.x;
         var yy = this.y;
@@ -2156,32 +2156,34 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         ctx.fill();
         ctx.stroke();
 
-        var xOff = ctx.measureText(this.identifier).width/this.scope.scale;
 
+
+        ctx.font= "14px Georgia";
+        var xOff = ctx.measureText(this.identifier).width;
         ctx.beginPath();
-        rect2(ctx, -55-(xOff/2), -12, xOff+10, 25, xx, yy, "RIGHT");
-        ctx.fillStyle="black"
+        rect2(ctx, -65, -12, xOff+10, 25, xx, yy, "RIGHT");
+        ctx.fillStyle="#eee"
+        ctx.strokeStyle = "#ccc";
         ctx.fill();
         ctx.stroke();
 
         ctx.beginPath();
+
         ctx.textAlign = "center";
-        ctx.fillStyle = "white";
-        if(this.inp1.value!==undefined)
-            fillText(ctx, this.identifier, xx-50, yy + 5,14);
-        else
-            fillText(ctx, this.identifier, xx-50, yy+5 ,14);
+        ctx.fillStyle = "black";
+        fillText(ctx, this.identifier, xx-60+xOff/2, yy + 5,14);
         ctx.fill();
 
         ctx.beginPath();
+        ctx.font= "30px Georgia";
         ctx.textAlign = "center";
         ctx.fillStyle = ["blue", "red"][+(this.inp1.value == undefined)];
         if(this.inp1.value!==undefined)
-            fillText(ctx, this.inp1.value.toString(16), xx+25, yy + 5,14);
+            fillText(ctx, this.inp1.value.toString(16), xx+17, yy + 8,25);
         else
-            fillText(ctx, "X", xx+25, yy+5 ,14);
-        fillText(ctx,":", xx-12+(xOff/4), yy+5 ,14);
-        ctx.stroke();
+            fillText(ctx, "x", xx+17, yy + 8,25);
+        // fillText(ctx,":", xx-12+(xOff/4), yy+5 ,14);
+        // ctx.stroke();
         ctx.fill();
     }
 
@@ -2199,11 +2201,11 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         }
         else if (dir == "UP") {
             this.inp1.leftx = 20;
-            this.inp1.lefty = -10;
+            this.inp1.lefty = -20;
         }
         else {
             this.inp1.leftx = 20;
-            this.inp1.lefty = -10;
+            this.inp1.lefty = -20;
         }
         this.inp1.refresh();
     }

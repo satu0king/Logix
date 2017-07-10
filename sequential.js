@@ -459,20 +459,20 @@ function Clock(x, y, scope=globalScope, dir="RIGHT") {
         ctx.strokeStyle = ["DarkGreen", "Lime"][this.state];
         ctx.lineWidth = this.scope.scale*  2;
         if (this.state == 0) {
-            moveTo(ctx, -6, 0, xx, yy, this.direction);
-            lineTo(ctx, -6, 6, xx, yy, this.direction);
-            lineTo(ctx, 0, 6, xx, yy, this.direction);
-            lineTo(ctx, 0, -6, xx, yy, this.direction);
-            lineTo(ctx, 6, -6, xx, yy, this.direction);
-            lineTo(ctx, 6, 0, xx, yy, this.direction);
+            moveTo(ctx, -6, 0, xx, yy, "RIGHT");
+            lineTo(ctx, -6, 5, xx, yy, "RIGHT");
+            lineTo(ctx, 0, 5, xx, yy, "RIGHT");
+            lineTo(ctx, 0, -5, xx, yy,"RIGHT");
+            lineTo(ctx, 6, -5, xx, yy, "RIGHT");
+            lineTo(ctx, 6, 0, xx, yy, "RIGHT");
 
         } else {
-            moveTo(ctx, -6, 0, xx, yy, this.direction);
-            lineTo(ctx, -6, -6, xx, yy, this.direction);
-            lineTo(ctx, 0, -6, xx, yy, this.direction);
-            lineTo(ctx, 0, 6, xx, yy, this.direction);
-            lineTo(ctx, 6, 6, xx, yy, this.direction);
-            lineTo(ctx, 6, 0, xx, yy, this.direction);
+            moveTo(ctx, -6, 0, xx, yy,"RIGHT");
+            lineTo(ctx, -6, -5, xx, yy, "RIGHT");
+            lineTo(ctx, 0, -5, xx, yy, "RIGHT");
+            lineTo(ctx, 0, 5, xx, yy, "RIGHT");
+            lineTo(ctx, 6, 5, xx, yy, "RIGHT");
+            lineTo(ctx, 6, 0, xx, yy,"RIGHT");
         }
         ctx.stroke();
 
