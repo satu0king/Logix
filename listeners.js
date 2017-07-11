@@ -34,13 +34,15 @@ window.addEventListener('keydown', function(e) {
     }
 
 
-    if (simulationArea.controlDown&&e.keyCode == 187 && globalScope.scale < 4) {
+    if (simulationArea.controlDown&&e.keyCode == 187) {
         e.preventDefault();
+        if(globalScope.scale<4)
         changeScale(.1);
     }
     // zoom out (-)
-    if (simulationArea.controlDown&&e.keyCode == 189 && globalScope.scale > 0.5) {
+    if (simulationArea.controlDown&&e.keyCode == 189 ) {
         e.preventDefault();
+        if(globalScope.scale>0.5)
         changeScale(-.1);
     }
 
@@ -50,7 +52,7 @@ window.addEventListener('keydown', function(e) {
 
     if (e.keyCode == 16) {
         simulationArea.shiftDown = true;
-        if (simulationArea.lastSelected&&simulationArea.lastSelected.objectType!="Wire") {
+        if (simulationArea.lastSelected&&simulationArea.lastSelected.objectType!="Wire"&&simulationArea.lastSelected.objectType!="CircuitElement") {
             simulationArea.multipleObjectSelections.push(simulationArea.lastSelected);
             // simulationArea.lastSelected = undefined;
         }

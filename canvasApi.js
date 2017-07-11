@@ -21,6 +21,10 @@ function changeScale(delta,xx,yy) {
 
 //fn to draw Dots on screen
 function dots(dots=true, transparentBackground=false) {
+
+
+
+
     if(!backgroundArea.context)return;
     backgroundArea.clear();
     var canvasWidth = backgroundArea.canvas.width; //max X distance
@@ -32,7 +36,25 @@ function dots(dots=true, transparentBackground=false) {
         ctx.rect(0, 0, canvasWidth, canvasHeight);
         ctx.fill();
     }
+    var scale = unit * globalScope.scale;
+    var ox = globalScope.ox % scale; //offset
+    var oy = globalScope.oy % scale; //offset
 
+    ctx.beginPath();
+    ctx.strokeStyle="#eee";
+    ctx.lineWidth=1;
+    for (var i = 0 + ox; i < canvasWidth; i += scale){
+        ctx.moveTo(i,0);
+        ctx.lineTo(i,canvasHeight);
+    }
+    for (var j = 0 + oy; j < canvasHeight; j += scale){
+        ctx.moveTo(0,j);
+        ctx.lineTo(canvasWidth,j);
+    }
+    ctx.stroke();
+
+
+    return ;
     function drawPixel(x, y, r, g, b, a) {
         var index = (x + y * canvasWidth) * 4;
         canvasData.data[index + 0] = r;
@@ -43,9 +65,7 @@ function dots(dots=true, transparentBackground=false) {
     if (dots) {
         var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
 
-        var scale = unit * globalScope.scale;
-        var ox = globalScope.ox % scale; //offset
-        var oy = globalScope.oy % scale; //offset
+
 
         for (var i = 0 + ox; i < canvasWidth; i += scale)
             for (var j = 0 + oy; j < canvasHeight; j += scale)
