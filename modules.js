@@ -2207,5 +2207,60 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
         }
         this.inp1.refresh();
     }
-
 }
+
+function PriortyEncoder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
+
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.setDimensions(20, 20);
+    this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
+    this.rectangleObject = false;
+    this.inputSize = 1 << this.bitWidth;
+
+    this.inp1 = new Node(-10, 0, 0, this, this.inputSize);
+    this.output1 = new Node(20, 0, 1, this, this.bitWidth);
+    console.log(this.output1)
+
+    this.customSave = function() {
+        var data = {
+
+            nodes: {
+                inp1: findNode(this.inp1),
+                output1: findNode(this.output1)
+            },
+            constructorParamaters: [this.direction, this.bitWidth],
+        }
+        return data;
+    }
+
+    this.newBitWidth = function(bitWidth) {
+        this.inputSize = 1 << bitWidth
+        this.inp1.bitWidth = this.inputSize;
+        this.bitWidth = bitWidth;
+        this.output1.bitWidth=bitWidth;
+    }
+
+    this.resolve = function() {
+
+        var inp=this.inp1.value;
+        this.output1.value=(dec2bin(inp).length)-1
+        this.scope.stack.push(this.output1);
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+        ctx.beginPath();
+        ctx.strokeStyle = "grey";
+        ctx.fillStyle = "white";
+        ctx.lineWidth = this.scope.scale*  3;
+        var xx = this.x;
+        var yy = this.y;
+        rect(ctx, xx - 10, yy - 30, 30, 60);
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+
+    }
+}
+
