@@ -2222,14 +2222,15 @@ function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
     this.inp1 = new Node(-10, 0, 0, this, this.inputSize);
     this.output1 = new Node(20, 0, 1, this, this.bitWidth);
-    console.log(this.output1)
+    this.enable = new Node(20, 20, 1, this, 1);
 
     this.customSave = function() {
         var data = {
 
             nodes: {
                 inp1: findNode(this.inp1),
-                output1: findNode(this.output1)
+                output1: findNode(this.output1),
+                enable: findNode(this.enable)
             },
             constructorParamaters: [this.direction, this.bitWidth],
         }
@@ -2248,6 +2249,13 @@ function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         var inp=this.inp1.value;
         this.output1.value=(dec2bin(inp).length)-1
         this.scope.stack.push(this.output1);
+        if(inp!=0) {
+            this.enable.value=1;
+        }
+        else {
+            this.enable.value = 0;
+        }
+        this.scope.stack.push(this.enable);
     }
 
     this.customDraw = function() {
@@ -2267,9 +2275,107 @@ function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         ctx.beginPath();
         ctx.fillStyle="black";
         ctx.textAlign="center";
-        fillText(ctx, "M", xx+5, yy-7, 15);
-        fillText(ctx, "S", xx+5, yy+8, 15);
-        fillText(ctx, "B", xx+5, yy+22, 15);
+        fillText(ctx, "MSB", xx+5, yy-10, 10);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle="green";
+        ctx.textAlign="center";
+        if(this.output1.value!=undefined)
+        {
+            fillText(ctx, this.output1.value, xx+5, yy+14, 13);
+        }
+        ctx.stroke();
+        ctx.fill();
+    }
+
+}
+
+
+function LSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
+
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.setDimensions(20, 20);
+    this.directionFixed=true;
+    this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
+    this.rectangleObject = false;
+    this.inputSize = 1 << this.bitWidth;
+
+    this.inp1 = new Node(-10, 0, 0, this, this.inputSize);
+    this.output1 = new Node(20, 0, 1, this, this.bitWidth);
+    this.enable = new Node(20, 20, 1, this, 1);
+
+    this.customSave = function() {
+        var data = {
+
+            nodes: {
+                inp1: findNode(this.inp1),
+                output1: findNode(this.output1),
+                enable: findNode(this.enable)
+            },
+            constructorParamaters: [this.direction, this.bitWidth],
+        }
+        return data;
+    }
+
+    this.newBitWidth = function(bitWidth) {
+        this.inputSize = 1 << bitWidth
+        this.inp1.bitWidth = this.inputSize;
+        this.bitWidth = bitWidth;
+        this.output1.bitWidth=bitWidth;
+    }
+
+    this.resolve = function() {
+
+        var inp=dec2bin(this.inp1.value);
+        var out=0;
+        for(var i=inp.length-1;i>=0;i--) {
+            if(inp[i]==1) {
+                out=inp.length-1-i;
+                break;
+            }
+
+        }
+        this.output1.value=out;
+        this.scope.stack.push(this.output1);
+        if(inp!=0) {
+            this.enable.value=1;
+        }
+        else {
+            this.enable.value = 0;
+        }
+        this.scope.stack.push(this.enable);
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+        ctx.beginPath();
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "white";
+        ctx.lineWidth = this.scope.scale*  3;
+        var xx = this.x;
+        var yy = this.y;
+        rect(ctx, xx - 10, yy - 30, 30, 60);
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.fillStyle="black";
+        ctx.textAlign="center";
+        fillText(ctx, "LSB", xx+5, yy-10, 10);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle="green";
+        ctx.textAlign="center";
+        if(this.output1.value!=undefined)
+        {
+            fillText(ctx, this.output1.value, xx+5, yy+14, 13);
+        }
         ctx.stroke();
         ctx.fill();
     }
