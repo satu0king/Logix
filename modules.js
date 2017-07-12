@@ -2211,10 +2211,11 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
     }
 }
 
-function PriortyEncoder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
+function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.setDimensions(20, 20);
+    this.directionFixed=true;
     this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
     this.rectangleObject = false;
     this.inputSize = 1 << this.bitWidth;
@@ -2253,7 +2254,7 @@ function PriortyEncoder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) 
 
         ctx = simulationArea.context;
         ctx.beginPath();
-        ctx.strokeStyle = "grey";
+        ctx.strokeStyle = "black";
         ctx.fillStyle = "white";
         ctx.lineWidth = this.scope.scale*  3;
         var xx = this.x;
@@ -2263,6 +2264,15 @@ function PriortyEncoder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) 
         ctx.fill();
         ctx.stroke();
 
+        ctx.beginPath();
+        ctx.fillStyle="black";
+        ctx.textAlign="center";
+        fillText(ctx, "M", xx+5, yy-7, 15);
+        fillText(ctx, "S", xx+5, yy+8, 15);
+        fillText(ctx, "B", xx+5, yy+22, 15);
+        ctx.stroke();
+        ctx.fill();
     }
+
 }
 
