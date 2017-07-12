@@ -16,8 +16,8 @@ window.addEventListener('mousemove', function(e) {
     // toBeUpdated=true;
     updateCanvas = true;
     var rect = simulationArea.canvas.getBoundingClientRect();
-    simulationArea.mouseRawX = (e.clientX - rect.left);
-    simulationArea.mouseRawY = (e.clientY - rect.top);
+    simulationArea.mouseRawX = (e.clientX - rect.left)*DPR;
+    simulationArea.mouseRawY = (e.clientY - rect.top)*DPR;
     simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
     simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
 
@@ -36,14 +36,14 @@ window.addEventListener('keydown', function(e) {
 
     if (simulationArea.controlDown&&e.keyCode == 187) {
         e.preventDefault();
-        if(globalScope.scale<4)
-        changeScale(.1);
+        if(globalScope.scale<4*DPR)
+        changeScale(.1*DPR);
     }
     // zoom out (-)
     if (simulationArea.controlDown&&e.keyCode == 189 ) {
         e.preventDefault();
-        if(globalScope.scale>0.5)
-        changeScale(-.1);
+        if(globalScope.scale>0.5*DPR)
+        changeScale(-.1*DPR);
     }
 
 
@@ -142,8 +142,8 @@ document.getElementById("simulationArea").addEventListener('mousedown', function
     simulationArea.lastSelected = undefined;
     simulationArea.selected = false;
     var rect = simulationArea.canvas.getBoundingClientRect();
-    simulationArea.mouseDownRawX = (e.clientX - rect.left);
-    simulationArea.mouseDownRawY = (e.clientY - rect.top);
+    simulationArea.mouseDownRawX = (e.clientX - rect.left)*DPR;
+    simulationArea.mouseDownRawY = (e.clientY - rect.top)*DPR;
     simulationArea.mouseDownX = Math.round(((simulationArea.mouseDownRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
     simulationArea.mouseDownY = Math.round(((simulationArea.mouseDownRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
     simulationArea.mouseDown = true;

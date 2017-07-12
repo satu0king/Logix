@@ -45,12 +45,12 @@ $(document).ready(function() {
         // if(dummyCounter!=3)return;
         // dummyCounter=0;
         if(event.ctrlKey){
-          if ( scrolledUp && globalScope.scale > 0.5) { changeScale(-.1); }
-         if ( scrolledDown && globalScope.scale < 4) { changeScale(.1); }
+          if ( scrolledUp && globalScope.scale > 0.5*DPR) { changeScale(-.1*DPR); }
+         if ( scrolledDown && globalScope.scale < 4*DPR) { changeScale(.1*DPR); }
         }
         else{
-            if ( scrolledUp && globalScope.scale < 4) { changeScale(.1); }
-           if ( scrolledDown && globalScope.scale >0.5) { changeScale(-.1); }
+            if ( scrolledUp && globalScope.scale < 4*DPR) { changeScale(.1*DPR); }
+           if ( scrolledDown && globalScope.scale >0.5*DPR) { changeScale(-.1*DPR); }
         }
 
         updateCanvas=true;

@@ -12,6 +12,7 @@ objectSelection = false;
 errorDetected = false;
 // var backups = []
 loading = false;
+DPR=1;
 projectSaved = true;
 //Exact same name as object constructor
 moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer", "Buffer", "SubCircuit","Flag"];
@@ -109,7 +110,7 @@ function Scope(name = "localScope") {
 
     this.ox = 0;
     this.oy = 0;
-    this.scale = 1;
+    this.scale = 2;
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)
@@ -159,11 +160,13 @@ function setup() {
     // return;
 
     toBeUpdated = true;
-    width = document.getElementById("simulation").clientWidth;
-    height = document.getElementById("simulation").clientHeight-document.getElementById("plot").clientHeight;
-    document.getElementById("canvasArea").style.height=height;
+    DPR=window.devicePixelRatio||1;
+    width = document.getElementById("simulation").clientWidth*DPR;
+    height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
+    document.getElementById("canvasArea").style.height=height/DPR;
     plotArea.c.width = document.getElementById("plot").clientWidth;
-    plotArea.c.height = document.getElementById("plot").clientHeight
+    plotArea.c.height = document.getElementById("plot").clientHeight;
+
     // console.log(width);
     //setup simulationArea
     backgroundArea.setup();
@@ -185,6 +188,7 @@ function setup() {
     //
     // }
     setTimeout(function(){
+        resetup();
         if (window.location.hash.length > 1) {
 
             var http = new XMLHttpRequest();
@@ -227,9 +231,11 @@ function setup() {
 
 //to resize window
 function resetup() {
-    width = document.getElementById("simulation").clientWidth;
-    height = document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight;
-    document.getElementById("canvasArea").style.height = height;
+
+    DPR=window.devicePixelRatio||1;
+    width = document.getElementById("simulation").clientWidth*DPR;
+    height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
+    document.getElementById("canvasArea").style.height = height/DPR;
     simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
     backgroundArea.canvas.width = width;
