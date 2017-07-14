@@ -291,6 +291,15 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle="black";
+        ctx.textAlign="center";
+        for(var i=0; i<this.inputSize; i++) {
+            fillText(ctx, String(i), xx+this.inp[i].x+7, yy+this.inp[i].y+2, 10);
+        }
+        ctx.stroke();
+        ctx.fill();
     }
 
 }
@@ -2088,6 +2097,15 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle="black";
+        ctx.textAlign="center";
+        for(var i=0; i<this.outputsize; i++) {
+            fillText(ctx, String(i), xx+this.output1[i].x-7, yy+this.output1[i].y+2, 10);
+        }
+        ctx.stroke();
+        ctx.fill();
     }
 }
 
@@ -2208,6 +2226,303 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
             this.inp1.lefty = -20;
         }
         this.inp1.refresh();
+    }
+}
+
+function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
+
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.setDimensions(20, 20);
+    this.directionFixed=true;
+    this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
+    this.rectangleObject = false;
+    this.inputSize = 1 << this.bitWidth;
+
+    this.inp1 = new Node(-10, 0, 0, this, this.inputSize);
+    this.output1 = new Node(20, 0, 1, this, this.bitWidth);
+    this.enable = new Node(20, 20, 1, this, 1);
+
+    this.customSave = function() {
+        var data = {
+
+            nodes: {
+                inp1: findNode(this.inp1),
+                output1: findNode(this.output1),
+                enable: findNode(this.enable)
+            },
+            constructorParamaters: [this.direction, this.bitWidth],
+        }
+        return data;
+    }
+
+    this.newBitWidth = function(bitWidth) {
+        this.inputSize = 1 << bitWidth
+        this.inp1.bitWidth = this.inputSize;
+        this.bitWidth = bitWidth;
+        this.output1.bitWidth=bitWidth;
+    }
+
+    this.resolve = function() {
+
+        var inp=this.inp1.value;
+        this.output1.value=(dec2bin(inp).length)-1
+        this.scope.stack.push(this.output1);
+        if(inp!=0) {
+            this.enable.value=1;
+        }
+        else {
+            this.enable.value = 0;
+        }
+        this.scope.stack.push(this.enable);
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+        ctx.beginPath();
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "white";
+        ctx.lineWidth = this.scope.scale*  3;
+        var xx = this.x;
+        var yy = this.y;
+        rect(ctx, xx - 10, yy - 30, 30, 60);
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.fillStyle="black";
+        ctx.textAlign="center";
+        fillText(ctx, "MSB", xx+5, yy-10, 10);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle="green";
+        ctx.textAlign="center";
+        if(this.output1.value!=undefined)
+        {
+            fillText(ctx, this.output1.value, xx+5, yy+14, 13);
+        }
+        ctx.stroke();
+        ctx.fill();
+    }
+
+}
+
+
+function LSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
+
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.setDimensions(20, 20);
+    this.directionFixed=true;
+    this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
+    this.rectangleObject = false;
+    this.inputSize = 1 << this.bitWidth;
+
+    this.inp1 = new Node(-10, 0, 0, this, this.inputSize);
+    this.output1 = new Node(20, 0, 1, this, this.bitWidth);
+    this.enable = new Node(20, 20, 1, this, 1);
+
+    this.customSave = function() {
+        var data = {
+
+            nodes: {
+                inp1: findNode(this.inp1),
+                output1: findNode(this.output1),
+                enable: findNode(this.enable)
+            },
+            constructorParamaters: [this.direction, this.bitWidth],
+        }
+        return data;
+    }
+
+    this.newBitWidth = function(bitWidth) {
+        this.inputSize = 1 << bitWidth
+        this.inp1.bitWidth = this.inputSize;
+        this.bitWidth = bitWidth;
+        this.output1.bitWidth=bitWidth;
+    }
+
+    this.resolve = function() {
+
+        var inp=dec2bin(this.inp1.value);
+        var out=0;
+        for(var i=inp.length-1;i>=0;i--) {
+            if(inp[i]==1) {
+                out=inp.length-1-i;
+                break;
+            }
+
+        }
+        this.output1.value=out;
+        this.scope.stack.push(this.output1);
+        if(inp!=0) {
+            this.enable.value=1;
+        }
+        else {
+            this.enable.value = 0;
+        }
+        this.scope.stack.push(this.enable);
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+        ctx.beginPath();
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "white";
+        ctx.lineWidth = this.scope.scale*  3;
+        var xx = this.x;
+        var yy = this.y;
+        rect(ctx, xx - 10, yy - 30, 30, 60);
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.fillStyle="black";
+        ctx.textAlign="center";
+        fillText(ctx, "LSB", xx+5, yy-10, 10);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle="green";
+        ctx.textAlign="center";
+        if(this.output1.value!=undefined)
+        {
+            fillText(ctx, this.output1.value, xx+5, yy+14, 13);
+        }
+        ctx.stroke();
+        ctx.fill();
+    }
+
+}
+
+function PriorityEncoder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
+
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
+    this.inputSize = 1 << this.bitWidth;
+
+    var yOff = 1;
+    if (this.bitWidth <= 3) {
+        yOff = 2;
+    }
+
+    this.setDimensions(20, yOff * 5 * (this.inputSize));
+    this.directionFixed=true;
+    this.rectangleObject = false;
+
+    this.inp1 = [];
+    for (var i = 0; i < this.inputSize; i++) {
+        var a = new Node(-10, +yOff * 10 * (i - this.inputSize / 2) + 10, 0, this, 1);
+        this.inp1.push(a);
+    }
+
+    this.output1 = [];
+    for (var i = 0; i < this.bitWidth; i++) {
+        var a = new Node(30, +2 * 10 * (i - this.bitWidth / 2) + 10, 1, this, 1);
+        this.output1.push(a);
+    }
+
+    this.enable = new Node(10, 20+this.inp1[this.inputSize-1].y, 1, this, 1);
+
+    this.customSave = function() {
+        var data = {
+
+            nodes: {
+                inp1: this.inp1.map(findNode),
+                output1: this.output1.map(findNode),
+                enable: findNode(this.enable)
+            },
+            constructorParamaters: [this.direction, this.bitWidth],
+        }
+        return data;
+    }
+
+    this.newBitWidth = function(bitWidth) {
+        if (bitWidth == undefined || bitWidth < 1 || bitWidth > 32) return;
+        if (this.bitWidth == bitWidth) return;
+        
+        this.bitWidth = bitWidth;
+        var obj = new window[this.objectType](this.x, this.y, this.scope, this.direction, this.bitWidth);
+        this.inputSize = 1 << bitWidth;
+
+        this.cleanDelete();
+        simulationArea.lastSelected = obj;
+        return obj;
+    }
+
+    this.resolve = function() {
+        var out=0;
+        var temp=0;
+        for(var i=this.inputSize-1; i>=0; i--) {
+            if(this.inp1[i].value==1) {
+                out=dec2bin(i);
+                break;
+            }
+        }
+        temp=out;
+
+        if(out.length!=undefined) {
+            this.enable.value=1;
+        }
+        else {
+            this.enable.value=0;
+        }
+        this.scope.stack.push(this.enable);
+
+        if(temp.length==undefined) {
+            temp="0";
+            for(var i=0; i<this.bitWidth-1; i++) {
+                temp="0"+temp;
+            }
+        }
+
+        if(temp.length!=this.bitWidth) {
+            for(var i=temp.length; i<this.bitWidth; i++) {
+                temp="0"+temp;
+            }
+        }
+
+        for(var i=this.bitWidth-1; i>=0; i--){        
+            this.output1[this.bitWidth-1-i].value=Number(temp[i]);
+            this.scope.stack.push(this.output1[this.bitWidth-1-i]);
+        }
+    }
+
+    this.customDraw = function() {
+
+        ctx = simulationArea.context;
+        ctx.beginPath();
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "white";
+        ctx.lineWidth = this.scope.scale*  3;
+        var xx = this.x;
+        var yy = this.y;
+        if(this.bitWidth<=3) 
+            rect(ctx, xx - 10, yy - 10 - yOff*5*(this.inputSize), 40, 20*(this.inputSize+1));
+        else 
+            rect(ctx, xx - 10, yy - 10 - yOff*5*(this.inputSize), 40, 10*(this.inputSize+3));
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.fillStyle="black";
+        ctx.textAlign="center";
+        for(var i=0; i<this.inputSize; i++) {
+            fillText(ctx, String(i), xx, yy+this.inp1[i].y+2, 10);
+        }
+        for(var i=0; i<this.bitWidth; i++) {
+            fillText(ctx, String(i), xx+this.output1[0].x-10, yy+this.output1[i].y+2, 10);
+        }
+        fillText(ctx, "EN", xx+this.enable.x, yy+this.enable.y-5, 10);
+        ctx.stroke();
+        ctx.fill();
+
     }
 
 }
