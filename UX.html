@@ -1,0 +1,174 @@
+<html>
+
+<head>
+<title> Logix - Digital Simulator </title>
+</head>
+    <link rel="stylesheet" type="text/css" href="./UX.css"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script src="./UX.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<body onload="setup()">
+
+<div class="toolbar" id="toolbar">
+<div class="toolbarButton logixButton right" id="clearProject" >Clear Project</div>
+<div class="toolbarButton logixButton " id="newProject" >New Project</div>
+<div class="toolbarButton logixButton" id="save">Save Online</div>
+<div class="toolbarButton logixButton" id="saveOffline">Save Offline</div>
+<div class="toolbarButton logixButton" id="createOpenLocalPrompt">Open Offline</div>
+<div class="toolbarButton logixButton" id="createSaveAsImgPrompt" >Download Image</div>
+<div class="toolbarButton logixButton" id="newCircuit">New Circuit +</div>
+<div class="toolbarButton logixButton" id="createSubCircuitPrompt">Insert SubCircuit</div>
+
+<div class="toolbarButton logixButton" id="createCombinationalAnalysisPrompt">Combinational Analysis</div>
+<div class="toolbarButton logixButton" id="startPlot">Start Plot</div>
+</div>
+
+<div>
+    <div class="side left" id="sideBar">
+        <div class="modules">
+            <div class="menu" id="menu">
+                <button class="accordion">Input</button>
+                <div class="panel">
+
+                  <div class="icon logixModules" id="Input" ></div>
+                  <div class="icon logixModules" id="Button" ></div>
+                  <div class="icon logixModules" id="Power" ></div>
+                  <div class="icon logixModules" id="Ground" ></div>
+                  <div class="icon logixModules" id="ConstantVal" ></div>
+                  <div class="icon logixModules" id="Stepper" ></div>
+                </div>
+                <button class="accordion">Output</button>
+                <div class="panel">
+
+                  <div class="icon logixModules" id="Output" ></div>
+                  <div class="icon logixModules" id="RGBLed" ></div>
+                  <div class="icon logixModules" id="DigitalLed" ></div>
+                  <div class="icon logixModules" id="VariableLed" ></div>
+                  <div class="icon logixModules" id="HexDisplay" ></div>
+                  <div class="icon logixModules" id="SevenSegDisplay" ></div>
+
+
+                </div>
+
+                <button class="accordion">Gates</button>
+                <div class="panel">
+                   <div class="icon logixModules" id="AndGate" ></div>
+                   <div class="icon logixModules" id="OrGate" ></div>
+                   <div class="icon logixModules" id="NotGate" ></div>
+                   <div class="icon logixModules" id="XorGate" ></div>
+                   <div class="icon logixModules" id="NandGate" ></div>
+                   <div class="icon logixModules" id="NorGate" ></div>
+                   <div class="icon logixModules" id="XnorGate" ></div>
+                </div>
+
+                <button class="accordion">Plexers</button>
+                <div class="panel">
+                    <div class="icon logixModules" id="Multiplexer" ></div>
+                    <div class="icon logixModules" id="Demultiplexer" ></div>
+                    <div class="icon logixModules" id="BitSelector" ></div>
+                    <div class="icon logixModules" id="MSB" ></div>
+                    <div class="icon logixModules" id="LSB" ></div>
+                    <div class="icon logixModules" id="PriorityEncoder" ></div>
+
+                </div>
+
+                <button class="accordion">Sequential Elements</button>
+                <div class="panel">
+                    <div class="icon logixModules" id="FlipFlop" ></div>
+                    <div class="icon logixModules" id="TTY" ></div>
+                    <div class="icon logixModules" id="Keyboard" ></div>
+                    <div class="icon logixModules" id="Clock" ></div>
+                </div>
+
+                <button class="accordion">Misc</button>
+                <div class="panel">
+                    <div class="icon logixModules" id="Flag" ></div>
+                    <div class="icon logixModules" id="Splitter" ></div>
+                    <div class="icon logixModules" id="Adder" ></div>
+                   <div class="icon logixModules" id="TriState" ></div>
+                   <div class="icon logixModules" id="Buffer" ></div>
+                   <div class="icon logixModules" id="ControlledInverter" ></div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+        <div class="moduleProperty effect1" id="moduleProperty"></div>
+
+    </div>
+    <div class="simulation" id="simulation" >
+        <div id="MessageDiv" >
+        </div>
+
+
+        <div class="canvasArea" id="canvasArea">
+            <canvas id="backgroundArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+            <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%;height:100%"></canvas>
+        </div>
+        <div id="plot" >
+            <canvas id="plotArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%"></canvas>
+        </div>
+
+     </div>
+
+     <div id="combinationalAnalysis"  style="display:none;" title="BooleanLogicTable">
+     <div id="saveImageDialog" style="display:none;" title="Render Image">
+       <p>
+        PNG: <input type="radio" name="imgType" value="png" checked="checked" />
+         JPEG: <input type="radio" name="imgType" value="jpeg" />
+         SVG: <input type="radio" name="imgType" value="svg" />
+         BMP: <input type="radio" name="imgType" value="bmp" />
+         GIF: <input type="radio" name="imgType" value="gif" />
+         TIFF: <input type="radio" name="imgType" value="tiff" />
+
+       <p>
+        <p>
+            Full Circuit View: <input type="radio" name="view" value="full" />
+            Current View: <input type="radio" name="view" value="current" checked="checked" />
+        </p>
+        <p>
+            Transparent Background: <input type="checkbox" name="transparent" value="transparent"/>
+        </p>
+        <p>
+            Resolution:
+            1x<input type="radio" name="resolution" value="1" checked="checked"  />
+            2x<input type="radio" name="resolution" value="2"/>
+            4x<input type="radio" name="resolution" value="4"/>
+        </p>
+
+     </div>
+
+     <div id="insertSubcircuitDialog" style="display:none;"  title="Insert SubCircuit">
+
+     <div id="openProjectDialog" style="display:none;"  title="Open Project">
+
+     </div>
+</div>
+
+
+ <!-- <script src="./SAP_DATA.js"></script> -->
+ <script src="./logix.js"></script>
+ <script src="./Plot.js"></script>
+ <script src="./Node.js"></script>
+ <script src="./wire.js"></script>
+ <script src="./subcircuit.js"></script>
+ <script src="./modules.js"></script>
+ <script src="./sequential.js"></script>
+ <script src="./canvasApi.js"></script>
+ <script src="./data.js"></script>
+ <script src="./listeners.js"></script>
+ <script src="./combinationalAnalysis.js"></script>
+ <script src="./Quin_McCluskey.js"></script>
+ <script src="./canvas2svg.js"></script>
+
+
+</body>
+
+</html>
