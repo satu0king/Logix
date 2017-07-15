@@ -110,7 +110,7 @@ function Scope(name = "localScope") {
 
     this.ox = 0;
     this.oy = 0;
-    this.scale = 2;
+    this.scale = DPR;
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)
@@ -810,7 +810,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             ctx = simulationArea.context;
             ctx.strokeStyle = "black";
             ctx.fillStyle = "white";
-            ctx.lineWidth = this.scope.scale * 3;
+            ctx.lineWidth = correctWidth(3);
             ctx.beginPath();
             rect2(ctx, -this.leftDimensionX, -this.upDimensionY, this.leftDimensionX + this.rightDimensionX, this.upDimensionY + this.downDimensionY, this.x, this.y, [this.direction, "RIGHT"][+this.directionFixed]);
             if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
