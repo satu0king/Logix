@@ -89,7 +89,7 @@ function bezierCurveTo(x1, y1, x2, y2, x3, y3, xx, yy, dir) {
     y3 *= globalScope.scale;
     xx = xx * globalScope.scale;
     yy = yy * globalScope.scale;
-    ctx.bezierCurveTo(xx + ox + x1, yy + oy + y1, xx + ox + x2, yy + oy + y2, xx + ox + x3, yy + oy + y3);
+    ctx.bezierCurveTo(Math.round(xx + ox + x1), Math.round(yy + oy + y1), Math.round(xx + ox + x2), Math.round(yy + oy + y2), Math.round(xx + ox + x3), Math.round(yy + oy + y3));
 }
 
 function moveTo(ctx, x1, y1, xx, yy, dir,bypass=false) {
@@ -140,7 +140,7 @@ function drawCircle2(ctx, sx, sy, radius, xx, yy, dir) { //ox-x of origin, xx- x
     xx = xx * globalScope.scale;
     yy = yy * globalScope.scale;
     radius *= globalScope.scale;
-    ctx.arc(xx + globalScope.ox + Sx, yy + globalScope.oy + Sy, radius, 0, 2*Math.PI);
+    ctx.arc(Math.round(xx + globalScope.ox + Sx), Math.round(yy + globalScope.oy + Sy), Math.round(radius), 0, 2*Math.PI);
 }
 
 function rect(ctx, x1, y1, x2, y2) {
@@ -207,10 +207,15 @@ function drawLine(ctx, x1, y1, x2, y2, color, width) {
     ctx.beginPath();
     ctx.strokeStyle = color;
     ctx.lineCap = "round";
-    ctx.lineWidth = width*globalScope.scale;
+    ctx.lineWidth = correctWidth(width);//*globalScope.scale;
+    var correction = 0.5*(ctx.lineWidth%2);
+    var hCorrection=0;
+    var vCorrection=0;
     // console.log(ctx.lineWidth);
-    ctx.moveTo(x1 + globalScope.ox, y1 + globalScope.oy);
-    ctx.lineTo(x2 + globalScope.ox, y2 + globalScope.oy);
+    if(y1==y2)vCorrection=correction;
+    if(x1==x2)hCorrection=correction;
+    ctx.moveTo(Math.round(x1 + globalScope.ox+hCorrection)-hCorrection, Math.round(y1 + globalScope.oy+vCorrection)-vCorrection);
+    ctx.lineTo(Math.round(x2 + globalScope.ox+hCorrection)-hCorrection,Math.round(y2 + globalScope.oy+vCorrection)-vCorrection);
     ctx.stroke();
 }
 
@@ -222,7 +227,7 @@ function drawCircle(ctx, x1, y1, r, color) {
     y1 = y1 * globalScope.scale;
     ctx.beginPath();
     ctx.fillStyle = color;
-    ctx.arc(x1 + globalScope.ox, y1 + globalScope.oy, r*globalScope.scale, 0, Math.PI * 2, false);
+    ctx.arc(Math.round(x1 + globalScope.ox), Math.round(y1 + globalScope.oy), Math.round(r*globalScope.scale), 0, Math.PI * 2, false);
     ctx.closePath();
     ctx.fill();
 }
