@@ -276,9 +276,10 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
         lineTo(ctx, 0, yOff * 5 * (this.inputSize - 1) + xOff, xx, yy, this.direction);
         ctx.stroke();
 
+        ctx.lineWidth = correctWidth(3);
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
-        ctx.lineWidth = correctWidth(3);
+
         ctx.fillStyle = "white";
         moveTo(ctx, -20 + xOff, -yOff * 10 * (this.inputSize / 2), xx, yy, this.direction);
         lineTo(ctx, -20 + xOff, 20 + yOff * 10 * (this.inputSize / 2 - 1), xx, yy, this.direction);
@@ -286,13 +287,15 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
         lineTo(ctx, 20 - xOff, -yOff * 10 * (this.inputSize / 2) - xOff + 20, xx, yy, this.direction);
 
         ctx.closePath();
-        ctx.stroke();
-
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
+        ctx.stroke();
+
+
 
         ctx.beginPath();
+        // ctx.lineWidth = correctWidth(2);
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         for (var i = 0; i < this.inputSize; i++) {
@@ -2092,11 +2095,12 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
         lineTo(ctx, 20 - xOff, -yOff * 10 * (this.outputsize / 2) - xOff + 20, xx, yy, this.direction);
 
         ctx.closePath();
-        ctx.stroke();
-
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
+        ctx.stroke();
+
+
 
         ctx.beginPath();
         ctx.fillStyle = "black";

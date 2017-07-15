@@ -232,7 +232,7 @@ function setup() {
 //to resize window
 function resetup() {
 
-    DPR=1;//window.devicePixelRatio||1;
+    DPR=window.devicePixelRatio||1;
     width = document.getElementById("simulation").clientWidth*DPR;
     height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
     document.getElementById("canvasArea").style.height = height/DPR;
