@@ -476,6 +476,157 @@ function copyPaste(copyList) {
     globalScope.scale=oldScale;
 
 }
+function paste(copyData) {
+    if(copyData==undefined)return;
+
+    tempScope = new Scope(globalScope.name,globalScope.id);
+    var oldOx=globalScope.ox;
+    var oldOy=globalScope.oy;
+    var oldScale=globalScope.scale;
+    loadScope(tempScope,copyData);
+    // tempScope=simulationArea.copyScope;
+    // update(globalScope);
+    // console.log(globalScope.wires.length)
+
+    var approxX=0;
+    var approxY=0;
+    var count=0
+
+
+
+
+    for (var i = 0; i < tempScope.objects.length; i++){
+        for (var j = 0; j < tempScope[tempScope.objects[i]].length; j++) {
+            var obj = tempScope[tempScope.objects[i]][j];
+            obj.updateScope(globalScope);
+            if(obj.objectType!="Wire"){
+                approxX+=obj.x;
+                approxY+=obj.y;
+                count++;
+            }
+        }
+    }
+
+
+
+
+
+    approxX/=count
+    approxY/=count
+
+    approxX=Math.round(approxX/10)*10
+    approxY=Math.round(approxY/10)*10
+
+
+        for (var i = 0; i < tempScope.objects.length; i++){
+            for (var j = 0; j < tempScope[tempScope.objects[i]].length; j++) {
+                var obj=tempScope[tempScope.objects[i]][j];
+                if(obj.objectType!="Wire"){
+                    obj.x+=simulationArea.mouseX-approxX;
+                    obj.y+=simulationArea.mouseY-approxY;
+                }
+            }
+        }
+
+        // console.log(tempScope,approxX,approxY,count);
+        // toBeUpdated=true;
+        // canvasUpdate=true;
+        // update(tempScope);
+        // return;
+
+
+
+    // for (var i = 0; i < globalScope.wires.length; i++) {
+    //     globalScope.wires[i].updateScope(tempScope);
+    // }
+
+
+
+
+    for (l in tempScope) {
+        if (tempScope[l] instanceof Array && l != "objects" && l!="CircuitElement" ) {
+            globalScope[l].extend(tempScope[l]);
+            console.log("Copying , ",l);
+        }
+    }
+
+
+
+
+    // update(tempScope);
+
+
+    // simulationArea.multipleObjectSelections = [];//copyList.slice();
+    // simulationArea.copyList = [];//copyList.slice();
+    canvasUpdate=true;
+    toBeUpdated = true;
+    // globalScope = tempScope;
+    scheduleUpdate();
+    globalScope.ox=oldOx;
+    globalScope.oy=oldOy;
+    globalScope.scale=oldScale;
+
+}
+function copy(copyList) {
+    if(copyList.length==0)return;
+    tempScope = new Scope(globalScope.name,globalScope.id);
+    var oldOx=globalScope.ox;
+    var oldOy=globalScope.oy;
+    var oldScale=globalScope.scale;
+    d = backUp(globalScope);
+    loadScope(tempScope, d);
+    scopeList[tempScope.id]=tempScope;
+    tempScope.backups=globalScope.backups;
+    for (var i = 0; i < globalScope.objects.length; i++){
+        var prevLength=globalScope[globalScope.objects[i]].length; // LOL length of list will reduce automatically when deletion starts
+        // if(globalScope[globalScope.objects[i]].length)console.log("deleting, ",globalScope[globalScope.objects[i]]);
+        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
+            var obj = globalScope[globalScope.objects[i]][j];
+            if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
+                if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
+                    console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
+                    globalScope[globalScope.objects[i]][j].cleanDelete();
+                }
+            }
+
+            if(globalScope[globalScope.objects[i]].length!=prevLength){
+                prevLength--;
+                j--;
+            }
+        }
+    }
+
+    // toBeUpdated = true;
+    // update(globalScope);
+    console.log("DEBUG1",globalScope.wires.length)
+    var prevLength=globalScope.wires.length;
+    for (var i = 0; i < globalScope.wires.length; i++) {
+        globalScope.wires[i].checkConnections();
+        if(globalScope.wires.length!=prevLength){
+            prevLength--;
+            i--;
+        }
+    }
+    // console.log(globalScope.wires,globalScope.allNodes)
+    // console.log("DEBUG2",globalScope.wires.length)
+    toBeUpdated=true;
+    // update(globalScope);
+
+    // update(tempScope);
+    simulationArea.copyData=backUp(globalScope);
+
+
+    simulationArea.multipleObjectSelections = [];//copyList.slice();
+    simulationArea.copyList = [];//copyList.slice();
+    canvasUpdate=true;
+    toBeUpdated = true;
+    globalScope = tempScope;
+    scheduleUpdate();
+    globalScope.ox=oldOx;
+    globalScope.oy=oldOy;
+    globalScope.scale=oldScale;
+
+}
 
 // fn that calls update on everything else. If any change is there, it resolves the circuit and draws it again
 // fn to change scale (zoom) - It also shifts origin so that the position

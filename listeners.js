@@ -71,9 +71,10 @@ window.addEventListener('keydown', function(e) {
        if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
            simulationArea.copyList.push(simulationArea.lastSelected);
        }
+       copy(simulationArea.copyList);
    }
    if(simulationArea.controlDown&&(e.key=="V"||e.key=="v")){
-       copyPaste(simulationArea.copyList);
+       paste(simulationArea.copyData);
    }
     if (simulationArea.lastSelected && simulationArea.lastSelected.keyDown) {
         if (e.key.toString().length == 1) {
