@@ -434,6 +434,8 @@ function copyPaste(copyList) {
     approxX/=copyList.length;
     approxY/=copyList.length;
 
+    approxX=Math.round(approxX/10)*10
+    approxY=Math.round(approxY/10)*10
     for (var i = 0; i < globalScope.objects.length; i++)
         for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
             var obj = globalScope[globalScope.objects[i]][j];
