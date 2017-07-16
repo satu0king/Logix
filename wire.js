@@ -91,6 +91,7 @@ function Wire(node1, node2, scope) {
     }
     this.draw = function() {
         ctx = simulationArea.context;
+
         var color;
         if (this.node1.value == undefined||this.node2.value == undefined)
             color = "red";
@@ -99,6 +100,7 @@ function Wire(node1, node2, scope) {
         else
             color = "black";
         drawLine(ctx, this.node1.absX(), this.node1.absY(), this.node2.absX(), this.node2.absY(), color, 3);
+
     }
 
     // checks if node lies on wire

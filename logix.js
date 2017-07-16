@@ -1,6 +1,7 @@
 var width;
-
 var height;
+
+
 uniqueIdCounter = 0;
 unit = 10;
 toBeUpdated = true;
@@ -8,16 +9,42 @@ updateCanvas = true;
 wireToBeChecked = 0; // when node disconnects from another node
 willBeUpdated = false;
 objectSelection = false;
-var backups = []
-loading = false
+errorDetected = false;
+// var backups = []
+loading = false;
+DPR=1;
+projectSaved = true;
 //Exact same name as object constructor
-moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter","TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed","Stepper", "VariableLed", "SubCircuit"];
+moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram", "FlipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer", "Buffer", "SubCircuit","Flag","MSB","LSB","PriorityEncoder"];
+
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
-inputList = ["Stepper","Ground", "Power", "ConstantVal", "Input", "Clock"];
+inputList = ["Buffer", "Stepper", "Ground", "Power", "ConstantVal", "Input", "Clock", "Button"];
+
+//Scope object for each circuit level, globalScope for outer level
+scopeList = {};
+globalScope = undefined;
+
 
 function showError(error) {
-    console.log("ERROR: " + error);
+    // console.log("ERROR: " + error);
+    errorDetected = true;
+    var id = Math.floor(Math.random() * 10000);
+    $('#MessageDiv').append("<div class='errorMessage' id='" + id + "'> " + error + "</div>");
+    setTimeout(function() {
+        $('#' + id).fadeOut()
+    }, 1500);
+    // console.log("<div class='errorMessage'>"+error+"</div>");
+}
+function showMessage(mes) {
+    // console.log("ERROR: " + error);
+    errorDetected = true;
+    var id = Math.floor(Math.random() * 10000);
+    $('#MessageDiv').append("<div class='normalMessage' id='" + id + "'> " + mes + "</div>");
+    setTimeout(function() {
+        $('#' + id).fadeOut()
+    }, 2500);
+    // console.log("<div class='errorMessage'>"+error+"</div>");
 }
 
 function openInNewTab(url) {
@@ -27,6 +54,7 @@ function openInNewTab(url) {
 
 function scheduleUpdate(count = 0) {
     // return;
+    // console.log(willBeUpdated,toBeUpdated,);
     if (count) {
         for (var i = 0; i < count; i++)
             setTimeout(update, 10 + 50 * i);
@@ -41,15 +69,8 @@ function scheduleUpdate(count = 0) {
 
 }
 
-function scheduleBackup() {
-    // return;
-    // setTimeout(function(){
-    var backup = backUp();
-    // if(backups.length==0||backups[backups.length-1]!=backup){
-    backups.push(backup);
-    // }
-    // }, 1000);
-}
+
+
 //fn to remove elem in array
 Array.prototype.clean = function(deleteValue) {
     for (var i = 0; i < this.length; i++) {
@@ -72,21 +93,50 @@ Array.prototype.contains = function(value) {
     return this.indexOf(value) > -1
 };
 
+function uniq(a) {
+    var seen = {};
+    return a.filter(function(item) {
+        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+    });
+}
 
-
-
-//Scope object for each circuit level, globalScope for outer level
 function Scope(name = "localScope") {
     //root object for referring to main canvas - intermediate node uses this
+    this.id = Math.floor((Math.random() * 100000000000) + 1);
     this.CircuitElement = [];
     this.root = new CircuitElement(0, 0, this, "RIGHT", 1);
+    this.backups = [];
+    this.timeStamp = new Date().getTime();
+
+    this.ox = 0;
+    this.oy = 0;
+    this.scale = DPR;
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)
             this.Clock[i].toggleState(); //tick clock!
-        // for (var i = 0; i < this.subCircuits.length; i++)
-        //     this.subCircuits[i].localScope.clockTick(); //tick clock!
+        for (var i = 0; i < this.SubCircuit.length; i++)
+            this.SubCircuit[i].localScope.clockTick(); //tick clock!
     }
+
+    this.checkDependency = function(id) {
+        if (id == this.id) return true;
+        for (var i = 0; i < this.SubCircuit.length; i++)
+            if (this.SubCircuit[i].id == id) return true;
+
+        for (var i = 0; i < this.SubCircuit.length; i++)
+            if (this.SubCircuit[i].localScope.checkDependency(id)) return true;
+    }
+
+    this.getDependencies = function() {
+        var list = []
+        for (var i = 0; i < this.SubCircuit.length; i++) {
+            list.push(this.SubCircuit[i].id);
+            list.extend(this.SubCircuit[i].localScope.getDependencies());
+        }
+        return uniq(list);
+    }
+
     this.name = name;
     this.stack = [];
 
@@ -101,78 +151,136 @@ function Scope(name = "localScope") {
 
 //fn to setup environment
 function setup() {
-    globalScope = new Scope("globalScope"); //enabling scope
-
-    data = {};
-    //retrieving data
-    if (parent.location.hash.length > 1) {
-
-        var http = new XMLHttpRequest();
-        hash = parent.location.hash.substr(1);
-        // alert(hash);
-        http.open("POST", "./index.php", true);
-        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        var params = "retrieve=" + hash; // probably use document.getElementById(...).value
-        http.send(params);
-        http.onload = function() {
-            // console.log(http.responseText);
-            if (http.responseText == "ERROR") alert("Error: could not load ");
-            else {
-                data = JSON.parse(http.responseText);
-                console.log(data);
-                load(globalScope, data);
-                simulationArea.changeClockTime(data["timePeriod"] || 500);
-                backups.push(backUp())
-            }
-        }
-
-    }
-
+    projectName = undefined;
+    projectId = generateId();
+    // globalScope = new Scope("globalScope"); //enabling scope
+    // scopeList.push(globalScope);
     toBeUpdated = true;
-    width = window.innerWidth;
-    height = window.innerHeight;
+    DPR=window.devicePixelRatio||1;
+    newCircuit("Main");
+
+    // return;
+
+
+    width = document.getElementById("simulation").clientWidth*DPR;
+    height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
+    document.getElementById("canvasArea").style.height=height/DPR;
+    plotArea.c.width = document.getElementById("plot").clientWidth;
+    plotArea.c.height = document.getElementById("plot").clientHeight;
+
+    // console.log(width);
     //setup simulationArea
+    backgroundArea.setup();
+    plotArea.setup();
     simulationArea.setup();
-    scheduleUpdate();
+    // update();
+    dots();
+    // scheduleUpdate();
+
+    data = {}
+    // data = JSON.parse(SAP_DATA);
+    // load(data);
+    // retrieving data
+    // if(localStorage.getItem(window.location.hash)){
+    //     var data=JSON.parse(localStorage.getItem("local"));
+    //     load(data);
+    //     simulationArea.changeClockTime(data["timePeriod"] || 500);
+    //     // console.log(localStorage.getItem("localHash"));
+    //
+    // }
+    setTimeout(function(){
+        resetup();
+        if (window.location.hash.length > 1) {
+
+            var http = new XMLHttpRequest();
+            hash = window.location.hash.substr(1);
+            // alert(hash);
+            http.open("POST", "./index.php", true);
+            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            var params = "retrieve=" + hash; // probably use document.getElementById(...).value
+            http.send(params);
+            http.onload = function() {
+                // console.log(http.responseText);
+                if (http.responseText == "ERROR") alert("Error: could not load ");
+                else {
+                    console.log(http.responseText);
+                    data = JSON.parse(http.responseText);
+                    console.log("From Server:" + data);
+                    load(data);
+                    simulationArea.changeClockTime(data["timePeriod"] || 500);
+                    // globalScope.backups.push(backUp(globalScope));
+                }
+            }
+
+        } else if (localStorage.getItem("recover")) {
+
+
+            var data = JSON.parse(localStorage.getItem("recover"));
+            if (confirm("Would you like to recover: " + data.name)) {
+                load(data);
+            }
+            localStorage.removeItem("recover");
+
+        }
+    },10);
+
+
+
 
 
 }
 
 //to resize window
 function resetup() {
-    width = window.innerWidth;
-    height = window.innerHeight;
+
+    DPR=window.devicePixelRatio||1;
+    width = document.getElementById("simulation").clientWidth*DPR;
+    height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
+    document.getElementById("canvasArea").style.height = height/DPR;
     simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
+    backgroundArea.canvas.width = width;
+    backgroundArea.canvas.height = height;
+    plotArea.c.width = document.getElementById("plot").clientWidth;
+    plotArea.c.height = document.getElementById("plot").clientHeight
     // simulationArea.setup();
-    scheduleUpdate();
+    updateCanvas=true;
+    update(); // INEFFICENT
+    dots(true, false);
 }
 
 window.onresize = resetup;
+window.onorientationchange = resetup;
 
 //for mobiles
 window.addEventListener('orientationchange', resetup);
 
 //Main fn that resolves circuit
 function play(scope = globalScope, resetNodes = true) {
+    // throw("ERROR");
+    if (errorDetected) return;
 
     // console.log("simulation");
     if (loading == true) return;
+
+    plotArea.stopWatch.Stop();
 
     if (resetNodes) {
         for (var i = 0; i < scope.allNodes.length; i++)
             scope.allNodes[i].reset();
         for (var i = 0; i < scope.SubCircuit.length; i++) {
-            scope.SubCircuit[i].resetNodes();
+            scope.SubCircuit[i].reset();
         }
     }
+
     for (var i = 0; i < scope.SubCircuit.length; i++) {
-        if (scope.SubCircuit[i].isResolvable())
-            scope.stack.push(scope.SubCircuit[i]);
+        if (scope.SubCircuit[i].isResolvable()) scope.stack.push(scope.SubCircuit[i]);
     }
+
     for (var i = 0; i < scope.FlipFlop.length; i++) {
         scope.stack.push(scope.FlipFlop[i]);
     }
+
     for (var i = 0; i < inputList.length; i++) {
         for (var j = 0; j < scope[inputList[i]].length; j++) {
             scope.stack.push(scope[inputList[i]][j]);
@@ -180,6 +288,7 @@ function play(scope = globalScope, resetNodes = true) {
     }
     var stepCount = 0;
     while (scope.stack.length) {
+        if (errorDetected) return;
         var elem = scope.stack.pop();
         elem.resolve();
         stepCount++;
@@ -189,8 +298,40 @@ function play(scope = globalScope, resetNodes = true) {
         }
     }
 
+    for(var i=0;i<scope.Flag.length;i++)
+        scope.Flag[i].setPlotValue();
+    // for (var i = 0; i < scope.SubCircuit.length; i++) {
+    //     if(!scope.SubCircuit[i].isResolvable())
+    //         {
+    //             scope.stack.push(scope.SubCircuit[i]);
+    //             while (scope.stack.length) {
+    //                 if(errorDetected)return;
+    //                 var elem = scope.stack.pop();
+    //                 elem.resolve();
+    //                 stepCount++;
+    //                 if (stepCount > 1000) {
+    //                     showError("Simulation Stack limit exceeded: maybe due to cyclic paths or contention");
+    //                     return;
+    //                 }
+    //             }
+    //         }
+    // }
+
 }
 
+var backgroundArea = {
+    canvas: document.getElementById("backgroundArea"),
+    setup: function() {
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.context = this.canvas.getContext("2d");
+        dots(true, false);
+    },
+    clear: function() {
+        if (!this.context) return;
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+}
 //simulation environment object
 var simulationArea = {
     canvas: document.getElementById("simulationArea"),
@@ -199,11 +340,10 @@ var simulationArea = {
     clockState: 0,
     lastSelected: undefined,
     stack: [],
-    ox: 0,
-    oy: 0,
+
     oldx: 0,
     oldy: 0,
-    scale: 1,
+
     multipleObjectSelections: [],
     copyList: [],
     shiftDown: false,
@@ -222,233 +362,11 @@ var simulationArea = {
         this.canvas.height = height;
         this.context = this.canvas.getContext("2d");
         // this.interval = setInterval(update, 100);
-        this.ClockInterval = setInterval(clockTick, 500);
+        // this.ClockInterval = setInterval(clockTick, 500);
         this.mouseDown = false;
         // this.shiftDown=false;
 
-        window.addEventListener('mousemove', function(e) {
-            // return;
-            scheduleUpdate();
-            // toBeUpdated=true;
-            updateCanvas = true;
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            simulationArea.mouseRawX = (e.clientX - rect.left);
-            simulationArea.mouseRawY = (e.clientY - rect.top);
-            simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
 
-        });
-        window.addEventListener('keyup', function(e) {
-            // update();
-            scheduleUpdate(1);
-            if (e.keyCode == 16) {
-                // simulationArea.lastSelected.delete(); // delete key
-                simulationArea.shiftDown = false;
-            }
-            if (e.key == "Meta"||e.key=="Control") {
-                simulationArea.controlDown = false;
-            }
-        });
-        window.addEventListener('keydown', function(e) {
-            scheduleUpdate(1);
-            updateCanvas = true;
-            wireToBeChecked = 1;
-            // e.preventDefault();
-               console.log("KEY:"+e.key);
-           if (e.key == "Meta"||e.key=="Control") {
-               simulationArea.controlDown = true;
-           }
-
-           if(simulationArea.controlDown&&(e.key=="C"||e.key=="c")){
-               simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
-               if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
-                   simulationArea.copyList.push(simulationArea.lastSelected);
-               }
-           }
-           if(simulationArea.controlDown&&(e.key=="V"||e.key=="v")){
-               copyPaste(simulationArea.copyList);
-           }
-            if (simulationArea.lastSelected && simulationArea.lastSelected.keyDown) {
-                if (e.key.toString().length == 1) {
-                    simulationArea.lastSelected.keyDown(e.key);
-                    return;
-                }
-                if (e.key == "Shift") return;
-            }
-            if (e.keyCode == 8) {
-                if (simulationArea.lastSelected) simulationArea.lastSelected.delete();
-                for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
-                    simulationArea.multipleObjectSelections[i].delete();
-                }
-            }
-            if (e.keyCode == 16) {
-                simulationArea.shiftDown = true;
-                if (simulationArea.lastSelected) {
-                    simulationArea.multipleObjectSelections.push(simulationArea.lastSelected);
-                    simulationArea.lastSelected = undefined;
-                }
-            }
-
-            if (simulationArea.controlDown&&e.key.charCodeAt(0) == 122) { // detect the special CTRL-Z code
-                if (backups.length == 0) return;
-                var backupOx = simulationArea.ox;
-                var backupOy = simulationArea.oy;
-                simulationArea.ox = 0;
-                simulationArea.oy = 0;
-                globalScope = new Scope("globalScope");
-                loading = true;
-                load(globalScope, backups.pop());
-                console.log("UNDO");
-                loading = false;
-                simulationArea.ox = backupOx;
-                simulationArea.oy = backupOy;
-            }
-            //change direction fns
-            if (e.keyCode == 37 && simulationArea.lastSelected != undefined) {
-                simulationArea.lastSelected.newDirection("LEFT");
-            }
-            if (e.keyCode == 38 && simulationArea.lastSelected != undefined) {
-                simulationArea.lastSelected.newDirection("UP");
-            }
-            if (e.keyCode == 39 && simulationArea.lastSelected != undefined) {
-                simulationArea.lastSelected.newDirection("RIGHT");
-            }
-            if (e.keyCode == 40 && simulationArea.lastSelected != undefined) {
-                simulationArea.lastSelected.newDirection("DOWN");
-            }
-            if ((e.keyCode == 113 || e.keyCode == 81) && simulationArea.lastSelected != undefined) {
-                if (simulationArea.lastSelected.bitWidth !== undefined)
-                    simulationArea.lastSelected.newBitWidth(parseInt(prompt("Enter new bitWidth"), 10));
-            }
-            if (!simulationArea.controlDown&&(e.keyCode == 67 || e.keyCode == 99)) {
-                simulationArea.changeClockTime(prompt("Enter Time:"));
-            }
-            if ((e.keyCode == 108 || e.keyCode == 76) && simulationArea.lastSelected != undefined) {
-                if (simulationArea.lastSelected.setLabel !== undefined)
-                    simulationArea.lastSelected.setLabel();
-            }
-
-            // zoom in (+)
-            if (simulationArea.controlDown&&e.keyCode == 187 && simulationArea.scale < 4) {
-                e.preventDefault();
-                changeScale(.1);
-            }
-            // zoom out (-)
-            if (simulationArea.controlDown&&e.keyCode == 189 && simulationArea.scale > 0.5) {
-                e.preventDefault();
-                changeScale(-.1);
-            }
-            // console.log()
-            // update();
-        })
-        window.addEventListener('dblclick', function(e) {
-            scheduleUpdate(2);
-            if (simulationArea.lastSelected&&simulationArea.lastSelected.dblclick !== undefined) {
-                simulationArea.lastSelected.dblclick();
-            }
-            if (!simulationArea.shiftDown) {
-                simulationArea.multipleObjectSelections = [];
-            }
-            // console.log(simulationArea.mouseDown, "mouseDOn");
-        });
-        // window.addEventListener('click', function(e) {
-        //     // console.log("click");
-        //     // if(simulationArea.lastSelected.click!==undefined){
-        //     //     simulationArea.lastSelected.click();
-        //     // }
-        //     // scheduleUpdate(1);
-        // });
-        window.addEventListener('mousedown', function(e) {
-            // return;
-            scheduleBackup();
-            update();
-            scheduleUpdate(1);
-
-            simulationArea.lastSelected = undefined;
-            simulationArea.selected = false;
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            simulationArea.mouseDownRawX = (e.clientX - rect.left);
-            simulationArea.mouseDownRawY = (e.clientY - rect.top);
-            simulationArea.mouseDownX = Math.round(((simulationArea.mouseDownRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseDownY = Math.round(((simulationArea.mouseDownRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseDown = true;
-            simulationArea.oldx = simulationArea.ox;
-            simulationArea.oldy = simulationArea.oy;
-            if (simulationArea.clickCount === 0) {
-                simulationArea.clickCount++;
-                simulationArea.timer();
-            } else if (simulationArea.clickCount === 1) {
-                simulationArea.clickCount = 0;
-                if (simulationArea.lock === "locked")
-                    simulationArea.lock = "unlocked";
-                else
-                    simulationArea.lock = "locked";
-                // console.log("Double", simulationArea.lock);
-            }
-            // console.log(simulationArea.mouseDown);
-            // console.log(simulationArea.mouseDown, "mouseDOn");
-        });
-
-        window.addEventListener('mouseup', function(e) {
-
-            // return;
-            // update();
-            scheduleUpdate(1);
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            // simulationArea.mouseDownX = (e.clientX - rect.left) / simulationArea.scale;
-            // simulationArea.mouseDownY = (e.clientY - rect.top) / simulationArea.scale;
-            // simulationArea.mouseDownX = Math.round((simulationArea.mouseDownX - simulationArea.ox / simulationArea.scale) / unit) * unit;
-            // simulationArea.mouseDownY = Math.round((simulationArea.mouseDownY - simulationArea.oy / simulationArea.scale) / unit) * unit;
-
-            simulationArea.mouseDown = false;
-            console.log(simulationArea.mouseDown);
-        });
-        window.addEventListener('touchmove', function(e) {
-            scheduleUpdate();
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            simulationArea.mouseRawX = (e.touches[0].clientX - rect.left);
-            simulationArea.mouseRawY = (e.touches[0].clientY - rect.top);
-            simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
-
-        })
-        window.addEventListener('touchstart', function(e) {
-            scheduleUpdate();
-            var rect = simulationArea.canvas.getBoundingClientRect();
-
-            simulationArea.mouseDownRawX = (e.touches[0].clientX - rect.left);
-            simulationArea.mouseDownRawY = (e.touches[0].clientY - rect.top);
-            simulationArea.mouseRawX = (e.touches[0].clientX - rect.left);
-            simulationArea.mouseRawY = (e.touches[0].clientY - rect.top);
-            simulationArea.mouseDownX = Math.round(((simulationArea.mouseDownRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseDownY = Math.round(((simulationArea.mouseDownRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - simulationArea.ox) / simulationArea.scale) / unit) * unit;
-            simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - simulationArea.oy) / simulationArea.scale) / unit) * unit;
-
-            simulationArea.mouseDown = true;
-            simulationArea.oldx = simulationArea.ox;
-            simulationArea.oldy = simulationArea.oy;
-
-
-            simulationArea.mouseDown = true;
-            console.log(simulationArea.mouseDown);
-        });
-        window.addEventListener('touchend', function(e) {
-            scheduleUpdate();
-            // update();
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            simulationArea.mouseDownY = simulationArea.mouseY;
-            simulationArea.mouseDownX = simulationArea.mouseX;
-
-            simulationArea.mouseDown = false;
-            console.log(simulationArea.mouseDown);
-        });
-        window.addEventListener('touchleave', function(e) {
-            scheduleUpdate();
-            // update();
-            var rect = simulationArea.canvas.getBoundingClientRect();
-            simulationArea.mouseDown = false;
-        });
     },
     changeClockTime(t) {
         clearInterval(this.ClockInterval);
@@ -457,63 +375,64 @@ var simulationArea = {
         this.ClockInterval = setInterval(clockTick, t);
     },
     clear: function() {
+        if (!this.context) return;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
 
-function copyPaste(copyList){
-    tempScope=new Scope("globalScope");
-    d=backUp();
-    load(tempScope,d);
+function copyPaste(copyList) {
+    tempScope = new Scope("globalScope");
+    d = backUp();
+    loadScope(tempScope, d);
     for (var i = 0; i < globalScope.objects.length; i++)
-        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++){
-            var obj=globalScope[globalScope.objects[i]][j];
-            if(obj.objectType!='Wire'){//}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
-                if(!copyList.contains(globalScope[globalScope.objects[i]][j])){
-                    console.log("DELETE:",globalScope[globalScope.objects[i]][j]);
+        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
+            var obj = globalScope[globalScope.objects[i]][j];
+            if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
+                if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
+                    console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
                     globalScope[globalScope.objects[i]][j].delete()
                 }
             }
         }
-    toBeUpdated=true;
+    toBeUpdated = true;
     console.log(globalScope.wires.length)
     // update(globalScope);
     // console.log(globalScope.wires.length)
-    for(var i=0;i<copyList.length;i++){
+    for (var i = 0; i < copyList.length; i++) {
         // console.log(copyList[i]);
-        copyList[i].x+=10;
-        copyList[i].y+=10;
+        copyList[i].x += 10;
+        copyList[i].y += 10;
         copyList[i].updateScope(tempScope);
     }
-    for(var i=0;i<globalScope.wires.length;i++){
+    for (var i = 0; i < globalScope.wires.length; i++) {
         // console.log(copyList[i]);
 
         globalScope.wires[i].updateScope(tempScope);
     }
 
 
-    toBeUpdated=true;
+    toBeUpdated = true;
     update(tempScope);
 
-    for(l in globalScope){
-        if(globalScope[l] instanceof Array&&l!="objects"){
+    for (l in globalScope) {
+        if (globalScope[l] instanceof Array && l != "objects") {
             tempScope[l].extend(globalScope[l]);
         }
     }
-    simulationArea.multipleObjectSelections=copyList.slice();
+    simulationArea.multipleObjectSelections = copyList.slice();
 
-    globalScope=tempScope;
+    globalScope = tempScope;
 
 }
 
 // fn that calls update on everything else. If any change is there, it resolves the circuit and draws it again
 // fn to change scale (zoom) - It also shifts origin so that the position
 //of the object in focus doent changeB
-function update(scope=globalScope) {
-
+function update(scope = globalScope) {
+    willBeUpdated = false;
     if (loading == true) return;
     // console.log("UPDATE");
-    willBeUpdated = false;
+
     var updated = false;
     simulationArea.hover = false;
     // wireToBeChecked=true;
@@ -534,7 +453,11 @@ function update(scope=globalScope) {
         // toBeUpdated = false;
         play();
     }
-
+    if (simulationArea.lastSelected !== undefined && simulationArea.lastSelected.objectType !== "Wire" && simulationArea.lastSelected.objectType !== "CircuitElement") {
+        showProperties(simulationArea.lastSelected);
+    } else {
+        hideProperties();
+    }
 
     if (!simulationArea.selected && simulationArea.mouseDown) {
         //mouse click NOT on object
@@ -548,11 +471,12 @@ function update(scope=globalScope) {
     } else if (simulationArea.lastSelected == scope.root && simulationArea.mouseDown) {
         //pane canvas
         if (!objectSelection) {
-            simulationArea.ox = (simulationArea.mouseRawX - simulationArea.mouseDownRawX) + simulationArea.oldx;
-            simulationArea.oy = (simulationArea.mouseRawY - simulationArea.mouseDownRawY) + simulationArea.oldy;
-            simulationArea.ox = Math.round(simulationArea.ox);
-            simulationArea.oy = Math.round(simulationArea.oy);
+            globalScope.ox = (simulationArea.mouseRawX - simulationArea.mouseDownRawX) + simulationArea.oldx;
+            globalScope.oy = (simulationArea.mouseRawY - simulationArea.mouseDownRawY) + simulationArea.oldy;
+            globalScope.ox = Math.round(globalScope.ox);
+            globalScope.oy = Math.round(globalScope.oy);
         }
+        dots(true, false);
 
     } else if (simulationArea.lastSelected == scope.root) {
         simulationArea.lastSelected = undefined;
@@ -605,7 +529,7 @@ function update(scope=globalScope) {
     //Draw
     if (toBeUpdated || updateCanvas) {
         simulationArea.clear();
-        dots(); // draw dots
+        // dots(); // draw dots
         for (var i = 0; i < scope.objects.length; i++)
             for (var j = 0; j < scope[scope.objects[i]].length; j++)
                 updated |= scope[scope.objects[i]][j].draw();
@@ -622,39 +546,8 @@ function update(scope=globalScope) {
     toBeUpdated = updateCanvas = false;
 }
 
-// function sort2(a1,a2){
-//     if(a1<=a2)
-//     return [a1,a2];
-//     return [a2,a1];
-// }
 
-//fn to draw Dots on screen
-function dots() {
-    var canvasWidth = simulationArea.canvas.width; //max X distance
-    var canvasHeight = simulationArea.canvas.height; //max Y distance
 
-    var ctx = simulationArea.context;
-    var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-
-    var scale = unit * simulationArea.scale;
-    var ox = simulationArea.ox % scale; //offset
-    var oy = simulationArea.oy % scale; //offset
-
-    function drawPixel(x, y, r, g, b, a) {
-        var index = (x + y * canvasWidth) * 4;
-        canvasData.data[index + 0] = r;
-        canvasData.data[index + 1] = g;
-        canvasData.data[index + 2] = b;
-        canvasData.data[index + 3] = a;
-    }
-
-    for (var i = 0 + ox; i < canvasWidth; i += scale)
-        for (var j = 0 + oy; j < canvasHeight; j += scale)
-            drawPixel(i, j, 0, 0, 0, 255);
-
-    ctx.putImageData(canvasData, 0, 0);
-
-}
 
 // The Circuit element class serves as the abstract class for all circuit elements.
 // Data Members: /* Insert Description */
@@ -668,11 +561,20 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.objectType = this.constructor.name; // CHECK IF THIS IS VALID
     this.x = x;
     this.y = y;
+
+    this.hover = false;
+    if (this.x == undefined || this.y == undefined) {
+        this.x = simulationArea.mouseX;
+        this.y = simulationArea.mouseY;
+        this.newElement = true;
+        this.hover = true;
+    }
+    this.deleteNodesWhenDeleted = true; // FOR NOW - TO CHECK LATER
+
     this.parent = parent;
     this.nodeList = []
-    this.isResolved = false;
     this.clicked = false;
-    this.hover = false;
+
     this.oldx = x;
     this.oldy = y;
     this.leftDimensionX = 10;
@@ -689,7 +591,21 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.labelDirection = dir;
     this.orientationFixed = true; // should it be false?
     this.fixedBitWidth = false;
+    this.absX = function() {
+        return this.x;
+    }
+    this.absY = function() {
+        return this.y;
+    }
+    this.copyFrom = function(obj) {
+        var properties = ["label", "labelDirection"];
+        for (var i = 0; i < properties.length; i++) {
+            if (obj[properties[i]] !== undefined)
+                this[properties[i]] = obj[properties[i]];
+        }
+    }
 
+    scheduleUpdate();
 
     /* Methods to be Implemented for derivedClass
         saveObject(); //To generate JSON-safe data that can be loaded
@@ -702,10 +618,10 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
 
     // Method definitions
 
-    this.updateScope=function(scope){
-        this.scope=scope;
-        for(var i=0;i<this.nodeList.length;i++)
-            this.nodeList[i].scope=scope;
+    this.updateScope = function(scope) {
+        this.scope = scope;
+        for (var i = 0; i < this.nodeList.length; i++)
+            this.nodeList[i].scope = scope;
     }
 
     this.saveObject = function() {
@@ -750,23 +666,34 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     // NOT OVERIDABLE
 
 
-    this.startDragging=function(){
+    this.startDragging = function() {
         this.oldx = this.x;
         this.oldy = this.y;
     }
-    this.drag=function(){
+    this.drag = function() {
         this.x = this.oldx + simulationArea.mouseX - simulationArea.mouseDownX;
         this.y = this.oldy + simulationArea.mouseY - simulationArea.mouseDownY;
     }
     this.update = function() {
 
         var update = false;
+
+        update |= this.newElement;
+        if (this.newElement) {
+            this.x = simulationArea.mouseX;
+            this.y = simulationArea.mouseY;
+            if (simulationArea.mouseDown) {
+                this.newElement = false;
+                simulationArea.lastSelected = this;
+            } else return;
+        }
         // console.log(this.nodeList)
         for (var i = 0; i < this.nodeList.length; i++) {
             update |= this.nodeList[i].update();
         }
 
         if (!simulationArea.mouseDown) this.hover = false;
+
 
         if ((this.clicked || !simulationArea.hover) && this.isHover()) {
             this.hover = true;
@@ -781,8 +708,8 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             // this.x = this.oldx + simulationArea.mouseX - simulationArea.mouseDownX;
             // this.y = this.oldy + simulationArea.mouseY - simulationArea.mouseDownY;
             this.drag();
-            if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
-                for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+            if (!simulationArea.shiftDown && simulationArea.multipleObjectSelections.contains(this)) {
+                for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
                     simulationArea.multipleObjectSelections[i].drag();
                 }
             }
@@ -792,8 +719,8 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             // this.oldx = this.x;
             // this.oldy = this.y;
             this.startDragging();
-            if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
-                for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+            if (!simulationArea.shiftDown && simulationArea.multipleObjectSelections.contains(this)) {
+                for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
                     simulationArea.multipleObjectSelections[i].startDragging();
                 }
             }
@@ -829,9 +756,9 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         return update;
     }
 
-    this.fixDirection=function(){
-        this.direction=fixDirection[this.direction]||this.direction;
-        this.labelDirection=fixDirection[this.labelDirection]||this.labelDirection;
+    this.fixDirection = function() {
+        this.direction = fixDirection[this.direction] || this.direction;
+        this.labelDirection = fixDirection[this.labelDirection] || this.labelDirection;
     }
 
     // The isHover method is used to check if the mouse is hovering over the object.
@@ -870,8 +797,8 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         return false;
     };
 
-    this.setLabel = function() {
-        this.label = prompt("Enter Label:");
+    this.setLabel = function(label) {
+        this.label = label || prompt("Enter Label:");
         // console.log(this.label);
     }
 
@@ -884,7 +811,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             ctx = simulationArea.context;
             ctx.strokeStyle = "black";
             ctx.fillStyle = "white";
-            ctx.lineWidth = 3;
+            ctx.lineWidth = correctWidth(3);
             ctx.beginPath();
             rect2(ctx, -this.leftDimensionX, -this.upDimensionY, this.leftDimensionX + this.rightDimensionX, this.upDimensionY + this.downDimensionY, this.x, this.y, [this.direction, "RIGHT"][+this.directionFixed]);
             if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
@@ -956,15 +883,25 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.delete = function() {
         simulationArea.lastSelected = undefined;
         this.scope[this.objectType].clean(this); // CHECK IF THIS IS VALID
-        for (var i = 0; i < this.nodeList.length; i++) {
-            this.nodeList[i].delete();
-        }
+        if (this.deleteNodesWhenDeleted)
+            for (var i = 0; i < this.nodeList.length; i++)
+                this.nodeList[i].delete();
+        else
+            for (var i = 0; i < this.nodeList.length; i++)
+                if (this.nodeList[i].connections.length)
+                    this.nodeList[i].converToIntermediate();
+                else
+                    this.nodeList[i].delete();
     }
 
+    this.cleanDelete = function() {
+        this.deleteNodesWhenDeleted = true;
+        this.delete();
+    }
     //method to change direction
     //OVERRIDE WITH CAUTION
     this.newDirection = function(dir) {
-        console.log(dir)
+        if (this.direction == dir) return;
         // Leave this for now
         if (this.directionFixed && this.orientationFixed) return;
         else if (this.directionFixed) {
@@ -978,6 +915,9 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             this.nodeList[i].refresh();
         }
 
+    }
+    this.newLabelDirection = function(dir) {
+        this.labelDirection = dir;
     }
 
     //Method to check if object can be resolved

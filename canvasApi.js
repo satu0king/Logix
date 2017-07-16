@@ -1,89 +1,175 @@
-function changeScale(delta) {
-    var xx, yy;
+function changeScale(delta,xx,yy) {
+    // var xx, yy;
 
-    if (simulationArea.lastSelected) { // selected object
-        xx = simulationArea.lastSelected.x;
-        yy = simulationArea.lastSelected.y;
-    } else { //mouse location
-        xx = simulationArea.mouseX;
-        yy = simulationArea.mouseY;
+    if(xx===undefined||yy===undefined){
+        if (simulationArea.lastSelected) { // selected object
+            xx = simulationArea.lastSelected.x;
+            yy = simulationArea.lastSelected.y;
+        } else { //mouse location
+            xx = simulationArea.mouseX;
+            yy = simulationArea.mouseY;
+        }
     }
 
-    var oldScale = simulationArea.scale;
-    simulationArea.scale += delta;
-    simulationArea.scale = Math.round(simulationArea.scale * 10) / 10;
-    simulationArea.ox -= Math.round(xx * (simulationArea.scale - oldScale));
-    simulationArea.oy -= Math.round(yy * (simulationArea.scale - oldScale));
+    var oldScale = globalScope.scale;
+    globalScope.scale += delta;
+    globalScope.scale = Math.round(globalScope.scale * 10) / 10;
+    globalScope.ox -= Math.round(xx * (globalScope.scale - oldScale));
+    globalScope.oy -= Math.round(yy * (globalScope.scale - oldScale));
+    dots(true,false);
+}
+
+//fn to draw Dots on screen
+function dots(dots=true, transparentBackground=false) {
+
+
+
+
+    if(!backgroundArea.context)return;
+    backgroundArea.clear();
+    var canvasWidth = backgroundArea.canvas.width; //max X distance
+    var canvasHeight = backgroundArea.canvas.height; //max Y distance
+
+    var ctx = backgroundArea.context;
+    if (!transparentBackground) {
+        ctx.fillStyle = "white";
+        ctx.rect(0, 0, canvasWidth, canvasHeight);
+        ctx.fill();
+    }
+    var scale = unit * globalScope.scale;
+    var ox = globalScope.ox % scale; //offset
+    var oy = globalScope.oy % scale; //offset
+
+    ctx.beginPath();
+    ctx.strokeStyle="#eee";
+    ctx.lineWidth=1;
+    var correction=0.5*(ctx.lineWidth%2)
+    for (var i = 0 + ox; i < canvasWidth; i += scale){
+        ctx.moveTo(Math.round(i+correction)-correction,0);
+        ctx.lineTo(Math.round(i+correction)-correction,canvasHeight);
+    }
+    for (var j = 0 + oy; j < canvasHeight; j += scale){
+        ctx.moveTo(0,Math.round(j+correction)-correction);
+        ctx.lineTo(canvasWidth,Math.round(j+correction)-correction);
+    }
+    ctx.stroke();
+
+
+    return ;
+    function drawPixel(x, y, r, g, b, a) {
+        var index = (x + y * canvasWidth) * 4;
+        canvasData.data[index + 0] = r;
+        canvasData.data[index + 1] = g;
+        canvasData.data[index + 2] = b;
+        canvasData.data[index + 3] = a;
+    }
+    if (dots) {
+        var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+
+
+
+        for (var i = 0 + ox; i < canvasWidth; i += scale)
+            for (var j = 0 + oy; j < canvasHeight; j += scale)
+                drawPixel(i, j, 0, 0, 0, 255);
+        ctx.putImageData(canvasData, 0, 0);
+    }
 }
 
 function bezierCurveTo(x1, y1, x2, y2, x3, y3, xx, yy, dir) {
     [x1, y1] = rotate(x1, y1, dir);
     [x2, y2] = rotate(x2, y2, dir);
     [x3, y3] = rotate(x3, y3, dir);
-    var ox = simulationArea.ox;
-    var oy = simulationArea.oy;
-    x1 *= simulationArea.scale;
-    y1 *= simulationArea.scale;
-    x2 *= simulationArea.scale;
-    y2 *= simulationArea.scale;
-    x3 *= simulationArea.scale;
-    y3 *= simulationArea.scale;
-    xx = xx * simulationArea.scale;
-    yy = yy * simulationArea.scale;
-    ctx.bezierCurveTo(xx + ox + x1, yy + oy + y1, xx + ox + x2, yy + oy + y2, xx + ox + x3, yy + oy + y3);
+    var ox = globalScope.ox;
+    var oy = globalScope.oy;
+    x1 *= globalScope.scale;
+    y1 *= globalScope.scale;
+    x2 *= globalScope.scale;
+    y2 *= globalScope.scale;
+    x3 *= globalScope.scale;
+    y3 *= globalScope.scale;
+    xx = xx * globalScope.scale;
+    yy = yy * globalScope.scale;
+    ctx.bezierCurveTo(Math.round(xx + ox + x1), Math.round(yy + oy + y1), Math.round(xx + ox + x2), Math.round(yy + oy + y2), Math.round(xx + ox + x3), Math.round(yy + oy + y3));
 }
 
-function moveTo(ctx, x1, y1, xx, yy, dir) {
+function moveTo(ctx, x1, y1, xx, yy, dir,bypass=false) {
+    var correction=0.5*(ctx.lineWidth%2);
     [newX, newY] = rotate(x1, y1, dir);
-    newX = newX * simulationArea.scale;
-    newY = newY * simulationArea.scale;
-    xx = xx * simulationArea.scale;
-    yy = yy * simulationArea.scale;
-    ctx.moveTo(xx + simulationArea.ox + newX, yy + simulationArea.oy + newY);
+    newX = newX * globalScope.scale;
+    newY = newY * globalScope.scale;
+    xx = xx * globalScope.scale;
+    yy = yy * globalScope.scale;
+    if(bypass)
+        ctx.moveTo(xx + globalScope.ox + newX,yy + globalScope.oy + newY);
+    else
+        ctx.moveTo(Math.round(xx + globalScope.ox + newX-correction)+correction, Math.round(yy + globalScope.oy + newY-correction)+correction);
 }
 
 function lineTo(ctx, x1, y1, xx, yy, dir) {
+    // var lineWidthBackup=ctx.lineWidth;
+    // ctx.lineWidth *=widrglobalScope.scale;
+    var correction=0.5*(ctx.lineWidth%2);
     [newX, newY] = rotate(x1, y1, dir);
-    newX = newX * simulationArea.scale;
-    newY = newY * simulationArea.scale;
-    xx = xx * simulationArea.scale;
-    yy = yy * simulationArea.scale;
-    ctx.lineTo(xx + simulationArea.ox + newX, yy + simulationArea.oy + newY);
+    newX = newX * globalScope.scale;
+    newY = newY * globalScope.scale;
+    xx = xx * globalScope.scale;
+    yy = yy * globalScope.scale;
+    ctx.lineTo(Math.round(xx + globalScope.ox + newX-correction)+correction, Math.round(yy + globalScope.oy + newY-correction)+correction);
 }
 
 function arc(ctx, sx, sy, radius, start, stop, xx, yy, dir) { //ox-x of origin, xx- x of element , sx - shift in x from element
 
+    var correction=0.5*(ctx.lineWidth%2);
     [Sx, Sy] = rotate(sx, sy, dir);
-    Sx = Sx * simulationArea.scale;
-    Sy = Sy * simulationArea.scale;
-    xx = xx * simulationArea.scale;
-    yy = yy * simulationArea.scale;
-    radius *= simulationArea.scale;
+    Sx = Sx * globalScope.scale;
+    Sy = Sy * globalScope.scale;
+    xx = xx * globalScope.scale;
+    yy = yy * globalScope.scale;
+    radius *= globalScope.scale;
+    console.log(ctx.lineWidth);
     [newStart, newStop, counterClock] = rotateAngle(start, stop, dir);
     // //console.log(Sx,Sy);
-    ctx.arc(xx + simulationArea.ox + Sx, yy + simulationArea.oy + Sy, radius, newStart, newStop, counterClock);
+    ctx.arc(Math.round(xx + globalScope.ox + Sx+correction)-correction, Math.round(yy + globalScope.oy + Sy+correction)-correction, Math.round(radius), newStart, newStop, counterClock);
+}
+
+function drawCircle2(ctx, sx, sy, radius, xx, yy, dir) { //ox-x of origin, xx- x of element , sx - shift in x from element
+
+    [Sx, Sy] = rotate(sx, sy, dir);
+    Sx = Sx * globalScope.scale;
+    Sy = Sy * globalScope.scale;
+    xx = xx * globalScope.scale;
+    yy = yy * globalScope.scale;
+    radius *= globalScope.scale;
+    ctx.arc(Math.round(xx + globalScope.ox + Sx), Math.round(yy + globalScope.oy + Sy), Math.round(radius), 0, 2*Math.PI);
 }
 
 function rect(ctx, x1, y1, x2, y2) {
-    x1 = x1 * simulationArea.scale;
-    y1 = y1 * simulationArea.scale;
-    x2 = x2 * simulationArea.scale;
-    y2 = y2 * simulationArea.scale;
-    ctx.rect(simulationArea.ox + x1, simulationArea.oy + y1, x2, y2);
+    // var lineWidthBackup=ctx.lineWidth;
+    // ctx.lineWidth *=globalScope.scale;
+    var correction=0.5*(ctx.lineWidth%2)
+    x1 = x1 * globalScope.scale;
+    y1 = y1 * globalScope.scale;
+    x2 = x2 * globalScope.scale;
+    y2 = y2 * globalScope.scale;
+    ctx.rect(Math.round(globalScope.ox + x1-correction)+correction, Math.round(globalScope.oy + y1-correction)+correction, Math.round(x2),Math.round( y2));
+    // ctx.lineWidth=lineWidthBackup
 }
 
 function rect2(ctx, x1, y1, x2, y2, xx, yy, dir) {
-
+    // var lineWidthBackup=ctx.lineWidth;
+    // ctx.lineWidth *=globalScope.scale;
+    var correction = 0.5*(ctx.lineWidth%2);
     [x1, y1] = rotate(x1, y1, dir);
     [x2, y2] = rotate(x2, y2, dir);
     // [xx,yy]=rotate(xx,yy,dir);
-    x1 = x1 * simulationArea.scale;
-    y1 = y1 * simulationArea.scale;
-    x2 = x2 * simulationArea.scale;
-    y2 = y2 * simulationArea.scale;
-    xx *= simulationArea.scale;
-    yy *= simulationArea.scale;
-    ctx.rect(simulationArea.ox + xx + x1, simulationArea.oy + yy + y1, x2, y2);
+    x1 = x1 * globalScope.scale;
+    y1 = y1 * globalScope.scale;
+    x2 = x2 * globalScope.scale;
+    y2 = y2 * globalScope.scale;
+    xx *= globalScope.scale;
+    yy *= globalScope.scale;
+    ctx.rect(Math.round(globalScope.ox + xx + x1-correction)+correction, Math.round(globalScope.oy + yy + y1-correction)+correction, Math.round(x2), Math.round(y2));
+    // ctx.lineWidth=lineWidthBackup
 }
 
 
@@ -98,6 +184,10 @@ function rotate(x1, y1, dir) {
         return [x1, y1];
 }
 
+function correctWidth(w){
+    return Math.max(1,Math.round(w*globalScope.scale));
+}
+
 function rotateAngle(start, stop, dir) {
     if (dir == "LEFT")
         return [start, stop, true];
@@ -110,38 +200,46 @@ function rotateAngle(start, stop, dir) {
 }
 
 function drawLine(ctx, x1, y1, x2, y2, color, width) {
-    x1 *= simulationArea.scale;
-    y1 *= simulationArea.scale;
-    x2 *= simulationArea.scale;
-    y2 *= simulationArea.scale;
+    x1 *= globalScope.scale;
+    y1 *= globalScope.scale;
+    x2 *= globalScope.scale;
+    y2 *= globalScope.scale;
     ctx.beginPath();
     ctx.strokeStyle = color;
     ctx.lineCap = "round";
-    ctx.lineWidth = width;
-    ctx.moveTo(x1 + simulationArea.ox, y1 + simulationArea.oy);
-    ctx.lineTo(x2 + simulationArea.ox, y2 + simulationArea.oy);
+    ctx.lineWidth = correctWidth(width);//*globalScope.scale;
+    var correction = 0.5*(ctx.lineWidth%2);
+    var hCorrection=0;
+    var vCorrection=0;
+    // console.log(ctx.lineWidth);
+    if(y1==y2)vCorrection=correction;
+    if(x1==x2)hCorrection=correction;
+    ctx.moveTo(Math.round(x1 + globalScope.ox+hCorrection)-hCorrection, Math.round(y1 + globalScope.oy+vCorrection)-vCorrection);
+    ctx.lineTo(Math.round(x2 + globalScope.ox+hCorrection)-hCorrection,Math.round(y2 + globalScope.oy+vCorrection)-vCorrection);
     ctx.stroke();
 }
 
 
 function drawCircle(ctx, x1, y1, r, color) {
-    // r = r*simulationArea.scale;
-    x1 = x1 * simulationArea.scale;
-    y1 = y1 * simulationArea.scale;
+    // r = r*globalScope.scale;
+
+    x1 = x1 * globalScope.scale;
+    y1 = y1 * globalScope.scale;
     ctx.beginPath();
     ctx.fillStyle = color;
-    ctx.arc(x1 + simulationArea.ox, y1 + simulationArea.oy, r, 0, Math.PI * 2, false);
+    ctx.arc(Math.round(x1 + globalScope.ox), Math.round(y1 + globalScope.oy), Math.round(r*globalScope.scale), 0, Math.PI * 2, false);
     ctx.closePath();
     ctx.fill();
 }
 
 function fillText(ctx, str, x1, y1, fontSize = 20) {
     // //console.log(x1,y1,"coordinates");
-    x1 = x1 * simulationArea.scale;
-    y1 = y1 * simulationArea.scale;
-    ctx.font = fontSize * simulationArea.scale + "px Georgia";
+    x1 = x1 * globalScope.scale;
+    y1 = y1 * globalScope.scale;
+    ctx.font = Math.round(fontSize * globalScope.scale) + "px Georgia";
     // ctx.font = 20+"px Georgia";
-    ctx.fillText(str, x1 + simulationArea.ox, y1 + simulationArea.oy);
+    ctx.fillText(str, Math.round(x1 + globalScope.ox), Math.round( y1 + globalScope.oy));
+    // ctx.fill();
 }
 
 function fillText2(ctx, str, x1, y1, xx, yy, dir) {
@@ -151,36 +249,37 @@ function fillText2(ctx, str, x1, y1, xx, yy, dir) {
         "DOWN": Math.PI / 2,
         "UP": -Math.PI / 2,
     }
-    x1 = x1 * simulationArea.scale;
-    y1 = y1 * simulationArea.scale;
+    x1 = x1 * globalScope.scale;
+    y1 = y1 * globalScope.scale;
     [x1, y1] = rotate(x1, y1, dir);
-    xx = xx * simulationArea.scale;
-    yy = yy * simulationArea.scale;
+    xx = xx * globalScope.scale;
+    yy = yy * globalScope.scale;
 
-    ctx.font = 14 * simulationArea.scale + "px Georgia";
+    ctx.font =  Math.round(14 * globalScope.scale) + "px Georgia";
     // ctx.font = 20+"px Georgia";
     //console.log(str);
     ctx.save();
-    ctx.translate(xx + x1 + simulationArea.ox, yy + y1 + simulationArea.oy);
+    ctx.translate( Math.round(xx + x1 + globalScope.ox), Math.round( yy + y1 + globalScope.oy));
     ctx.rotate(angle[dir]);
     ctx.textAlign = "center";
     ctx.fillText(str, 0, 0);
     ctx.restore();
-    // ctx.fillText(str, xx+x1+simulationArea.ox,yy+ y1+simulationArea.oy);
+
+    // ctx.fillText(str, xx+x1+globalScope.ox,yy+ y1+globalScope.oy);
 
 }
 
 function fillText3(ctx, str, x1, y1, xx = 0, yy = 0, fontSize = 14, font = "Georgia", textAlign = "center") {
 
-    x1 = x1 * simulationArea.scale;
-    y1 = y1 * simulationArea.scale;
-    xx = xx * simulationArea.scale;
-    yy = yy * simulationArea.scale;
+    x1 = x1 * globalScope.scale;
+    y1 = y1 * globalScope.scale;
+    xx = xx * globalScope.scale;
+    yy = yy * globalScope.scale;
 
-    ctx.font = fontSize * simulationArea.scale + "px " + font;
+    ctx.font =  Math.round(fontSize * globalScope.scale) + "px " + font;
     // console.log(ctx.font);
     ctx.textAlign = textAlign;
-    ctx.fillText(str, xx + x1 + simulationArea.ox, yy + y1 + simulationArea.oy);
+    ctx.fillText(str, Math.round( xx + x1 + globalScope.ox), Math.round( yy + y1 + globalScope.oy));
 
 }
 oppositeDirection = {
