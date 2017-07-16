@@ -1417,25 +1417,6 @@ function Output(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1) {
     this.orientationFixed = false;
     this.setDimensions(this.bitWidth * 10, 10);
     this.inp1 = new Node(this.bitWidth * 10, 0, 0, this);
-    // this.plotValues = [];
-
-    // this.resolve = function() {
-    //
-    //     var time=plotArea.stopWatch.ElapsedMilliseconds;
-    //     // console.log("DEB:",time);
-    //     if(this.plotValues.length&&this.plotValues[this.plotValues.length-1][0]==time)
-    //         this.plotValues.pop();
-    //
-    //     if(this.plotValues.length==0){
-    //         this.plotValues.push([time,this.inp1.value]);
-    //         return;
-    //     }
-    //
-    //     if(this.plotValues[this.plotValues.length-1][1]==this.inp1.value)
-    //        return;
-    //     else
-    //        this.plotValues.push([time,this.inp1.value]);
-    // }
 
     this.customSave = function() {
         var data = {

@@ -385,10 +385,14 @@ function copyPaste(copyList) {
     tempScope = new Scope(globalScope.name,globalScope.id);
     var oldOx=globalScope.ox;
     var oldOy=globalScope.oy;
+    var oldScale=globalScope.scale;
     d = backUp(globalScope);
     loadScope(tempScope, d);
     scopeList[tempScope.id]=tempScope;
-    for (var i = 0; i < globalScope.objects.length; i++)
+    tempScope.backups=globalScope.backups;
+    for (var i = 0; i < globalScope.objects.length; i++){
+        var prevLength=globalScope[globalScope.objects[i]].length; // LOL length of list will reduce automatically when deletion starts
+        // if(globalScope[globalScope.objects[i]].length)console.log("deleting, ",globalScope[globalScope.objects[i]]);
         for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
             var obj = globalScope[globalScope.objects[i]][j];
             if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
@@ -397,10 +401,27 @@ function copyPaste(copyList) {
                     globalScope[globalScope.objects[i]][j].cleanDelete();
                 }
             }
-        }
 
-    toBeUpdated = true;
-    console.log(globalScope.wires.length)
+            if(globalScope[globalScope.objects[i]].length!=prevLength){
+                prevLength--;
+                j--;
+            }
+        }
+    }
+
+    // toBeUpdated = true;
+    // update(globalScope);
+    console.log("DEBUG1",globalScope.wires.length)
+    var prevLength=globalScope.wires.length;
+    for (var i = 0; i < globalScope.wires.length; i++) {
+        globalScope.wires[i].checkConnections();
+        if(globalScope.wires.length!=prevLength){
+            prevLength--;
+            i--;
+        }
+    }
+    console.log(globalScope.wires,globalScope.allNodes)
+    console.log("DEBUG2",globalScope.wires.length)
     // update(globalScope);
     // console.log(globalScope.wires.length)
 
@@ -412,31 +433,45 @@ function copyPaste(copyList) {
     }
     approxX/=copyList.length;
     approxY/=copyList.length;
+
+    for (var i = 0; i < globalScope.objects.length; i++)
+        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
+            var obj = globalScope[globalScope.objects[i]][j];
+            obj.updateScope(tempScope);
+        }
+
+
     for (var i = 0; i < copyList.length; i++) {
         // console.log(copyList[i]);
         copyList[i].x += simulationArea.mouseX-approxX;
         copyList[i].y += simulationArea.mouseY-approxY;
-        copyList[i].updateScope(tempScope);
-    }
-    for (var i = 0; i < globalScope.wires.length; i++) {
-        globalScope.wires[i].updateScope(tempScope);
+
     }
 
 
-    toBeUpdated = true;
-    update(tempScope);
+    // for (var i = 0; i < globalScope.wires.length; i++) {
+    //     globalScope.wires[i].updateScope(tempScope);
+    // }
 
     for (l in globalScope) {
         if (globalScope[l] instanceof Array && l != "objects") {
             tempScope[l].extend(globalScope[l]);
-            console.log("Copying , ",l);
+            // console.log("Copying , ",l);
         }
     }
+
+    // update(tempScope);
+
+
     simulationArea.multipleObjectSelections = [];//copyList.slice();
-    copyList=[];
+    simulationArea.copyList = [];//copyList.slice();
+    canvasUpdate=true;
+    toBeUpdated = true;
     globalScope = tempScope;
+    scheduleUpdate();
     globalScope.ox=oldOx;
     globalScope.oy=oldOy;
+    globalScope.scale=oldScale;
 
 }
 
@@ -455,8 +490,14 @@ function update(scope = globalScope) {
         if (wireToBeChecked == 2) wireToBeChecked = 0; // this required due to timing issues
         else wireToBeChecked++;
         // WHY IS THIS REQUIRED ???? we are checking inside wire ALSO
-        for (var i = 0; i < scope.wires.length; i++)
+        var prevLength=scope.wires.length;
+        for (var i = 0; i < scope.wires.length; i++){
             scope.wires[i].checkConnections();
+            if(scope.wires.length!=prevLength){
+                prevLength--;
+                i--;
+            }
+        }
     }
 
     for (var i = 0; i < scope.objects.length; i++)
@@ -600,6 +641,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.rectangleObject = true;
     this.label = "";
     this.scope = scope;
+    console.log()
     this.scope[this.objectType].push(this); // CHECK IF THIS IS VALID
     this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
     this.direction = dir;

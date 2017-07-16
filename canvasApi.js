@@ -126,7 +126,6 @@ function arc(ctx, sx, sy, radius, start, stop, xx, yy, dir) { //ox-x of origin, 
     xx = xx * globalScope.scale;
     yy = yy * globalScope.scale;
     radius *= globalScope.scale;
-    console.log(ctx.lineWidth);
     [newStart, newStop, counterClock] = rotateAngle(start, stop, dir);
     // //console.log(Sx,Sy);
     ctx.arc(Math.round(xx + globalScope.ox + Sx+correction)-correction, Math.round(yy + globalScope.oy + Sy+correction)-correction, Math.round(radius), newStart, newStop, counterClock);
