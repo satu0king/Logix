@@ -53,7 +53,7 @@ window.addEventListener('keydown', function(e) {
 
     if (e.keyCode == 16) {
         simulationArea.shiftDown = true;
-        if (simulationArea.lastSelected&&simulationArea.lastSelected.objectType!="Wire"&&simulationArea.lastSelected.objectType!="CircuitElement") {
+        if (simulationArea.lastSelected&&simulationArea.lastSelected.objectType!="Wire"&&simulationArea.lastSelected.objectType!="CircuitElement" &&!simulationArea.multipleObjectSelections.contains(simulationArea.lastSelected)) {
             simulationArea.multipleObjectSelections.push(simulationArea.lastSelected);
             // simulationArea.lastSelected = undefined;
         }

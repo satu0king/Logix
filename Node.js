@@ -104,6 +104,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     this.updateScope=function(scope){
         this.scope=scope;
+        if(this.type==2)this.parent=scope.root;
 
     }
 

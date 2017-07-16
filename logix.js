@@ -100,9 +100,9 @@ function uniq(a) {
     });
 }
 
-function Scope(name = "localScope") {
+function Scope(name = "localScope",id=undefined) {
     //root object for referring to main canvas - intermediate node uses this
-    this.id = Math.floor((Math.random() * 100000000000) + 1);
+    this.id = id||Math.floor((Math.random() * 100000000000) + 1);
     this.CircuitElement = [];
     this.root = new CircuitElement(0, 0, this, "RIGHT", 1);
     this.backups = [];
@@ -381,32 +381,44 @@ var simulationArea = {
 }
 
 function copyPaste(copyList) {
-    tempScope = new Scope("globalScope");
-    d = backUp();
+    if(copyList.length==0)return;
+    tempScope = new Scope(globalScope.name,globalScope.id);
+    var oldOx=globalScope.ox;
+    var oldOy=globalScope.oy;
+    d = backUp(globalScope);
     loadScope(tempScope, d);
+    scopeList[tempScope.id]=tempScope;
     for (var i = 0; i < globalScope.objects.length; i++)
         for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
             var obj = globalScope[globalScope.objects[i]][j];
             if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
                 if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
                     console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
-                    globalScope[globalScope.objects[i]][j].delete()
+                    globalScope[globalScope.objects[i]][j].cleanDelete();
                 }
             }
         }
+
     toBeUpdated = true;
     console.log(globalScope.wires.length)
     // update(globalScope);
     // console.log(globalScope.wires.length)
+
+    var approxX=0;
+    var approxY=0;
+    for (var i = 0; i < copyList.length; i++) {
+        approxX+=copyList[i].x;
+        approxY+=copyList[i].y;
+    }
+    approxX/=copyList.length;
+    approxY/=copyList.length;
     for (var i = 0; i < copyList.length; i++) {
         // console.log(copyList[i]);
-        copyList[i].x += 10;
-        copyList[i].y += 10;
+        copyList[i].x += simulationArea.mouseX-approxX;
+        copyList[i].y += simulationArea.mouseY-approxY;
         copyList[i].updateScope(tempScope);
     }
     for (var i = 0; i < globalScope.wires.length; i++) {
-        // console.log(copyList[i]);
-
         globalScope.wires[i].updateScope(tempScope);
     }
 
@@ -417,11 +429,14 @@ function copyPaste(copyList) {
     for (l in globalScope) {
         if (globalScope[l] instanceof Array && l != "objects") {
             tempScope[l].extend(globalScope[l]);
+            console.log("Copying , ",l);
         }
     }
-    simulationArea.multipleObjectSelections = copyList.slice();
-
+    simulationArea.multipleObjectSelections = [];//copyList.slice();
+    copyList=[];
     globalScope = tempScope;
+    globalScope.ox=oldOx;
+    globalScope.oy=oldOy;
 
 }
 
@@ -507,6 +522,7 @@ function update(scope = globalScope) {
                 for (var j = 0; j < scope[scope.objects[i]].length; j++) {
                     var obj = scope[scope.objects[i]][j];
                     // console.log(obj);
+                    if(simulationArea.multipleObjectSelections.contains(obj))continue;
                     var x, y;
                     if (obj.objectType == "Node") {
                         x = obj.absX();
