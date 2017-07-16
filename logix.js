@@ -155,12 +155,13 @@ function setup() {
     projectId = generateId();
     // globalScope = new Scope("globalScope"); //enabling scope
     // scopeList.push(globalScope);
+    toBeUpdated = true;
+    DPR=window.devicePixelRatio||1;
     newCircuit("Main");
 
     // return;
 
-    toBeUpdated = true;
-    DPR=window.devicePixelRatio||1;
+
     width = document.getElementById("simulation").clientWidth*DPR;
     height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
     document.getElementById("canvasArea").style.height=height/DPR;

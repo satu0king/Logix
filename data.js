@@ -76,11 +76,11 @@ function generateSvg(){
         //
         // globalScope.ox = (-minX + maxDimension+11)*resolution;
         // globalScope.oy = (-minY + maxDimension-6)*resolution;
-        width = (maxX - minX + 2*maxDimension+10) * resolution;
-        height = (maxY - minY + 2*maxDimension+10) * resolution;
+        width = (maxX - minX + 2*maxDimension+26) * resolution;
+        height = (maxY - minY + 2*maxDimension+26) * resolution;
 
-        globalScope.ox = (-minX + maxDimension+5)*resolution;
-        globalScope.oy = (-minY + maxDimension+5)*resolution;
+        globalScope.ox = (-minX + maxDimension+3)*resolution;
+        globalScope.oy = (-minY + maxDimension+13)*resolution;
     }
     else{
         width=(width*resolution)/backUpScale;

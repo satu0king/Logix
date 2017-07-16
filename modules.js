@@ -2233,7 +2233,10 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
 function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
-    this.setDimensions(20, 20);
+    // this.setDimensions(20, 20);
+    this.leftDimensionX=10;
+    this.rightDimensionX=20;
+    this.setHeight(30);
     this.directionFixed = true;
     this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
     this.rectangleObject = false;
@@ -2294,7 +2297,6 @@ function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         fillText(ctx, "MSB", xx + 5, yy - 10, 10);
-        ctx.stroke();
         ctx.fill();
 
         ctx.beginPath();
@@ -2313,7 +2315,9 @@ function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 function LSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
-    this.setDimensions(20, 20);
+    this.leftDimensionX=10;
+    this.rightDimensionX=20;
+    this.setHeight(30);
     this.directionFixed = true;
     this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
     this.rectangleObject = false;
@@ -2382,7 +2386,6 @@ function LSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         fillText(ctx, "LSB", xx + 5, yy - 10, 10);
-        ctx.stroke();
         ctx.fill();
 
         ctx.beginPath();
@@ -2516,7 +2519,6 @@ function PriorityEncoder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1)
             fillText(ctx, String(i), xx + this.output1[0].x - 10, yy + this.output1[i].y + 2, 10);
         }
         fillText(ctx, "EN", xx + this.enable.x, yy + this.enable.y - 5, 10);
-        ctx.stroke();
         ctx.fill();
 
     }
