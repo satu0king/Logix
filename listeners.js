@@ -28,6 +28,7 @@ window.addEventListener('keydown', function(e) {
     toBeUpdated=true;
 
 
+
     // zoom in (+)
     if (e.key == "Meta"||e.key=="Control") {
         simulationArea.controlDown = true;
@@ -92,6 +93,9 @@ window.addEventListener('keydown', function(e) {
     if (simulationArea.controlDown&&e.key.charCodeAt(0) == 122) { // detect the special CTRL-Z code
         undo();
     }
+    // else{
+    //     //
+    // }
     //change direction fns
     if (e.keyCode == 37 && simulationArea.lastSelected != undefined) {
         simulationArea.lastSelected.newDirection("LEFT");
