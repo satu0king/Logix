@@ -217,7 +217,8 @@ function backUp(scope = globalScope) {
     data["name"] = scope.name;
 
     for (var i = 0; i < moduleList.length; i++) {
-        data[moduleList[i]] = scope[moduleList[i]].map(extract);
+        if(scope[moduleList[i]].length)
+            data[moduleList[i]] = scope[moduleList[i]].map(extract);
     }
 
 
