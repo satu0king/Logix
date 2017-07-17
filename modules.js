@@ -304,7 +304,6 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
             else if(this.direction=="UP") fillText(ctx, String(i), xx + this.inp[i].x, yy + this.inp[i].y - 4, 10);
             else fillText(ctx, String(i), xx + this.inp[i].x, yy + this.inp[i].y + 10, 10);
         }
-        ctx.stroke();
         ctx.fill();
     }
 
@@ -1420,6 +1419,25 @@ function Output(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1) {
     this.orientationFixed = false;
     this.setDimensions(this.bitWidth * 10, 10);
     this.inp1 = new Node(this.bitWidth * 10, 0, 0, this);
+    // this.plotValues = [];
+
+    // this.resolve = function() {
+    //
+    //     var time=plotArea.stopWatch.ElapsedMilliseconds;
+    //     // console.log("DEB:",time);
+    //     if(this.plotValues.length&&this.plotValues[this.plotValues.length-1][0]==time)
+    //         this.plotValues.pop();
+    //
+    //     if(this.plotValues.length==0){
+    //         this.plotValues.push([time,this.inp1.value]);
+    //         return;
+    //     }
+    //
+    //     if(this.plotValues[this.plotValues.length-1][1]==this.inp1.value)
+    //        return;
+    //     else
+    //        this.plotValues.push([time,this.inp1.value]);
+    // }
 
     this.customSave = function() {
         var data = {
@@ -2098,7 +2116,6 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
             else if(this.direction=="UP") fillText(ctx, String(i), xx + this.output1[i].x , yy + this.output1[i].y - 5, 10);
             else fillText(ctx, String(i), xx + this.output1[i].x , yy + this.output1[i].y + 10, 10);
         }
-        ctx.stroke();
         ctx.fill();
     }
 }
@@ -2286,8 +2303,8 @@ function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         ctx.beginPath();
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
-        fillText(ctx, "MSB", xx + 5, yy - 10, 10);
-        fillText(ctx, "EN", xx + this.enable.x-12, yy +this.enable.y+4, 10);
+        fillText(ctx, "MSB", xx + 6, yy - 12, 10);
+        fillText(ctx, "EN", xx + this.enable.x-12, yy +this.enable.y+3, 8);
         ctx.fill();
 
         ctx.beginPath();
@@ -2376,8 +2393,8 @@ function LSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         ctx.beginPath();
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
-        fillText(ctx, "LSB", xx + 5, yy - 10, 10);
-        fillText(ctx, "EN", xx + this.enable.x-12, yy +this.enable.y+4, 10);
+        fillText(ctx, "LSB", xx + 6, yy - 12, 10);
+        fillText(ctx, "EN", xx + this.enable.x-12, yy +this.enable.y+3, 8);
         ctx.fill();
 
         ctx.beginPath();
