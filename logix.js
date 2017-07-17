@@ -100,9 +100,9 @@ function uniq(a) {
     });
 }
 
-function Scope(name = "localScope") {
+function Scope(name = "localScope",id=undefined) {
     //root object for referring to main canvas - intermediate node uses this
-    this.id = Math.floor((Math.random() * 100000000000) + 1);
+    this.id = id||Math.floor((Math.random() * 100000000000) + 1);
     this.CircuitElement = [];
     this.root = new CircuitElement(0, 0, this, "RIGHT", 1);
     this.backups = [];
@@ -155,12 +155,13 @@ function setup() {
     projectId = generateId();
     // globalScope = new Scope("globalScope"); //enabling scope
     // scopeList.push(globalScope);
+    toBeUpdated = true;
+    DPR=window.devicePixelRatio||1;
     newCircuit("Main");
 
     // return;
 
-    toBeUpdated = true;
-    DPR=window.devicePixelRatio||1;
+
     width = document.getElementById("simulation").clientWidth*DPR;
     height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
     document.getElementById("canvasArea").style.height=height/DPR;
@@ -380,48 +381,338 @@ var simulationArea = {
 }
 
 function copyPaste(copyList) {
-    tempScope = new Scope("globalScope");
-    d = backUp();
+    if(copyList.length==0)return;
+    tempScope = new Scope(globalScope.name,globalScope.id);
+    var oldOx=globalScope.ox;
+    var oldOy=globalScope.oy;
+    var oldScale=globalScope.scale;
+    d = backUp(globalScope);
     loadScope(tempScope, d);
-    for (var i = 0; i < globalScope.objects.length; i++)
+    scopeList[tempScope.id]=tempScope;
+    tempScope.backups=globalScope.backups;
+    for (var i = 0; i < globalScope.objects.length; i++){
+        var prevLength=globalScope[globalScope.objects[i]].length; // LOL length of list will reduce automatically when deletion starts
+        // if(globalScope[globalScope.objects[i]].length)console.log("deleting, ",globalScope[globalScope.objects[i]]);
         for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
             var obj = globalScope[globalScope.objects[i]][j];
             if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
                 if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
                     console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
-                    globalScope[globalScope.objects[i]][j].delete()
+                    globalScope[globalScope.objects[i]][j].cleanDelete();
                 }
             }
+
+            if(globalScope[globalScope.objects[i]].length!=prevLength){
+                prevLength--;
+                j--;
+            }
         }
-    toBeUpdated = true;
-    console.log(globalScope.wires.length)
+    }
+
+    // toBeUpdated = true;
+    // update(globalScope);
+    console.log("DEBUG1",globalScope.wires.length)
+    var prevLength=globalScope.wires.length;
+    for (var i = 0; i < globalScope.wires.length; i++) {
+        globalScope.wires[i].checkConnections();
+        if(globalScope.wires.length!=prevLength){
+            prevLength--;
+            i--;
+        }
+    }
+    console.log(globalScope.wires,globalScope.allNodes)
+    console.log("DEBUG2",globalScope.wires.length)
     // update(globalScope);
     // console.log(globalScope.wires.length)
+
+    var approxX=0;
+    var approxY=0;
+    for (var i = 0; i < copyList.length; i++) {
+        approxX+=copyList[i].x;
+        approxY+=copyList[i].y;
+    }
+    approxX/=copyList.length;
+    approxY/=copyList.length;
+
+    approxX=Math.round(approxX/10)*10
+    approxY=Math.round(approxY/10)*10
+    for (var i = 0; i < globalScope.objects.length; i++)
+        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
+            var obj = globalScope[globalScope.objects[i]][j];
+            obj.updateScope(tempScope);
+        }
+
+
     for (var i = 0; i < copyList.length; i++) {
         // console.log(copyList[i]);
-        copyList[i].x += 10;
-        copyList[i].y += 10;
-        copyList[i].updateScope(tempScope);
-    }
-    for (var i = 0; i < globalScope.wires.length; i++) {
-        // console.log(copyList[i]);
+        copyList[i].x += simulationArea.mouseX-approxX;
+        copyList[i].y += simulationArea.mouseY-approxY;
 
-        globalScope.wires[i].updateScope(tempScope);
     }
 
 
-    toBeUpdated = true;
-    update(tempScope);
+    // for (var i = 0; i < globalScope.wires.length; i++) {
+    //     globalScope.wires[i].updateScope(tempScope);
+    // }
 
     for (l in globalScope) {
         if (globalScope[l] instanceof Array && l != "objects") {
             tempScope[l].extend(globalScope[l]);
+            // console.log("Copying , ",l);
         }
     }
-    simulationArea.multipleObjectSelections = copyList.slice();
 
+    // update(tempScope);
+
+
+    simulationArea.multipleObjectSelections = [];//copyList.slice();
+    simulationArea.copyList = [];//copyList.slice();
+    canvasUpdate=true;
+    toBeUpdated = true;
     globalScope = tempScope;
+    scheduleUpdate();
+    globalScope.ox=oldOx;
+    globalScope.oy=oldOy;
+    globalScope.scale=oldScale;
 
+}
+function paste(copyData) {
+    if(copyData==undefined)return;
+    var data=JSON.parse(copyData);
+    if(!data["logixClipBoardData"])return;
+    tempScope = new Scope(globalScope.name,globalScope.id);
+    var oldOx=globalScope.ox;
+    var oldOy=globalScope.oy;
+    var oldScale=globalScope.scale;
+    loadScope(tempScope,data);
+
+    var prevLength=tempScope.allNodes.length
+    for (var i = 0; i < tempScope.allNodes.length; i++) {
+        tempScope.allNodes[i].checkDeleted();
+        if(tempScope.allNodes.length!=prevLength){
+            prevLength--;
+            i--;
+        }
+    }
+
+    // tempScope=simulationArea.copyScope;
+    // update(globalScope);
+    // console.log(globalScope.wires.length)
+
+    var approxX=0;
+    var approxY=0;
+    var count=0
+
+
+
+
+    for (var i = 0; i < tempScope.objects.length; i++){
+        for (var j = 0; j < tempScope[tempScope.objects[i]].length; j++) {
+            var obj = tempScope[tempScope.objects[i]][j];
+            obj.updateScope(globalScope);
+            if(obj.objectType!="Wire"){
+                approxX+=obj.x;
+                approxY+=obj.y;
+                count++;
+            }
+        }
+    }
+
+
+
+
+
+    approxX/=count
+    approxY/=count
+
+    approxX=Math.round(approxX/10)*10
+    approxY=Math.round(approxY/10)*10
+
+
+        for (var i = 0; i < tempScope.objects.length; i++){
+            for (var j = 0; j < tempScope[tempScope.objects[i]].length; j++) {
+                var obj=tempScope[tempScope.objects[i]][j];
+                if(obj.objectType!="Wire"){
+                    obj.x+=simulationArea.mouseX-approxX;
+                    obj.y+=simulationArea.mouseY-approxY;
+                }
+            }
+        }
+
+        // console.log(tempScope,approxX,approxY,count);
+        // toBeUpdated=true;
+        // canvasUpdate=true;
+        // update(tempScope);
+        // return;
+
+
+
+    // for (var i = 0; i < globalScope.wires.length; i++) {
+    //     globalScope.wires[i].updateScope(tempScope);
+    // }
+
+
+
+
+    for (l in tempScope) {
+        if (tempScope[l] instanceof Array && l != "objects" && l!="CircuitElement" ) {
+            globalScope[l].extend(tempScope[l]);
+            console.log("Copying , ",l);
+        }
+    }
+
+
+
+
+    // update(tempScope);
+
+
+    // simulationArea.multipleObjectSelections = [];//copyList.slice();
+    // simulationArea.copyList = [];//copyList.slice();
+    canvasUpdate=true;
+    toBeUpdated = true;
+    // globalScope = tempScope;
+    scheduleUpdate();
+    globalScope.ox=oldOx;
+    globalScope.oy=oldOy;
+    globalScope.scale=oldScale;
+
+}
+function cut(copyList) {
+    if(copyList.length==0)return;
+    tempScope = new Scope(globalScope.name,globalScope.id);
+    var oldOx=globalScope.ox;
+    var oldOy=globalScope.oy;
+    var oldScale=globalScope.scale;
+    d = backUp(globalScope);
+    loadScope(tempScope, d);
+    scopeList[tempScope.id]=tempScope;
+
+    for(var i=0;i<copyList.length;i++){
+        var obj=copyList[i];
+        if(obj.objectType=="Node")obj.objectType="allNodes"
+        for(var j=0;j<tempScope[obj.objectType].length;j++){
+            if(tempScope[obj.objectType][j].x==obj.x&&tempScope[obj.objectType][j].y==obj.y&&(obj.objectType!="Node"||obj.type==2)){
+                tempScope[obj.objectType][j].delete();
+                break;
+            }
+
+        }
+    }
+    tempScope.backups=globalScope.backups;
+    for (var i = 0; i < globalScope.objects.length; i++){
+        var prevLength=globalScope[globalScope.objects[i]].length; // LOL length of list will reduce automatically when deletion starts
+        // if(globalScope[globalScope.objects[i]].length)console.log("deleting, ",globalScope[globalScope.objects[i]]);
+        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
+            var obj = globalScope[globalScope.objects[i]][j];
+            if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
+                if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
+                    console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
+                    globalScope[globalScope.objects[i]][j].cleanDelete();
+                }
+            }
+
+            if(globalScope[globalScope.objects[i]].length!=prevLength){
+                prevLength--;
+                j--;
+            }
+        }
+    }
+
+    // toBeUpdated = true;
+    // update(globalScope);
+    console.log("DEBUG1",globalScope.wires.length)
+    var prevLength=globalScope.wires.length;
+    for (var i = 0; i < globalScope.wires.length; i++) {
+        globalScope.wires[i].checkConnections();
+        if(globalScope.wires.length!=prevLength){
+            prevLength--;
+            i--;
+        }
+    }
+    // console.log(globalScope.wires,globalScope.allNodes)
+    // console.log("DEBUG2",globalScope.wires.length)
+    toBeUpdated=true;
+    // update(globalScope);
+
+    // update(tempScope);
+    var data=backUp(globalScope);
+    data['logixClipBoardData']=true;
+    data=JSON.stringify(data);
+
+
+    simulationArea.multipleObjectSelections = [];//copyList.slice();
+    simulationArea.copyList = [];//copyList.slice();
+    canvasUpdate=true;
+    toBeUpdated = true;
+    globalScope = tempScope;
+    scheduleUpdate();
+    globalScope.ox=oldOx;
+    globalScope.oy=oldOy;
+    globalScope.scale=oldScale;
+    return data;
+}
+function copy(copyList) {
+    if(copyList.length==0)return;
+    tempScope = new Scope(globalScope.name,globalScope.id);
+    var oldOx=globalScope.ox;
+    var oldOy=globalScope.oy;
+    var oldScale=globalScope.scale;
+    d = backUp(globalScope);
+    loadScope(tempScope, d);
+    scopeList[tempScope.id]=tempScope;
+    tempScope.backups=globalScope.backups;
+    for (var i = 0; i < globalScope.objects.length; i++){
+        var prevLength=globalScope[globalScope.objects[i]].length; // LOL length of list will reduce automatically when deletion starts
+        // if(globalScope[globalScope.objects[i]].length)console.log("deleting, ",globalScope[globalScope.objects[i]]);
+        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
+            var obj = globalScope[globalScope.objects[i]][j];
+            if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
+                if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
+                    console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
+                    globalScope[globalScope.objects[i]][j].cleanDelete();
+                }
+            }
+
+            if(globalScope[globalScope.objects[i]].length!=prevLength){
+                prevLength--;
+                j--;
+            }
+        }
+    }
+
+    // toBeUpdated = true;
+    // update(globalScope);
+    console.log("DEBUG1",globalScope.wires.length)
+    var prevLength=globalScope.wires.length;
+    for (var i = 0; i < globalScope.wires.length; i++) {
+        globalScope.wires[i].checkConnections();
+        if(globalScope.wires.length!=prevLength){
+            prevLength--;
+            i--;
+        }
+    }
+    // console.log(globalScope.wires,globalScope.allNodes)
+    // console.log("DEBUG2",globalScope.wires.length)
+    toBeUpdated=true;
+    // update(globalScope);
+
+    // update(tempScope);
+    var data=backUp(globalScope);
+    data['logixClipBoardData']=true;
+    data=JSON.stringify(data);
+
+
+    simulationArea.multipleObjectSelections = [];//copyList.slice();
+    simulationArea.copyList = [];//copyList.slice();
+    canvasUpdate=true;
+    toBeUpdated = true;
+    globalScope = tempScope;
+    scheduleUpdate();
+    globalScope.ox=oldOx;
+    globalScope.oy=oldOy;
+    globalScope.scale=oldScale;
+    return data;
 }
 
 // fn that calls update on everything else. If any change is there, it resolves the circuit and draws it again
@@ -439,8 +730,14 @@ function update(scope = globalScope) {
         if (wireToBeChecked == 2) wireToBeChecked = 0; // this required due to timing issues
         else wireToBeChecked++;
         // WHY IS THIS REQUIRED ???? we are checking inside wire ALSO
-        for (var i = 0; i < scope.wires.length; i++)
+        var prevLength=scope.wires.length;
+        for (var i = 0; i < scope.wires.length; i++){
             scope.wires[i].checkConnections();
+            if(scope.wires.length!=prevLength){
+                prevLength--;
+                i--;
+            }
+        }
     }
 
     for (var i = 0; i < scope.objects.length; i++)
@@ -506,6 +803,7 @@ function update(scope = globalScope) {
                 for (var j = 0; j < scope[scope.objects[i]].length; j++) {
                     var obj = scope[scope.objects[i]][j];
                     // console.log(obj);
+                    if(simulationArea.multipleObjectSelections.contains(obj))continue;
                     var x, y;
                     if (obj.objectType == "Node") {
                         x = obj.absX();
@@ -583,6 +881,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.rectangleObject = true;
     this.label = "";
     this.scope = scope;
+    console.log()
     this.scope[this.objectType].push(this); // CHECK IF THIS IS VALID
     this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
     this.direction = dir;
