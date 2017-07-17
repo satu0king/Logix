@@ -252,7 +252,11 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     }
 
+    this.checkDeleted=function(){
+        if(this.deleted)this.delete();
+    }
     this.update = function() {
+
 
         if (!this.clicked && !simulationArea.mouseDown) {
             var px = this.prevx;

@@ -478,12 +478,23 @@ function copyPaste(copyList) {
 }
 function paste(copyData) {
     if(copyData==undefined)return;
-
+    var data=JSON.parse(copyData);
+    if(!data["logixClipBoardData"])return;
     tempScope = new Scope(globalScope.name,globalScope.id);
     var oldOx=globalScope.ox;
     var oldOy=globalScope.oy;
     var oldScale=globalScope.scale;
-    loadScope(tempScope,copyData);
+    loadScope(tempScope,data);
+
+    var prevLength=tempScope.allNodes.length
+    for (var i = 0; i < tempScope.allNodes.length; i++) {
+        tempScope.allNodes[i].checkDeleted();
+        if(tempScope.allNodes.length!=prevLength){
+            prevLength--;
+            i--;
+        }
+    }
+
     // tempScope=simulationArea.copyScope;
     // update(globalScope);
     // console.log(globalScope.wires.length)
@@ -567,6 +578,80 @@ function paste(copyData) {
     globalScope.scale=oldScale;
 
 }
+function cut(copyList) {
+    if(copyList.length==0)return;
+    tempScope = new Scope(globalScope.name,globalScope.id);
+    var oldOx=globalScope.ox;
+    var oldOy=globalScope.oy;
+    var oldScale=globalScope.scale;
+    d = backUp(globalScope);
+    loadScope(tempScope, d);
+    scopeList[tempScope.id]=tempScope;
+
+    for(var i=0;i<copyList.length;i++){
+        var obj=copyList[i];
+        if(obj.objectType=="Node")obj.objectType="allNodes"
+        for(var j=0;j<tempScope[obj.objectType].length;j++){
+            if(tempScope[obj.objectType][j].x==obj.x&&tempScope[obj.objectType][j].y==obj.y&&(obj.objectType!="Node"||obj.type==2)){
+                tempScope[obj.objectType][j].delete();
+                break;
+            }
+
+        }
+    }
+    tempScope.backups=globalScope.backups;
+    for (var i = 0; i < globalScope.objects.length; i++){
+        var prevLength=globalScope[globalScope.objects[i]].length; // LOL length of list will reduce automatically when deletion starts
+        // if(globalScope[globalScope.objects[i]].length)console.log("deleting, ",globalScope[globalScope.objects[i]]);
+        for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
+            var obj = globalScope[globalScope.objects[i]][j];
+            if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
+                if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
+                    console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
+                    globalScope[globalScope.objects[i]][j].cleanDelete();
+                }
+            }
+
+            if(globalScope[globalScope.objects[i]].length!=prevLength){
+                prevLength--;
+                j--;
+            }
+        }
+    }
+
+    // toBeUpdated = true;
+    // update(globalScope);
+    console.log("DEBUG1",globalScope.wires.length)
+    var prevLength=globalScope.wires.length;
+    for (var i = 0; i < globalScope.wires.length; i++) {
+        globalScope.wires[i].checkConnections();
+        if(globalScope.wires.length!=prevLength){
+            prevLength--;
+            i--;
+        }
+    }
+    // console.log(globalScope.wires,globalScope.allNodes)
+    // console.log("DEBUG2",globalScope.wires.length)
+    toBeUpdated=true;
+    // update(globalScope);
+
+    // update(tempScope);
+    var data=backUp(globalScope);
+    data['logixClipBoardData']=true;
+    data=JSON.stringify(data);
+
+
+    simulationArea.multipleObjectSelections = [];//copyList.slice();
+    simulationArea.copyList = [];//copyList.slice();
+    canvasUpdate=true;
+    toBeUpdated = true;
+    globalScope = tempScope;
+    scheduleUpdate();
+    globalScope.ox=oldOx;
+    globalScope.oy=oldOy;
+    globalScope.scale=oldScale;
+    return data;
+}
 function copy(copyList) {
     if(copyList.length==0)return;
     tempScope = new Scope(globalScope.name,globalScope.id);
@@ -613,7 +698,9 @@ function copy(copyList) {
     // update(globalScope);
 
     // update(tempScope);
-    simulationArea.copyData=backUp(globalScope);
+    var data=backUp(globalScope);
+    data['logixClipBoardData']=true;
+    data=JSON.stringify(data);
 
 
     simulationArea.multipleObjectSelections = [];//copyList.slice();
@@ -625,7 +712,7 @@ function copy(copyList) {
     globalScope.ox=oldOx;
     globalScope.oy=oldOy;
     globalScope.scale=oldScale;
-
+    return data;
 }
 
 // fn that calls update on everything else. If any change is there, it resolves the circuit and draws it again

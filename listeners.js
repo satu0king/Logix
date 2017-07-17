@@ -67,14 +67,14 @@ window.addEventListener('keydown', function(e) {
        console.log("KEY:"+e.key);
 
    if(simulationArea.controlDown&&(e.key=="C"||e.key=="c")){
-       simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
-       if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
-           simulationArea.copyList.push(simulationArea.lastSelected);
-       }
-       copy(simulationArea.copyList);
+    //    simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
+    //    if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
+    //        simulationArea.copyList.push(simulationArea.lastSelected);
+    //    }
+    //    copy(simulationArea.copyList);
    }
    if(simulationArea.controlDown&&(e.key=="V"||e.key=="v")){
-       paste(simulationArea.copyData);
+    //    paste(simulationArea.copyData);
    }
     if (simulationArea.lastSelected && simulationArea.lastSelected.keyDown) {
         if (e.key.toString().length == 1) {
@@ -239,4 +239,51 @@ window.addEventListener('touchleave', function(e) {
     // update();
     var rect = simulationArea.canvas.getBoundingClientRect();
     simulationArea.mouseDown = false;
+});
+
+var isIe = (navigator.userAgent.toLowerCase().indexOf("msie") != -1
+           || navigator.userAgent.toLowerCase().indexOf("trident") != -1);
+
+document.addEventListener('cut', function(e) {
+    simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
+    if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
+        simulationArea.copyList.push(simulationArea.lastSelected);
+    }
+
+
+    var textToPutOnClipboard = cut(simulationArea.copyList);
+    if (isIe) {
+        window.clipboardData.setData('Text', textToPutOnClipboard);
+    } else {
+        e.clipboardData.setData('text/plain', textToPutOnClipboard);
+    }
+    e.preventDefault();
+});
+document.addEventListener('copy', function(e) {
+    simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
+    if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
+        simulationArea.copyList.push(simulationArea.lastSelected);
+    }
+
+
+    var textToPutOnClipboard = copy(simulationArea.copyList);
+    if (isIe) {
+        window.clipboardData.setData('Text', textToPutOnClipboard);
+    } else {
+        e.clipboardData.setData('text/plain', textToPutOnClipboard);
+    }
+    e.preventDefault();
+});
+
+document.addEventListener('paste', function(e) {
+    var data;
+    if (isIe) {
+        data=window.clipboardData.getData('Text');
+    } else {
+        data=e.clipboardData.getData('text/plain');
+    }
+    console.log(data)
+
+    paste(data);
+    e.preventDefault();
 });

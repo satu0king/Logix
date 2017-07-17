@@ -5,10 +5,31 @@ function loadSubCircuit(savedData, scope) {
 //subCircuit
 function SubCircuit(x, y, scope = globalScope,id=undefined, savedData = undefined) {
 
+
+
+
     this.id = id||prompt("Enter Id: ");
+    if(scopeList[this.id]==undefined){
+        showError("SubCircuit ID: "+this.id+" Not found");
+
+    }
     if(scopeList[this.id].checkDependency(scope.id)){
         showError("Cyclic Circuit Error");
+    }
+
+    if(scopeList[this.id]==undefined||scopeList[this.id].checkDependency(scope.id)){
+        if(savedData){
+
+            for (var i = 0; i < savedData["inputNodes"].length; i++) {
+                scope.allNodes[savedData["inputNodes"][i]].deleted=true;
+
+            }
+            for (var i = 0; i < savedData["outputNodes"].length; i++) {
+                scope.allNodes[savedData["outputNodes"][i]].deleted=true;
+            }
+        }
         return;
+
     }
 
     CircuitElement.call(this, x, y, scope, "RIGHT", 1);
@@ -22,6 +43,8 @@ function SubCircuit(x, y, scope = globalScope,id=undefined, savedData = undefine
     this.width = 0;
     this.height = 0;
     this.title = "";
+
+
 
     if (this.savedData != undefined) {
         this.height = savedData["height"];
