@@ -17,6 +17,7 @@ function Wire(node1, node2, scope) {
 
     this.updateScope=function(scope){
         this.scope=scope;
+        this.checkConnections();
     }
 
     this.updateData();
@@ -24,7 +25,7 @@ function Wire(node1, node2, scope) {
 
     //to check if nodes are disconnected
     this.checkConnections = function() {
-        var check = !node1.connections.contains(node2) || !node2.connections.contains(node1);
+        var check = !node1.connections.contains(node2) || !this.node2.connections.contains(node1) ||this.node1.deleted||node2.deleted;
         if (check) this.delete();
         return check;
     }
