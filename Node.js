@@ -88,7 +88,10 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     //This fn is called during rotations and setup
 
     this.updateRotation = function() {
-        [this.x, this.y] = rotate(this.leftx, this.lefty, this.parent.direction);
+        var x,y;
+        [x, y] = rotate(this.leftx, this.lefty, this.parent.direction);
+        this.x=x;
+        this.y=y;
     }
     this.refresh = function() {
         // [this.x,this.y]=rotate(this.leftx,this.lefty,this.parent.direction);

@@ -10,10 +10,10 @@ function SubCircuit(x, y, scope = globalScope,id=undefined, savedData = undefine
 
     this.id = id||prompt("Enter Id: ");
     if(scopeList[this.id]==undefined){
-        showError("SubCircuit ID: "+this.id+" Not found");
+        showError("SubCircuit : "+((savedData&&savedData.title)||this.id)+" Not found");
 
     }
-    if(scopeList[this.id].checkDependency(scope.id)){
+    else if(scopeList[this.id].checkDependency(scope.id)){
         showError("Cyclic Circuit Error");
     }
 
@@ -181,6 +181,7 @@ function SubCircuit(x, y, scope = globalScope,id=undefined, savedData = undefine
             x: this.x,
             y: this.y,
             id: this.id,
+            title:this.title,
             height: this.height,
             width: this.width,
             dir: this.direction,
