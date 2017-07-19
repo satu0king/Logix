@@ -234,8 +234,8 @@ function resetup() {
     document.getElementById("canvasArea").style.height = height/DPR;
     simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
-    backgroundArea.canvas.width = width+200;
-    backgroundArea.canvas.height = height+200;
+    backgroundArea.canvas.width = width+100*DPR;
+    backgroundArea.canvas.height = height+100*DPR;
 
     plotArea.c.width = document.getElementById("plot").clientWidth;
     plotArea.c.height = document.getElementById("plot").clientHeight
