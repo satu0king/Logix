@@ -456,7 +456,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     }
 
     this.delete = function() {
-        toBeUpdated = true;
+        updateSimulation = true;
         this.deleted = true;
         this.parent.scope.allNodes.clean(this);
         this.parent.scope.nodes.clean(this);

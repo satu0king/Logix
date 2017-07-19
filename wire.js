@@ -131,7 +131,7 @@ function Wire(node1, node2, scope) {
 
 
     this.delete = function() {
-        toBeUpdated = true;
+        updateSimulation = true;
         this.node1.connections.clean(this.node2);
         this.node2.connections.clean(this.node1);
         this.scope.wires.clean(this);

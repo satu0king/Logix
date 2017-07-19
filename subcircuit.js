@@ -66,7 +66,8 @@ function SubCircuit(x, y, scope = globalScope,id=undefined, savedData = undefine
     this.buildCircuit = function() {
         loadScope(this.localScope, this.data);
         this.lastUpdated=scopeList[this.id].timeStamp;
-        toBeUpdated = true;
+        updateSimulation = true;
+        updateCanvas = true;
         this.width = 100;
         // this.title = document.getElementById(this.id).innerHTML;
         this.localScope.name = this.title;
