@@ -9,7 +9,7 @@ function update(scope = globalScope) {
     // console.log("UPDATE");
 
     var updated = false;
-    simulationArea.hover = false;
+    simulationArea.hover = undefined;
     // wireToBeChecked=true;
     if (wireToBeChecked) {
         if (wireToBeChecked == 2) wireToBeChecked = 0; // this required due to timing issues
@@ -68,7 +68,7 @@ function updateSelectionsAndPane(scope){
         //mouse click NOT on object
         simulationArea.selected = true;
         simulationArea.lastSelected = scope.root;
-        simulationArea.hover = true;
+        simulationArea.hover = scope.root;
 
         if (simulationArea.shiftDown) {
             objectSelection = true;
@@ -86,7 +86,7 @@ function updateSelectionsAndPane(scope){
     } else if (simulationArea.lastSelected == scope.root) {
         simulationArea.lastSelected = undefined;
         simulationArea.selected = false;
-        simulationArea.hover = false;
+        simulationArea.hover = undefined;
         if (objectSelection) {
             objectSelection = false;
             var x1 = simulationArea.mouseDownX;

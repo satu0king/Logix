@@ -66,15 +66,16 @@ window.addEventListener('mousemove', function(e) {
     // updateSimulation=true;
 
     // updateCanvas=true;
-    // if(simulationArea.lastSelected&&simulationArea.lastSelected.objectType=="Node"){
-        updatePosition=true;
-        updateCanvas=true;
+    //if(simulationArea.lastSelected&&simulationArea.lastSelected.objectType=="Node"){
+        // updatePosition=true;
+        // updateCanvas=true;
+    //}
         // console.log(simulationArea.lastSelected)
         // scheduleUpdate(0,100);
         // if(simulationArea.lastSelected)simulationArea.lastSelected.update();
     // }
 
-    if(simulationArea.lastSelected&&(simulationArea.mouseDown||simulationArea.lastSelected.newElement||simulationArea.lastSelected.objectType=="Node")){
+    if(simulationArea.lastSelected&&(simulationArea.mouseDown||simulationArea.lastSelected.newElement)){
         updateCanvas = true;
         scheduleUpdate(0,20);
 
@@ -82,6 +83,7 @@ window.addEventListener('mousemove', function(e) {
             updateSelectionsAndPane(globalScope);
         }
         else{
+            
             simulationArea.lastSelected.update();
             // simulationArea.hover.update();
         }
@@ -216,6 +218,7 @@ window.addEventListener('mouseup', function(e) {
 
     // return;
     // update();
+    console.log(simulationArea.hover)
     simulationArea.mouseDown = false;
     errorDetected=false;
     updateSimulation=true;
