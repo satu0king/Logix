@@ -277,9 +277,9 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         if (!simulationArea.mouseDown) this.hover = false;
         if ((this.clicked || !simulationArea.hover) && this.isHover()) {
             this.hover = true;
-            simulationArea.hover = true;
+            simulationArea.hover = this;
         } else if (!simulationArea.mouseDown && this.hover && this.isHover() == false) {
-            if (this.hover) simulationArea.hover = false;
+            if (this.hover) simulationArea.hover = undefined;
             this.hover = false;
         }
 

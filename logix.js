@@ -807,7 +807,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             update |= this.nodeList[i].update();
         }
 
-        // if(!simulationArea.hover||simulationArea.hover==this)
+        if(!simulationArea.hover||simulationArea.hover==this)
         this.hover=this.isHover();
 
         if (!simulationArea.mouseDown) this.hover = false;

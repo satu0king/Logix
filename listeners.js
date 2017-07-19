@@ -63,13 +63,21 @@ window.addEventListener('mousemove', function(e) {
     simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
 
     // return;
+    // updateSimulation=true;
 
-    if(simulationArea.mouseDown&&simulationArea.lastSelected){
+    // updateCanvas=true;
+    // if(simulationArea.lastSelected&&simulationArea.lastSelected.objectType=="Node"){
+        // updatePosition=true;
+        updateCanvas=true;
+        console.log(simulationArea.lastSelected)
+        // scheduleUpdate(0,100);
+        // if(simulationArea.lastSelected)simulationArea.lastSelected.update();
+    // }
+
+    if(simulationArea.lastSelected&&(simulationArea.mouseDown||simulationArea.lastSelected.newElement||simulationArea.lastSelected.objectType=="Node")){
         updateCanvas = true;
         scheduleUpdate(0,20);
-    }
 
-    if(simulationArea.lastSelected&&simulationArea.mouseDown){
         if(simulationArea.lastSelected==globalScope.root){
             updateSelectionsAndPane(globalScope);
         }
@@ -78,9 +86,9 @@ window.addEventListener('mousemove', function(e) {
             // simulationArea.hover.update();
         }
     }
-    // if(simulationArea.hover){
-    //     simulationArea.hover.update();
-    // }
+    if(simulationArea.hover){
+        simulationArea.hover.update();
+    }
 
 
     // updateSimulation=true;
