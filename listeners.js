@@ -83,7 +83,6 @@ window.addEventListener('mousemove', function(e) {
             updateSelectionsAndPane(globalScope);
         }
         else{
-            
             simulationArea.lastSelected.update();
             // simulationArea.hover.update();
         }
@@ -103,6 +102,7 @@ window.addEventListener('keydown', function(e) {
 
     errorDetected=false;
     updateSimulation=true;
+    updatePosition=true;
 
 
 
@@ -224,6 +224,15 @@ window.addEventListener('mouseup', function(e) {
     updateSimulation=true;
     updatePosition=true;
     updateCanvas=true;
+    wireToBeChecked=true;
+    for(var i=0;i<4;i++){
+        errorDetected=false;
+        updateSimulation=true;
+        updatePosition=true;
+        updateCanvas=true;
+        wireToBeChecked=true;
+        update();
+    }
     scheduleUpdate(1);
     var rect = simulationArea.canvas.getBoundingClientRect();
     // simulationArea.mouseDownX = (e.clientX - rect.left) / globalScope.scale;

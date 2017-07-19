@@ -177,6 +177,10 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         var w = new Wire(this, n, this.parent.scope);
         this.connections.push(n);
         n.connections.push(this);
+
+        updateCanvas=true;
+        updateSimulation=true;
+        scheduleUpdate();
     }
 
     this.resolve = function() {
@@ -220,21 +224,21 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
         var ctx = simulationArea.context;
 
-        // if (this.clicked) {
-        //     if (this.prev == 'x') {
-        //         drawLine(ctx, this.absX(), this.absY(), simulationArea.mouseX, this.absY(), "black", 3);
-        //         drawLine(ctx, simulationArea.mouseX, this.absY(), simulationArea.mouseX, simulationArea.mouseY, "black", 3);
-        //     } else if (this.prev == 'y') {
-        //         drawLine(ctx, this.absX(), this.absY(), this.absX(), simulationArea.mouseY, "black", 3);
-        //         drawLine(ctx, this.absX(), simulationArea.mouseY, simulationArea.mouseX, simulationArea.mouseY, "black", 3);
-        //     } else {
-        //         if (Math.abs(this.x + this.parent.x - simulationArea.mouseX) > Math.abs(this.y + this.parent.y - simulationArea.mouseY)) {
-        //             drawLine(ctx, this.absX(), this.absY(), simulationArea.mouseX, this.absY(), "black", 3);
-        //         } else {
-        //             drawLine(ctx, this.absX(), this.absY(), this.absX(), simulationArea.mouseY, "black", 3);
-        //         }
-        //     }
-        // }
+        if (this.clicked) {
+            if (this.prev == 'x') {
+                drawLine(ctx, this.absX(), this.absY(), simulationArea.mouseX, this.absY(), "black", 3);
+                drawLine(ctx, simulationArea.mouseX, this.absY(), simulationArea.mouseX, simulationArea.mouseY, "black", 3);
+            } else if (this.prev == 'y') {
+                drawLine(ctx, this.absX(), this.absY(), this.absX(), simulationArea.mouseY, "black", 3);
+                drawLine(ctx, this.absX(), simulationArea.mouseY, simulationArea.mouseX, simulationArea.mouseY, "black", 3);
+            } else {
+                if (Math.abs(this.x + this.parent.x - simulationArea.mouseX) > Math.abs(this.y + this.parent.y - simulationArea.mouseY)) {
+                    drawLine(ctx, this.absX(), this.absY(), simulationArea.mouseX, this.absY(), "black", 3);
+                } else {
+                    drawLine(ctx, this.absX(), this.absY(), this.absX(), simulationArea.mouseY, "black", 3);
+                }
+            }
+        }
         // if (this.type != 2) {
 
         var color = "black";
@@ -294,6 +298,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         }
 
 
+        console.log("Node:", this.wasClicked, this.clicked);
         if (!this.wasClicked && this.clicked) {
 
             this.wasClicked = true;
@@ -318,8 +323,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
             }
 
         }
-
-        if (this.wasClicked && this.clicked) {
+        else if (this.wasClicked && this.clicked) {
 
             if (!simulationArea.shiftDown && simulationArea.multipleObjectSelections.contains(this)) {
                 for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
@@ -355,9 +359,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
 
         }
-
-        console.log("Node:", this.wasClicked, this.clicked);
-        if (this.wasClicked && !this.clicked) {
+        else if (this.wasClicked && !this.clicked) {
             this.wasClicked = false;
 
             if (simulationArea.mouseX == this.absX() && simulationArea.mouseY == this.absY()) {
@@ -394,7 +396,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
                 for (var i = 0; i < this.parent.scope.allNodes.length; i++) {
                     if (x1 == this.parent.scope.allNodes[i].absX() && y1 == this.parent.scope.allNodes[i].absY()) {
                         n1 = this.parent.scope.allNodes[i];
-                        this.connect(n1);
+
                         break;
                     }
                 }
@@ -402,7 +404,6 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
                 if (n1 == undefined) {
                     n1 = new Node(x1, y1, 2, this.scope.root);
-                    this.connect(n1);
                     for (var i = 0; i < this.parent.scope.wires.length; i++) {
                         if (this.parent.scope.wires[i].checkConvergence(n1)) {
                             this.parent.scope.wires[i].converge(n1);
@@ -410,13 +411,13 @@ function Node(x, y, type, parent, bitWidth = undefined) {
                         }
                     }
                 }
+                this.connect(n1);
             }
 
             for (var i = 0; i < this.parent.scope.allNodes.length; i++) {
                 if (x2 == this.parent.scope.allNodes[i].absX() && y2 == this.parent.scope.allNodes[i].absY()) {
                     n2 = this.parent.scope.allNodes[i];
-                    if (flag == 0) this.connect(n2);
-                    else n1.connect(n2);
+
                     break;
                 }
             }
@@ -424,8 +425,6 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
             if (n2 == undefined) {
                 n2 = new Node(x2, y2, 2, this.scope.root);
-                if (flag == 0) this.connect(n2);
-                else n1.connect(n2);
                 for (var i = 0; i < this.parent.scope.wires.length; i++) {
                     if (this.parent.scope.wires[i].checkConvergence(n2)) {
                         this.parent.scope.wires[i].converge(n2);
@@ -433,17 +432,22 @@ function Node(x, y, type, parent, bitWidth = undefined) {
                     }
                 }
             }
+            if (flag == 0) this.connect(n2);
+            else n1.connect(n2);
             if (simulationArea.lastSelected == this) simulationArea.lastSelected = n2;
 
 
         }
 
-
-
-
-
-
-
+        if (this.type == 2  && simulationArea.mouseDown == false) {
+            if (this.connections.length == 2) {
+                if ((this.connections[0].absX() == this.connections[1].absX()) || (this.connections[0].absY() == this.connections[1].absY())) {
+                    this.connections[0].connect(this.connections[1]);
+                    this.delete();
+                }
+            }
+            else if (this.connections.length == 0) this.delete();
+        }
 
     }
 
@@ -456,6 +460,8 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         for (var i = 0; i < this.connections.length; i++) {
             this.connections[i].connections.clean(this);
         }
+        wireToBeChecked=true;
+        scheduleUpdate();
     }
 
     this.isClicked = function() {
@@ -683,16 +689,11 @@ function oldNodeUpdate() {
     if (this.type == 2) {
         if (this.connections.length == 2 && simulationArea.mouseDown == false) {
             if ((this.connections[0].absX() == this.connections[1].absX()) || (this.connections[0].absY() == this.connections[1].absY())) {
-                // this.connections[0].connections.clean(this);
-                // this.connections[1].connections.clean(this);
-                // allNodes.clean(this);
-                // nodes.clean(this);
-                // this.deleted=true;
                 this.connections[0].connect(this.connections[1]);
                 this.delete();
-                updated = true;
             }
-        } else if (this.connections.length == 0) this.delete();
+        }
+        else if (this.connections.length == 0) this.delete();
     }
 
     // if (this.clicked && this.type == 2 && simulationArea.lastSelected == undefined) simulationArea.lastSelected = this;

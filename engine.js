@@ -23,6 +23,7 @@ function update(scope = globalScope) {
                 i--;
             }
         }
+        scheduleUpdate();
     }
     if(updatePosition){
         console.log("updatePosition");
