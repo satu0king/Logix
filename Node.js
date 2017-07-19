@@ -66,8 +66,8 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     } else {
         this.bitWidth = bitWidth;
     }
-    this.prevx=undefined;
-    this.prevy=undefined;
+    this.prevx = undefined;
+    this.prevy = undefined;
     this.leftx = x;
     this.lefty = y;
     this.x = x;
@@ -88,10 +88,10 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     //This fn is called during rotations and setup
 
     this.updateRotation = function() {
-        var x,y;
+        var x, y;
         [x, y] = rotate(this.leftx, this.lefty, this.parent.direction);
-        this.x=x;
-        this.y=y;
+        this.x = x;
+        this.y = y;
     }
     this.refresh = function() {
         // [this.x,this.y]=rotate(this.leftx,this.lefty,this.parent.direction);
@@ -105,25 +105,25 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     this.refresh();
 
-    this.updateScope=function(scope){
-        this.scope=scope;
-        if(this.type==2)this.parent=scope.root;
+    this.updateScope = function(scope) {
+        this.scope = scope;
+        if (this.type == 2) this.parent = scope.root;
 
     }
 
-    this.converToIntermediate=function(){
-        this.type=2;
-        this.x=this.absX();
-        this.y=this.absY();
-        this.parent=this.scope.root;
+    this.converToIntermediate = function() {
+        this.type = 2;
+        this.x = this.absX();
+        this.y = this.absY();
+        this.parent = this.scope.root;
         this.scope.nodes.push(this);
     }
 
-    this.startDragging=function(){
+    this.startDragging = function() {
         this.oldx = this.x;
         this.oldy = this.y;
     }
-    this.drag=function(){
+    this.drag = function() {
         this.x = this.oldx + simulationArea.mouseX - simulationArea.mouseDownX;
         this.y = this.oldy + simulationArea.mouseY - simulationArea.mouseDownY;
     }
@@ -171,6 +171,9 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     }
 
     this.connect = function(n) {
+
+        if (n == this) return;
+        if (n.connections.contains(this)) return;
         var w = new Wire(this, n, this.parent.scope);
         this.connections.push(n);
         n.connections.push(this);
@@ -235,10 +238,10 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         // if (this.type != 2) {
 
         var color = "black";
-        if(this.bitWidth==1)color= ["green", "lightgreen"][this.value];
-        if(this.value==undefined)color="red";
-        if(this.type==2)
-        drawCircle(ctx, this.absX(), this.absY(), 2, color);
+        if (this.bitWidth == 1) color = ["green", "lightgreen"][this.value];
+        if (this.value == undefined) color = "red";
+        if (this.type == 2)
+            drawCircle(ctx, this.absX(), this.absY(), 2, color);
         else drawCircle(ctx, this.absX(), this.absY(), 3, "green");
         // }
 
@@ -255,50 +258,49 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     }
 
-    this.checkDeleted=function(){
-        if(this.deleted)this.delete();
+    this.checkDeleted = function() {
+        if (this.deleted) this.delete();
     }
-    this.update=function(){
-        if(this==simulationArea.hover)simulationArea.hover=undefined;
-        this.hover=this.isHover();
+    this.update = function() {
+
+
+
+        if (this == simulationArea.hover) simulationArea.hover = undefined;
+        this.hover = this.isHover();
 
         // this.clicked=this.hover&&simulationArea.mouseDown;
 
 
         if (!simulationArea.mouseDown) {
-            this.wasClicked=false;
             if (this.absX() != this.prevx || this.absY() != this.prevy) { // Connect to any node
-                this.prevx=this.absX();
-                this.prevy=this.absY();
+                this.prevx = this.absX();
+                this.prevy = this.absY();
                 this.nodeConnect();
-                return;
+                // return;
             }
         }
 
 
-        if(this.hover){
-            simulationArea.hover=this;
+        if (this.hover) {
+            simulationArea.hover = this;
         }
 
-        if(simulationArea.mouseDown&&this.hover&&!simulationArea.selected){
-            simulationArea.selected=true;
-            simulationArea.lastSelected=this;
-            this.clicked=true;
-        }
-        else{
-            this.clicked=false;
-        }
-
-        if(this.wasClicked&&!this.clicked){
-            this.wasClicked=false;
+        if (simulationArea.mouseDown && ((this.hover && !simulationArea.selected) || simulationArea.lastSelected == this)) {
+            simulationArea.selected = true;
+            simulationArea.lastSelected = this;
+            this.clicked = true;
+        } else {
+            this.clicked = false;
         }
 
-        if(!this.wasClicked&&this.clicked){
 
-            this.wasClicked=true;
+        if (!this.wasClicked && this.clicked) {
+
+            this.wasClicked = true;
+            this.prev = 'a';
             if (this.type == 2) {
-                if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
-                    for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+                if (!simulationArea.shiftDown && simulationArea.multipleObjectSelections.contains(this)) {
+                    for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
                         simulationArea.multipleObjectSelections[i].startDragging();
                     }
                 }
@@ -317,13 +319,125 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
         }
 
-        if(this.wasClicked&&this.clicked){
-            if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
-                for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+        if (this.wasClicked && this.clicked) {
+
+            if (!simulationArea.shiftDown && simulationArea.multipleObjectSelections.contains(this)) {
+                for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
                     simulationArea.multipleObjectSelections[i].drag();
                 }
             }
+            if (this.type == 2) {
+                if (this.connections.length == 1 && this.connections[0].absX() == simulationArea.mouseX && this.absX() == simulationArea.mouseX) {
+                    this.y = simulationArea.mouseY - this.parent.y;
+                    this.prev = 'a';
+                    return;
+                } else if (this.connections.length == 1 && this.connections[0].absY() == simulationArea.mouseY && this.absY() == simulationArea.mouseY) {
+                    this.x = simulationArea.mouseX - this.parent.x;
+                    this.prev = 'a';
+                    return;
+                }
+                if (this.connections.length == 1 && this.connections[0].absX() == this.absX() && this.connections[0].absY() == this.absY()) {
+                    this.connections[0].clicked = true;
+                    this.connections[0].wasClicked = true;
+                    simulationArea.lastSelected = this.connections[0];
+                    this.delete();
+                    return;
+                }
+            }
+
+            if (this.prev == 'a' && distance(simulationArea.mouseX, simulationArea.mouseY, this.absX(), this.absY()) >= 10) {
+                if (Math.abs(this.x + this.parent.x - simulationArea.mouseX) > Math.abs(this.y + this.parent.y - simulationArea.mouseY)) {
+                    this.prev = 'x';
+                } else {
+                    this.prev = 'y';
+                }
+            }
+
+
         }
+
+        console.log("Node:", this.wasClicked, this.clicked);
+        if (this.wasClicked && !this.clicked) {
+            this.wasClicked = false;
+
+            if (simulationArea.mouseX == this.absX() && simulationArea.mouseY == this.absY()) {
+                return; // no new node situation
+            }
+
+            var x1, y1, x2, y2, flag = 0;
+            var n1, n2;
+
+            // (x,y) present node, (x1,y1) node 1 , (x2,y2) node 2
+            // n1 - node 1, n2 - node 2
+            // node 1 may or may not be there
+            // flag = 0  - node 2 only
+            // flag = 1  - node 1 and node 2
+            x2 = simulationArea.mouseX;
+            y2 = simulationArea.mouseY;
+            x = this.absX();
+            y = this.absY()
+
+            if (x != x2 && y != y2) {
+                flag = 1;
+                if (this.prev == 'x') {
+                    x1 = x2;
+                    y1 = y;
+                } else if (this.prev == 'y') {
+                    y1 = y2;
+                    x1 = x
+                }
+            }
+
+            console.log("Node:", x, y, x1, y1, x2, y2, flag);
+            // return;
+            if (flag == 1) {
+                for (var i = 0; i < this.parent.scope.allNodes.length; i++) {
+                    if (x1 == this.parent.scope.allNodes[i].absX() && y1 == this.parent.scope.allNodes[i].absY()) {
+                        n1 = this.parent.scope.allNodes[i];
+                        this.connect(n1);
+                        break;
+                    }
+                }
+
+
+                if (n1 == undefined) {
+                    n1 = new Node(x1, y1, 2, this.scope.root);
+                    this.connect(n1);
+                    for (var i = 0; i < this.parent.scope.wires.length; i++) {
+                        if (this.parent.scope.wires[i].checkConvergence(n1)) {
+                            this.parent.scope.wires[i].converge(n1);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            for (var i = 0; i < this.parent.scope.allNodes.length; i++) {
+                if (x2 == this.parent.scope.allNodes[i].absX() && y2 == this.parent.scope.allNodes[i].absY()) {
+                    n2 = this.parent.scope.allNodes[i];
+                    if (flag == 0) this.connect(n2);
+                    else n1.connect(n2);
+                    break;
+                }
+            }
+
+
+            if (n2 == undefined) {
+                n2 = new Node(x2, y2, 2, this.scope.root);
+                if (flag == 0) this.connect(n2);
+                else n1.connect(n2);
+                for (var i = 0; i < this.parent.scope.wires.length; i++) {
+                    if (this.parent.scope.wires[i].checkConvergence(n2)) {
+                        this.parent.scope.wires[i].converge(n2);
+                        break;
+                    }
+                }
+            }
+            if (simulationArea.lastSelected == this) simulationArea.lastSelected = n2;
+
+
+        }
+
 
 
 
@@ -345,11 +459,11 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     }
 
     this.isClicked = function() {
-        return this.absX()==simulationArea.mouseX&&this.absY()==simulationArea.mouseY;
+        return this.absX() == simulationArea.mouseX && this.absY() == simulationArea.mouseY;
     }
 
     this.isHover = function() {
-        return this.absX()==simulationArea.mouseX&&this.absY()==simulationArea.mouseY;
+        return this.absX() == simulationArea.mouseX && this.absY() == simulationArea.mouseY;
     }
 
     this.nodeConnect = function() {
@@ -359,7 +473,16 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         for (var i = 0; i < this.parent.scope.allNodes.length; i++) {
             if (this != this.parent.scope.allNodes[i] && x == this.parent.scope.allNodes[i].absX() && y == this.parent.scope.allNodes[i].absY()) {
                 n = this.parent.scope.allNodes[i];
-                this.connect(n);
+                if (this.type == 2) {
+                    for (var j = 0; j < this.connections.length; j++) {
+                        n.connect(this.connections[j]);
+                    }
+                    this.delete();
+                } else {
+                    this.connect(n);
+                }
+
+
                 break;
             }
         }
@@ -379,9 +502,10 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         }
 
     }
-    this.cleanDelete=this.delete;
+    this.cleanDelete = this.delete;
 
 }
+
 function oldNodeUpdate() {
     // if(isNaN(this.x)||isNaN(this.y))return;
 
@@ -409,8 +533,8 @@ function oldNodeUpdate() {
 
     if (simulationArea.mouseDown && (this.clicked)) {
 
-        if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
-            for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+        if (!simulationArea.shiftDown && simulationArea.multipleObjectSelections.contains(this)) {
+            for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
                 simulationArea.multipleObjectSelections[i].drag();
             }
         }
@@ -432,9 +556,6 @@ function oldNodeUpdate() {
             if (this.connections.length == 1 && this.connections[0].absX() == this.absX() && this.connections[0].absY() == this.absY()) {
                 this.connections[0].clicked = true;
                 this.connections[0].wasClicked = true;
-                // this.connections[0].connections.clean(this);
-                // nodes.clean(this);
-                // allNodes.clean(this);
                 this.delete();
                 updated = true;
             }
@@ -460,8 +581,8 @@ function oldNodeUpdate() {
     if (this.clicked && !this.wasClicked) {
         this.wasClicked = true;
         // this.drag();
-        if(!simulationArea.shiftDown&&simulationArea.multipleObjectSelections.contains(this)){
-            for(var i=0;i<simulationArea.multipleObjectSelections.length;i++){
+        if (!simulationArea.shiftDown && simulationArea.multipleObjectSelections.contains(this)) {
+            for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
                 simulationArea.multipleObjectSelections[i].startDragging();
             }
         }
@@ -510,6 +631,8 @@ function oldNodeUpdate() {
                 break;
             }
         }
+
+
         // return;
         if (n == undefined) {
             n = new Node(x, y, 2, this.scope.root);
