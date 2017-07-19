@@ -67,9 +67,9 @@ window.addEventListener('mousemove', function(e) {
 
     // updateCanvas=true;
     // if(simulationArea.lastSelected&&simulationArea.lastSelected.objectType=="Node"){
-        // updatePosition=true;
+        updatePosition=true;
         updateCanvas=true;
-        console.log(simulationArea.lastSelected)
+        // console.log(simulationArea.lastSelected)
         // scheduleUpdate(0,100);
         // if(simulationArea.lastSelected)simulationArea.lastSelected.update();
     // }
@@ -86,9 +86,9 @@ window.addEventListener('mousemove', function(e) {
             // simulationArea.hover.update();
         }
     }
-    if(simulationArea.hover){
-        simulationArea.hover.update();
-    }
+    // if(simulationArea.hover){
+    //     simulationArea.hover.update();
+    // }
 
 
     // updateSimulation=true;

@@ -217,6 +217,7 @@ function setup() {
                     simulationArea.changeClockTime(data["timePeriod"] || 500);
                     // globalScope.backups.push(backUp(globalScope));
                 }
+
             }
 
         } else if (localStorage.getItem("recover")) {
@@ -822,7 +823,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         }
 
         if (simulationArea.mouseDown && (this.clicked)) {
-            if (this.x == simulationArea.mouseX && this.y == simulationArea.mouseY) return false;
+            // if (this.x == simulationArea.mouseX && this.y == simulationArea.mouseY) return false;
             // this.x = this.oldx + simulationArea.mouseX - simulationArea.mouseDownX;
             // this.y = this.oldy + simulationArea.mouseY - simulationArea.mouseDownY;
             this.drag();
@@ -842,7 +843,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
                     simulationArea.multipleObjectSelections[i].startDragging();
                 }
             }
-            simulationArea.selected = this.clicked = this.hover = this.hover;
+            simulationArea.selected = this.clicked = this.hover ;
 
             update |= this.clicked;
         } else {

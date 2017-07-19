@@ -259,7 +259,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         if(this.deleted)this.delete();
     }
     this.update = function() {
-
+        // if(isNaN(this.x)||isNaN(this.y))return;
 
         if (!this.clicked && !simulationArea.mouseDown) {
             var px = this.prevx;

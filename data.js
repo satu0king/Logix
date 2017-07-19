@@ -311,6 +311,9 @@ function load(data) {
         loadScope(scope, data.scopes[i]);
     }
     simulationArea.changeClockTime(data["timePeriod"] || 500);
+    updateSimulation=true;
+    updateCanvas=true;
+    scheduleUpdate();
 }
 
 function loadModule(data, scope) {
