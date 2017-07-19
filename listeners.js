@@ -41,12 +41,12 @@ document.getElementById("simulationArea").addEventListener('mousedown', function
     // simulationArea.hover=false;
     scheduleBackup();
     // update();
-    console.log("DEBUG:",simulationArea.lastSelected)
+    //console.log("DEBUG:",simulationArea.lastSelected)
     scheduleUpdate(1);
     // update();
-    console.log("DEBUG:",simulationArea.lastSelected)
-    // console.log(simulationArea.mouseDown);
-    // console.log(simulationArea.mouseDown, "mouseDOn");
+    //console.log("DEBUG:",simulationArea.lastSelected)
+    // //console.log(simulationArea.mouseDown);
+    // //console.log(simulationArea.mouseDown, "mouseDOn");
 });
 window.addEventListener('mousemove', function(e) {
     // return;
@@ -65,28 +65,34 @@ window.addEventListener('mousemove', function(e) {
     // return;
     // updateSimulation=true;
 
-    // updateCanvas=true;
+    updateCanvas=true;
     //if(simulationArea.lastSelected&&simulationArea.lastSelected.objectType=="Node"){
         // updatePosition=true;
         // updateCanvas=true;
     //}
-        // console.log(simulationArea.lastSelected)
+        // //console.log(simulationArea.lastSelected)
         // scheduleUpdate(0,100);
         // if(simulationArea.lastSelected)simulationArea.lastSelected.update();
     // }
 
     if(simulationArea.lastSelected&&(simulationArea.mouseDown||simulationArea.lastSelected.newElement)){
         updateCanvas = true;
-        scheduleUpdate(0,20);
+        var fn;
+
 
         if(simulationArea.lastSelected==globalScope.root){
-            updateSelectionsAndPane(globalScope);
+            fn=function(){updateSelectionsAndPane();}
         }
         else{
-            simulationArea.lastSelected.update();
+            fn=function(){simulationArea.lastSelected.update()};
             // simulationArea.hover.update();
         }
+        scheduleUpdate(0,20,fn);
     }
+    else {
+        scheduleUpdate(0,200);
+    }
+
     // if(simulationArea.hover){
     //     simulationArea.hover.update();
     // }
@@ -141,7 +147,7 @@ window.addEventListener('keydown', function(e) {
     updateCanvas = true;
     wireToBeChecked = 1;
     // e.preventDefault();
-       console.log("KEY:"+e.key);
+       //console.log("KEY:"+e.key);
 
    if(simulationArea.controlDown&&(e.key=="C"||e.key=="c")){
     //    simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
@@ -199,7 +205,7 @@ window.addEventListener('keydown', function(e) {
             simulationArea.lastSelected.setLabel();
     }
 
-    // console.log()
+    // //console.log()
     // update();
 })
 document.getElementById("simulationArea").addEventListener('dblclick', function(e) {
@@ -210,7 +216,7 @@ document.getElementById("simulationArea").addEventListener('dblclick', function(
     if (!simulationArea.shiftDown) {
         simulationArea.multipleObjectSelections = [];
     }
-    // console.log(simulationArea.mouseDown, "mouseDOn");
+    // //console.log(simulationArea.mouseDown, "mouseDOn");
 });
 
 
@@ -218,21 +224,20 @@ window.addEventListener('mouseup', function(e) {
 
     // return;
     // update();
-    console.log(simulationArea.hover)
+    //console.log(simulationArea.hover)
     simulationArea.mouseDown = false;
+    for(var i=0;i<4;i++){
+        updatePosition=true;
+        wireToBeChecked=true;
+        update();
+    }
     errorDetected=false;
     updateSimulation=true;
     updatePosition=true;
     updateCanvas=true;
+    gridUpdate=true;
     wireToBeChecked=true;
-    for(var i=0;i<4;i++){
-        errorDetected=false;
-        updateSimulation=true;
-        updatePosition=true;
-        updateCanvas=true;
-        wireToBeChecked=true;
-        update();
-    }
+
     scheduleUpdate(1);
     var rect = simulationArea.canvas.getBoundingClientRect();
     // simulationArea.mouseDownX = (e.clientX - rect.left) / globalScope.scale;
@@ -245,10 +250,10 @@ window.addEventListener('mouseup', function(e) {
     {
         smartDropXX=simulationArea.mouseX+100;//Math.round(((simulationArea.mouseRawX - globalScope.ox+100) / globalScope.scale) / unit) * unit;
         smartDropYY=simulationArea.mouseY-50;//Math.round(((simulationArea.mouseRawY - globalScope.oy+100) / globalScope.scale) / unit) * unit;
-        // console.log(smartDropXX,smartDropYY);
+        // //console.log(smartDropXX,smartDropYY);
     }
 
-    console.log(simulationArea.mouseDown);
+    //console.log(simulationArea.mouseDown);
 });
 // window.addEventListener('touchmove', function(e) {
 //     scheduleUpdate();
@@ -278,7 +283,7 @@ window.addEventListener('mouseup', function(e) {
 //
 //
 //     simulationArea.mouseDown = true;
-//     console.log(simulationArea.mouseDown);
+//     //console.log(simulationArea.mouseDown);
 // });
 // window.addEventListener('touchend', function(e) {
 //     scheduleUpdate();
@@ -288,7 +293,7 @@ window.addEventListener('mouseup', function(e) {
 //     simulationArea.mouseDownX = simulationArea.mouseX;
 //
 //     simulationArea.mouseDown = false;
-//     console.log(simulationArea.mouseDown);
+//     //console.log(simulationArea.mouseDown);
 // });
 // window.addEventListener('touchleave', function(e) {
 //     scheduleUpdate();
@@ -338,7 +343,7 @@ document.addEventListener('paste', function(e) {
     } else {
         data=e.clipboardData.getData('text/plain');
     }
-    console.log(data)
+    //console.log(data)
 
     paste(data);
     e.preventDefault();

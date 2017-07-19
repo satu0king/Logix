@@ -15,7 +15,7 @@ errorDetected = false;
 updatePosition=true;
 updateSimulation=true;
 updateCanvas = true;
-
+gridUpdate=true;
 
 
 loading = false;
@@ -34,24 +34,24 @@ globalScope = undefined;
 
 
 function showError(error) {
-    // console.log("ERROR: " + error);
+    // //console.log("ERROR: " + error);
     errorDetected = true;
     var id = Math.floor(Math.random() * 10000);
     $('#MessageDiv').append("<div class='errorMessage' id='" + id + "'> " + error + "</div>");
     setTimeout(function() {
         $('#' + id).fadeOut()
     }, 1500);
-    // console.log("<div class='errorMessage'>"+error+"</div>");
+    // //console.log("<div class='errorMessage'>"+error+"</div>");
 }
 function showMessage(mes) {
-    // console.log("ERROR: " + error);
+    // //console.log("ERROR: " + error);
     errorDetected = true;
     var id = Math.floor(Math.random() * 10000);
     $('#MessageDiv').append("<div class='normalMessage' id='" + id + "'> " + mes + "</div>");
     setTimeout(function() {
         $('#' + id).fadeOut()
     }, 2500);
-    // console.log("<div class='errorMessage'>"+error+"</div>");
+    // //console.log("<div class='errorMessage'>"+error+"</div>");
 }
 
 function openInNewTab(url) {
@@ -59,22 +59,6 @@ function openInNewTab(url) {
     win.focus();
 }
 
-function scheduleUpdate(count = 0,time=100) {
-    // return;
-    // console.log(willBeUpdated,updateSimulation,);
-    if (count) {
-        for (var i = 0; i < count; i++)
-            setTimeout(update, 10 + 50 * i);
-    }
-    if (willBeUpdated) return;
-
-    // if (simulationArea.mouseDown)
-    setTimeout(update, time);
-    // else
-    //     setTimeout(update, 100);
-    willBeUpdated = true;
-
-}
 
 
 
@@ -175,7 +159,7 @@ function setup() {
     plotArea.c.width = document.getElementById("plot").clientWidth;
     plotArea.c.height = document.getElementById("plot").clientHeight;
 
-    // console.log(width);
+    // //console.log(width);
     //setup simulationArea
     backgroundArea.setup();
     plotArea.setup();
@@ -192,7 +176,7 @@ function setup() {
     //     var data=JSON.parse(localStorage.getItem("local"));
     //     load(data);
     //     simulationArea.changeClockTime(data["timePeriod"] || 500);
-    //     // console.log(localStorage.getItem("localHash"));
+    //     // //console.log(localStorage.getItem("localHash"));
     //
     // }
     setTimeout(function(){
@@ -207,12 +191,12 @@ function setup() {
             var params = "retrieve=" + hash; // probably use document.getElementById(...).value
             http.send(params);
             http.onload = function() {
-                // console.log(http.responseText);
+                // //console.log(http.responseText);
                 if (http.responseText == "ERROR") alert("Error: could not load ");
                 else {
-                    console.log(http.responseText);
+                    //console.log(http.responseText);
                     data = JSON.parse(http.responseText);
-                    console.log("From Server:" + data);
+                    //console.log("From Server:" + data);
                     load(data);
                     simulationArea.changeClockTime(data["timePeriod"] || 500);
                     // globalScope.backups.push(backUp(globalScope));
@@ -244,16 +228,21 @@ function resetup() {
     DPR=window.devicePixelRatio||1;
     width = document.getElementById("simulation").clientWidth*DPR;
     height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
+    document.getElementById("backgroundArea").style.height=(document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)+100;
+    document.getElementById("backgroundArea").style.width=document.getElementById("simulation").clientWidth+100;
+
     document.getElementById("canvasArea").style.height = height/DPR;
     simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
-    backgroundArea.canvas.width = width;
-    backgroundArea.canvas.height = height;
+    backgroundArea.canvas.width = width+200;
+    backgroundArea.canvas.height = height+200;
+
     plotArea.c.width = document.getElementById("plot").clientWidth;
     plotArea.c.height = document.getElementById("plot").clientHeight
     // simulationArea.setup();
     updateCanvas=true;
     update(); // INEFFICENT
+    simulationArea.prevScale=0;
     dots(true, false);
 }
 
@@ -285,7 +274,7 @@ var simulationArea = {
     clockState: 0,
     lastSelected: undefined,
     stack: [],
-
+    prevScale:0,
     oldx: 0,
     oldy: 0,
 
@@ -337,12 +326,12 @@ function copyPaste(copyList) {
     tempScope.backups=globalScope.backups;
     for (var i = 0; i < globalScope.objects.length; i++){
         var prevLength=globalScope[globalScope.objects[i]].length; // LOL length of list will reduce automatically when deletion starts
-        // if(globalScope[globalScope.objects[i]].length)console.log("deleting, ",globalScope[globalScope.objects[i]]);
+        // if(globalScope[globalScope.objects[i]].length)//console.log("deleting, ",globalScope[globalScope.objects[i]]);
         for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
             var obj = globalScope[globalScope.objects[i]][j];
             if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
                 if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
-                    console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
+                    //console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
                     globalScope[globalScope.objects[i]][j].cleanDelete();
                 }
             }
@@ -356,7 +345,7 @@ function copyPaste(copyList) {
 
     // updateSimulation = true;
     // update(globalScope);
-    console.log("DEBUG1",globalScope.wires.length)
+    //console.log("DEBUG1",globalScope.wires.length)
     var prevLength=globalScope.wires.length;
     for (var i = 0; i < globalScope.wires.length; i++) {
         globalScope.wires[i].checkConnections();
@@ -365,10 +354,10 @@ function copyPaste(copyList) {
             i--;
         }
     }
-    console.log(globalScope.wires,globalScope.allNodes)
-    console.log("DEBUG2",globalScope.wires.length)
+    //console.log(globalScope.wires,globalScope.allNodes)
+    //console.log("DEBUG2",globalScope.wires.length)
     // update(globalScope);
-    // console.log(globalScope.wires.length)
+    // //console.log(globalScope.wires.length)
 
     var approxX=0;
     var approxY=0;
@@ -389,7 +378,7 @@ function copyPaste(copyList) {
 
 
     for (var i = 0; i < copyList.length; i++) {
-        // console.log(copyList[i]);
+        // //console.log(copyList[i]);
         copyList[i].x += simulationArea.mouseX-approxX;
         copyList[i].y += simulationArea.mouseY-approxY;
 
@@ -403,7 +392,7 @@ function copyPaste(copyList) {
     for (l in globalScope) {
         if (globalScope[l] instanceof Array && l != "objects") {
             tempScope[l].extend(globalScope[l]);
-            // console.log("Copying , ",l);
+            // //console.log("Copying , ",l);
         }
     }
 
@@ -442,7 +431,7 @@ function paste(copyData) {
 
     // tempScope=simulationArea.copyScope;
     // update(globalScope);
-    // console.log(globalScope.wires.length)
+    // //console.log(globalScope.wires.length)
 
     var approxX=0;
     var approxY=0;
@@ -484,7 +473,7 @@ function paste(copyData) {
             }
         }
 
-        // console.log(tempScope,approxX,approxY,count);
+        // //console.log(tempScope,approxX,approxY,count);
         // updateSimulation=true;
         // canvasUpdate=true;
         // update(tempScope);
@@ -502,7 +491,7 @@ function paste(copyData) {
     for (l in tempScope) {
         if (tempScope[l] instanceof Array && l != "objects" && l!="CircuitElement" ) {
             globalScope[l].extend(tempScope[l]);
-            console.log("Copying , ",l);
+            //console.log("Copying , ",l);
         }
     }
 
@@ -547,12 +536,12 @@ function cut(copyList) {
     tempScope.backups=globalScope.backups;
     for (var i = 0; i < globalScope.objects.length; i++){
         var prevLength=globalScope[globalScope.objects[i]].length; // LOL length of list will reduce automatically when deletion starts
-        // if(globalScope[globalScope.objects[i]].length)console.log("deleting, ",globalScope[globalScope.objects[i]]);
+        // if(globalScope[globalScope.objects[i]].length)//console.log("deleting, ",globalScope[globalScope.objects[i]]);
         for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
             var obj = globalScope[globalScope.objects[i]][j];
             if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
                 if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
-                    console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
+                    //console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
                     globalScope[globalScope.objects[i]][j].cleanDelete();
                 }
             }
@@ -566,7 +555,7 @@ function cut(copyList) {
 
     // updateSimulation = true;
     // update(globalScope);
-    console.log("DEBUG1",globalScope.wires.length)
+    //console.log("DEBUG1",globalScope.wires.length)
     var prevLength=globalScope.wires.length;
     for (var i = 0; i < globalScope.wires.length; i++) {
         globalScope.wires[i].checkConnections();
@@ -575,8 +564,8 @@ function cut(copyList) {
             i--;
         }
     }
-    // console.log(globalScope.wires,globalScope.allNodes)
-    // console.log("DEBUG2",globalScope.wires.length)
+    // //console.log(globalScope.wires,globalScope.allNodes)
+    // //console.log("DEBUG2",globalScope.wires.length)
     updateSimulation=true;
     // update(globalScope);
 
@@ -609,12 +598,12 @@ function copy(copyList) {
     tempScope.backups=globalScope.backups;
     for (var i = 0; i < globalScope.objects.length; i++){
         var prevLength=globalScope[globalScope.objects[i]].length; // LOL length of list will reduce automatically when deletion starts
-        // if(globalScope[globalScope.objects[i]].length)console.log("deleting, ",globalScope[globalScope.objects[i]]);
+        // if(globalScope[globalScope.objects[i]].length)//console.log("deleting, ",globalScope[globalScope.objects[i]]);
         for (var j = 0; j < globalScope[globalScope.objects[i]].length; j++) {
             var obj = globalScope[globalScope.objects[i]][j];
             if (obj.objectType != 'Wire') { //}&&obj.objectType!='CircuitElement'){//}&&(obj.objectType!='Node'||obj.type==2)){
                 if (!copyList.contains(globalScope[globalScope.objects[i]][j])) {
-                    console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
+                    //console.log("DELETE:", globalScope[globalScope.objects[i]][j]);
                     globalScope[globalScope.objects[i]][j].cleanDelete();
                 }
             }
@@ -628,7 +617,7 @@ function copy(copyList) {
 
     // updateSimulation = true;
     // update(globalScope);
-    console.log("DEBUG1",globalScope.wires.length)
+    //console.log("DEBUG1",globalScope.wires.length)
     var prevLength=globalScope.wires.length;
     for (var i = 0; i < globalScope.wires.length; i++) {
         globalScope.wires[i].checkConnections();
@@ -637,8 +626,8 @@ function copy(copyList) {
             i--;
         }
     }
-    // console.log(globalScope.wires,globalScope.allNodes)
-    // console.log("DEBUG2",globalScope.wires.length)
+    // //console.log(globalScope.wires,globalScope.allNodes)
+    // //console.log("DEBUG2",globalScope.wires.length)
     updateSimulation=true;
     // update(globalScope);
 
@@ -698,7 +687,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.rectangleObject = true;
     this.label = "";
     this.scope = scope;
-    console.log()
+    //console.log()
     this.scope[this.objectType].push(this); // CHECK IF THIS IS VALID
     this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
     this.direction = dir;
@@ -803,7 +792,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
                 simulationArea.lastSelected = this;
             } else return;
         }
-        // console.log(this.nodeList)
+        // //console.log(this.nodeList)
         for (var i = 0; i < this.nodeList.length; i++) {
             update |= this.nodeList[i].update();
         }
@@ -870,7 +859,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         }
 
         // if (this.hover)
-        //     console.log(this);
+        //     //console.log(this);
 
         return update;
     }
@@ -889,6 +878,9 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         // [width, height] = rotate(this.width, this.height, "RIGHT");
         // width = Math.abs(width);
         // height = Math.abs(height);
+        var mouseX = simulationArea.mouseX;
+        var mouseY = simulationArea.mouseY;
+        if(Math.abs(mouseX-this.x>200)||Math.abs(mouseY-this.y>200))return false;
         var rX = this.rightDimensionX;
         var lX = this.leftDimensionX;
         var uY = this.upDimensionY;
@@ -909,8 +901,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
                 uY = this.rightDimensionX;
             }
         }
-        var mouseX = simulationArea.mouseX;
-        var mouseY = simulationArea.mouseY;
+
         if (mouseX - this.x <= rX && this.x - mouseX <= lX && mouseY - this.y <= dY && this.y - mouseY <= uY) return true;
 
         return false;
@@ -918,13 +909,17 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
 
     this.setLabel = function(label) {
         this.label = label || prompt("Enter Label:");
-        // console.log(this.label);
+        // //console.log(this.label);
     }
 
     //Method that draws the outline of the module and calls draw function on module Nodes.
     //NOT OVERIDABLE
     this.draw = function() {
 
+        if(this.x*this.scope.scale+this.scope.ox<-this.rightDimensionX*this.scope.scale-00||this.x*this.scope.scale+this.scope.ox>width+this.leftDimensionX*this.scope.scale+00||this.y*this.scope.scale+this.scope.oy<-this.downDimensionY*this.scope.scale-00||this.y*this.scope.scale+this.scope.oy>height+00+this.upDimensionY*this.scope.scale)return;
+        if(!simulationArea.mouseDown){
+            this.hover=this.isHover();
+        }
         // Draws rectangle and highlighs
         if (this.rectangleObject) {
             ctx = simulationArea.context;
@@ -937,7 +932,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
             ctx.fill();
             ctx.stroke();
             // if (this.hover)
-            //     console.log(this);
+            //     //console.log(this);
         }
         if (this.label != "") {
             var rX = this.rightDimensionX;

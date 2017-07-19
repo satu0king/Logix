@@ -1,3 +1,24 @@
+function scheduleUpdate(count = 0,time=100,fn) {
+    // return;
+    // //console.log(willBeUpdated,updateSimulation,);
+    if (count) {
+        for (var i = 0; i < count; i++)
+            setTimeout(update, 10 + 50 * i);
+    }
+    if (willBeUpdated) return;
+
+    // if (simulationArea.mouseDown)
+    if(fn)
+        setTimeout(function(){fn();update();}, time);
+    else setTimeout(update, time);
+    // else
+    //     setTimeout(update, 100);
+    willBeUpdated = true;
+
+}
+
+
+
 // fn that calls update on everything else. If any change is there, it resolves the circuit and draws it again
 // fn to change scale (zoom) - It also shifts origin so that the position
 //of the object in focus doent changeB
@@ -6,7 +27,7 @@
 function update(scope = globalScope) {
     willBeUpdated = false;
     if (loading == true) return;
-    // console.log("UPDATE");
+    // //console.log("UPDATE");
 
     var updated = false;
     simulationArea.hover = undefined;
@@ -26,7 +47,7 @@ function update(scope = globalScope) {
         scheduleUpdate();
     }
     if(updatePosition){
-        console.log("updatePosition");
+        //console.log("updatePosition");
         for (var i = 0; i < scope.objects.length; i++)
             for (var j = 0; j < scope[scope.objects[i]].length; j++)
                 updated |= scope[scope.objects[i]][j].update();
@@ -42,7 +63,7 @@ function update(scope = globalScope) {
     if(prevPropertyObj!=simulationArea.lastSelected){
         if (simulationArea.lastSelected !== undefined && simulationArea.lastSelected.objectType !== "Wire" && simulationArea.lastSelected.objectType !== "CircuitElement") {
             showProperties(simulationArea.lastSelected);
-            console.log("yo");
+            //console.log("yo");
         } else {
             hideProperties();
         }
@@ -63,8 +84,8 @@ function update(scope = globalScope) {
     // }
 }
 
-function updateSelectionsAndPane(scope){
-    console.log("updateSelectionsAndPane");
+function updateSelectionsAndPane(scope=globalScope){
+    //console.log("updateSelectionsAndPane");
     if (!simulationArea.selected && simulationArea.mouseDown) {
         //mouse click NOT on object
         simulationArea.selected = true;
@@ -81,8 +102,9 @@ function updateSelectionsAndPane(scope){
             globalScope.oy = (simulationArea.mouseRawY - simulationArea.mouseDownRawY) + simulationArea.oldy;
             globalScope.ox = Math.round(globalScope.ox);
             globalScope.oy = Math.round(globalScope.oy);
+            gridUpdate=true;
         }
-        dots(true, false);
+
 
     } else if (simulationArea.lastSelected == scope.root) {
         simulationArea.lastSelected = undefined;
@@ -95,7 +117,7 @@ function updateSelectionsAndPane(scope){
             var y1 = simulationArea.mouseDownY;
             var y2 = simulationArea.mouseY;
             // simulationArea.multipleObjectSelections=[];
-            // console.log(x1,x2,y1,y2);
+            // //console.log(x1,x2,y1,y2);
             // [x1,x2]=[x1,x2].sort();
             // [y1,y2]=[y1,y2].sort();
             if (x1 > x2) {
@@ -108,11 +130,11 @@ function updateSelectionsAndPane(scope){
                 y1 = y2;
                 y2 = temp;
             }
-            // console.log(x1,x2,y1,y2);
+            // //console.log(x1,x2,y1,y2);
             for (var i = 0; i < scope.objects.length; i++) {
                 for (var j = 0; j < scope[scope.objects[i]].length; j++) {
                     var obj = scope[scope.objects[i]][j];
-                    // console.log(obj);
+                    // //console.log(obj);
                     if(simulationArea.multipleObjectSelections.contains(obj))continue;
                     var x, y;
                     if (obj.objectType == "Node") {
@@ -122,7 +144,7 @@ function updateSelectionsAndPane(scope){
                         x = obj.x;
                         y = obj.y;
                     } else {
-                        // console.log(obj);
+                        // //console.log(obj);
                         continue;
                     }
                     if (x > x1 && x < x2 && y > y1 && y < y2) {
@@ -136,8 +158,9 @@ function updateSelectionsAndPane(scope){
 
 
 function renderCanvas(scope){
-    console.log("renderCanvas");
+    console.log(gridUpdate);
     simulationArea.clear();
+    if(gridUpdate){gridUpdate=false;dots();}
     // dots(); // draw dots
     for (var i = 0; i < scope.objects.length; i++)
         for (var j = 0; j < scope[scope.objects[i]].length; j++)
@@ -155,10 +178,10 @@ function renderCanvas(scope){
 //Main fn that resolves circuit
 function play(scope = globalScope, resetNodes = true) {
     // throw("ERROR");
-    console.log("play");
+    //console.log("play");
     if (errorDetected) return;
 
-    // console.log("simulation");
+    // //console.log("simulation");
     if (loading == true) return;
 
     plotArea.stopWatch.Stop();

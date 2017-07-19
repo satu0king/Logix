@@ -1,5 +1,5 @@
 function constructNodeConnections(node, data) {
-    // console.log(data["connections"].length);
+    // //console.log(data["connections"].length);
     for (var i = 0; i < data["connections"].length; i++)
         if (!node.connections.contains(node.scope.allNodes[data["connections"][i]])) node.connect(node.scope.allNodes[data["connections"][i]]);
 }
@@ -59,7 +59,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     this.parent = parent;
     if (type != 2 && this.parent.nodeList !== undefined)
         this.parent.nodeList.push(this);
-    // console.log(this.parent.nodeList);
+    // //console.log(this.parent.nodeList);
 
     if (bitWidth == undefined) {
         this.bitWidth = parent.bitWidth;
@@ -199,7 +199,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
                     this.highlighted = true;
                     this.connections[i].highlighted = true;
                     showError("Contention Error: " + this.value + " and " + this.connections[i].value);
-                    // console.log("CONTENTION", this.connections[i].value, this.value);
+                    // //console.log("CONTENTION", this.connections[i].value, this.value);
                 } else if (this.connections[i].bitWidth == this.bitWidth || this.connections[i].type == 2) {
                     this.connections[i].bitWidth = this.bitWidth;
                     this.connections[i].value = this.value;
@@ -208,11 +208,11 @@ function Node(x, y, type, parent, bitWidth = undefined) {
                     this.highlighted = true;
                     this.connections[i].highlighted = true;
                     showError("BitWidth Error: " + this.bitWidth + " and " + this.connections[i].bitWidth);
-                    // console.log("BIT WIDTH ERROR");
+                    // //console.log("BIT WIDTH ERROR");
                 }
             }
             // else if(this.connections[i].value!=this.value){
-            //     console.log("CONTENTION");
+            //     //console.log("CONTENTION");
             // }
         }
 
@@ -220,7 +220,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     this.draw = function() {
         // if (this.isHover())
-        //     console.log(this, this.id);
+        //     //console.log(this, this.id);
 
         var ctx = simulationArea.context;
 
@@ -256,7 +256,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
             arc(ctx, this.x, this.y, 8, 0, Math.PI * 2, this.parent.x, this.parent.y, "RIGHT");
             ctx.closePath();
             ctx.stroke();
-            //   console.log("HIT");
+            //   //console.log("HIT");
         }
 
 
@@ -264,6 +264,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     this.checkDeleted = function() {
         if (this.deleted) this.delete();
+        if(this.connections.length==0)this.delete();
     }
     this.update = function() {
 
@@ -298,7 +299,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         }
 
 
-        console.log("Node:", this.wasClicked, this.clicked);
+        //console.log("Node:", this.wasClicked, this.clicked);
         if (!this.wasClicked && this.clicked) {
 
             this.wasClicked = true;
@@ -390,7 +391,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
                 }
             }
 
-            console.log("Node:", x, y, x1, y1, x2, y2, flag);
+            //console.log("Node:", x, y, x1, y1, x2, y2, flag);
             // return;
             if (flag == 1) {
                 for (var i = 0; i < this.parent.scope.allNodes.length; i++) {
@@ -459,6 +460,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
         if (simulationArea.lastSelected == this) simulationArea.lastSelected = undefined;
         for (var i = 0; i < this.connections.length; i++) {
             this.connections[i].connections.clean(this);
+            this.connections[i].checkDeleted();
         }
         wireToBeChecked=true;
         scheduleUpdate();
@@ -546,7 +548,7 @@ function oldNodeUpdate() {
         }
 
         if (this.type == 2) {
-            //console.log(this.absY(),simulationArea.mouseDownY,simulationArea.mouseDownX-this.parent.x);
+            ////console.log(this.absY(),simulationArea.mouseDownY,simulationArea.mouseDownX-this.parent.x);
             if (this.absX() == simulationArea.mouseX && this.absY() == simulationArea.mouseY) {
                 updated = false;
                 this.prev = 'a';

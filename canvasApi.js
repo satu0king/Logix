@@ -25,30 +25,41 @@ function dots(dots=true, transparentBackground=false) {
 
 
 
+
+    var scale = unit * globalScope.scale;
+    var ox = globalScope.ox % scale; //offset
+    var oy = globalScope.oy % scale; //offset
+
+
+    document.getElementById("backgroundArea").style.left=(ox-scale)/DPR;
+    document.getElementById("backgroundArea").style.top=(oy-scale)/DPR;
+
+    if(globalScope.scale==simulationArea.prevScale)return;
+
     if(!backgroundArea.context)return;
-    backgroundArea.clear();
+        simulationArea.prevScale=globalScope.scale;
+
     var canvasWidth = backgroundArea.canvas.width; //max X distance
     var canvasHeight = backgroundArea.canvas.height; //max Y distance
 
     var ctx = backgroundArea.context;
+    ctx.beginPath();
+    backgroundArea.clear();
+    ctx.strokeStyle="#eee";
+    ctx.lineWidth=1;
     if (!transparentBackground) {
         ctx.fillStyle = "white";
         ctx.rect(0, 0, canvasWidth, canvasHeight);
         ctx.fill();
     }
-    var scale = unit * globalScope.scale;
-    var ox = globalScope.ox % scale; //offset
-    var oy = globalScope.oy % scale; //offset
 
-    ctx.beginPath();
-    ctx.strokeStyle="#eee";
-    ctx.lineWidth=1;
-    var correction=0.5*(ctx.lineWidth%2)
-    for (var i = 0 + ox; i < canvasWidth; i += scale){
+
+    var correction=0.5*(ctx.lineWidth%2);
+    for (var i = 0 ; i < canvasWidth; i += scale){
         ctx.moveTo(Math.round(i+correction)-correction,0);
         ctx.lineTo(Math.round(i+correction)-correction,canvasHeight);
     }
-    for (var j = 0 + oy; j < canvasHeight; j += scale){
+    for (var j = 0 ; j < canvasHeight; j += scale){
         ctx.moveTo(0,Math.round(j+correction)-correction);
         ctx.lineTo(canvasWidth,Math.round(j+correction)-correction);
     }
