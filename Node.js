@@ -37,7 +37,7 @@ function findNode(x) {
 }
 
 function loadNode(data, scope) {
-    var n = new Node(data["x"], data["y"], data["type"], scope.root, data["bitWidth"]);
+    var n = new Node(data["x"], data["y"], data["type"], scope.root, data["bitWidth"],data["label"]);
 }
 
 //get Node in index x in scope and set parent
@@ -50,7 +50,7 @@ function extractNode(x, scope, parent) {
 //output node=1
 //input node=0
 //intermediate node =2
-function Node(x, y, type, parent, bitWidth = undefined) {
+function Node(x, y, type, parent, bitWidth = undefined,label="") {
 
 
     this.objectType = "Node";
@@ -66,6 +66,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     } else {
         this.bitWidth = bitWidth;
     }
+    this.label=label;
     this.prevx = undefined;
     this.prevy = undefined;
     this.leftx = x;
@@ -84,6 +85,10 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     this.prev = 'a';
     this.count = 0;
     this.highlighted = false;
+
+    this.setLabel = function(label) {
+        this.label = label ;//|| "";
+    }
 
     //This fn is called during rotations and setup
 
@@ -139,6 +144,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
             y: this.lefty,
             type: this.type,
             bitWidth: this.bitWidth,
+            label:this.label,
             connections: [],
         }
         for (var i = 0; i < this.connections.length; i++) {
@@ -221,6 +227,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
     this.draw = function() {
         // if (this.isHover())
         //     //console.log(this, this.id);
+        if(!simulation.mouseDown)this.hover=this.isHover();
 
         var ctx = simulationArea.context;
 
@@ -257,6 +264,26 @@ function Node(x, y, type, parent, bitWidth = undefined) {
             ctx.closePath();
             ctx.stroke();
             //   //console.log("HIT");
+        }
+
+        if(this.hover){
+            var v="X";
+            if(this.value!==undefined)
+            v=this.value.toString(16);
+
+            if(this.type==2){
+                if(this.label.length){
+                    showMessage(ctx,this.label+" : "+v,this.absX(),this.absY()-15);
+                }
+                else{
+                    showMessage(ctx, v ,this.absX(),this.absY()-15);
+                }
+            }
+            else if(this.label.length){
+
+                        showMessage(ctx,this.label,this.absX(),this.absY()-15);
+
+            }
         }
 
 
@@ -357,6 +384,13 @@ function Node(x, y, type, parent, bitWidth = undefined) {
                     this.prev = 'y';
                 }
             }
+            else if(this.prev=='x' && this.absY()==simulationArea.mouseY){
+                this.prev='a';
+            }
+            else if(this.prev=='y' && this.absX()==simulationArea.mouseX){
+                this.prev='a';
+            }
+
 
 
         }

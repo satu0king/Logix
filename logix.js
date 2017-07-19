@@ -908,8 +908,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     };
 
     this.setLabel = function(label) {
-        this.label = label || prompt("Enter Label:");
-        // //console.log(this.label);
+        this.label = label || ""
     }
 
     //Method that draws the outline of the module and calls draw function on module Nodes.

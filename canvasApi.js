@@ -242,6 +242,29 @@ function drawCircle(ctx, x1, y1, r, color) {
     ctx.fill();
 }
 
+function showMessage(ctx,str,x1,y1,fontSize=10){
+    if(!str||!str.length)return;
+
+    ctx.font = Math.round(fontSize * globalScope.scale) + "px Georgia";
+    ctx.textAlign = "center"
+    var width=ctx.measureText(str).width/globalScope.scale+8;
+    var height=13;
+    ctx.strokeStyle="black";
+    ctx.lineWidth=correctWidth(2);
+    ctx.fillStyle="yellow";
+    console.log(width,height);
+    ctx.beginPath();
+    rect(ctx,x1 -width/2 , y1 -height/2-3, width, height);
+    ctx.stroke();
+    ctx.fill();
+    x1 = x1 * globalScope.scale;
+    y1 = y1 * globalScope.scale;
+    ctx.beginPath();
+    ctx.fillStyle="red";
+    ctx.fillText(str, Math.round(x1 + globalScope.ox), Math.round( y1 + globalScope.oy));
+    ctx.fill();
+}
+
 function fillText(ctx, str, x1, y1, fontSize = 20) {
     // //console.log(x1,y1,"coordinates");
     x1 = x1 * globalScope.scale;

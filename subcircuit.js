@@ -64,6 +64,7 @@ function SubCircuit(x, y, scope = globalScope,id=undefined, savedData = undefine
     }
 
     this.buildCircuit = function() {
+        
         loadScope(this.localScope, this.data);
         this.lastUpdated=scopeList[this.id].timeStamp;
         updateSimulation = true;
