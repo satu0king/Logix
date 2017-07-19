@@ -299,9 +299,11 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         for (var i = 0; i < this.inputSize; i++) {
-            fillText(ctx, String(i), xx + this.inp[i].x + 7, yy + this.inp[i].y + 2, 10);
+            if(this.direction=="RIGHT") fillText(ctx, String(i), xx + this.inp[i].x + 7, yy + this.inp[i].y + 2, 10);
+            else if(this.direction=="LEFT") fillText(ctx, String(i), xx + this.inp[i].x - 7, yy + this.inp[i].y + 2, 10);
+            else if(this.direction=="UP") fillText(ctx, String(i), xx + this.inp[i].x, yy + this.inp[i].y - 4, 10);
+            else fillText(ctx, String(i), xx + this.inp[i].x, yy + this.inp[i].y + 10, 10);
         }
-        ctx.stroke();
         ctx.fill();
     }
 
@@ -2052,6 +2054,7 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
     this.resolve = function() {
         this.output1[this.controlSignalInput.value].value = this.input.value;
         this.scope.stack.push(this.output1[this.controlSignalInput.value]);
+
     }
 
     this.customDraw = function() {
@@ -2086,10 +2089,14 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
         ctx.beginPath();
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
+        //[xFill,yFill] = rotate(xx + this.output1[i].x - 7, yy + this.output1[i].y + 2);
+        //console.log([xFill,yFill])
         for (var i = 0; i < this.outputsize; i++) {
-            fillText(ctx, String(i), xx + this.output1[i].x - 7, yy + this.output1[i].y + 2, 10);
+            if(this.direction=="LEFT") fillText(ctx, String(i), xx + this.output1[i].x - 7, yy + this.output1[i].y + 2, 10);
+            else if(this.direction=="RIGHT") fillText(ctx, String(i), xx + this.output1[i].x + 7, yy + this.output1[i].y + 2, 10);
+            else if(this.direction=="UP") fillText(ctx, String(i), xx + this.output1[i].x , yy + this.output1[i].y - 5, 10);
+            else fillText(ctx, String(i), xx + this.output1[i].x , yy + this.output1[i].y + 10, 10);
         }
-        ctx.stroke();
         ctx.fill();
     }
 }
@@ -2277,7 +2284,8 @@ function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         ctx.beginPath();
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
-        fillText(ctx, "MSB", xx + 5, yy - 10, 10);
+        fillText(ctx, "MSB", xx + 6, yy - 12, 10);
+        fillText(ctx, "EN", xx + this.enable.x-12, yy +this.enable.y+3, 8);
         ctx.fill();
 
         ctx.beginPath();
@@ -2366,7 +2374,8 @@ function LSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         ctx.beginPath();
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
-        fillText(ctx, "LSB", xx + 5, yy - 10, 10);
+        fillText(ctx, "LSB", xx + 6, yy - 12, 10);
+        fillText(ctx, "EN", xx + this.enable.x-12, yy +this.enable.y+3, 8);
         ctx.fill();
 
         ctx.beginPath();
