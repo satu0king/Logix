@@ -264,7 +264,7 @@ function Node(x, y, type, parent, bitWidth = undefined) {
 
     this.checkDeleted = function() {
         if (this.deleted) this.delete();
-        if(this.connections.length==0)this.delete();
+        if(this.connections.length==0&&this.type==2)this.delete();
     }
     this.update = function() {
 
