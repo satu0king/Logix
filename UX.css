@@ -43,14 +43,6 @@ body {
     overflow: hidden
 }
 
-.toolbar{
-    padding: 8px;
-    height:26px;
-    display: block;
-    /*width: 1000px;*/
-    background-color: #eee;
-}
-
 .modules{
     max-height: 800px;
     overflow: scroll;
@@ -96,38 +88,6 @@ body {
     background-color: #99ff33;
     font-size: 15px;
     /*z-index: 10;*/
-}
-
-
-.toolbarButton {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
-    background-color: #0099ff;
-    color: white;
-    height: 12;
-
-    margin-left: 5px;
-    margin-right: 5px;
-    text-decoration: none;
-    padding: 5px 5px;
-    float: left;
-    border: 1px solid #0055bb;
-    border-radius: 3px;
-    text-align: center;
-    display: inline;
-    font-size: 12px;
-    cursor: pointer;
-    -webkit-transition-duration: 0.7s;
-    /* Safari */
-    transition-duration: 0.7s;
-    box-shadow: 0 8px 6px -6px #777;
-}
-.toolbarButton:hover {
-    background-color: #0066cc;
-    /*color: black;*/
 }
 
 
