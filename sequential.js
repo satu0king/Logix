@@ -12,22 +12,22 @@ function clockTick() {
 function TflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.directionFixed = true;
-    this.fixedBitWidth=true;
+    this.fixedBitWidth = true;
     this.setDimensions(20, 20);
     this.rectangleObject = true;
-    this.clockInp = new Node(-20, +10, 0, this, 1,"Clock");
-    this.dInp = new Node(-20, -10, 0, this,this.bitWidth,"T");
-    this.qOutput = new Node(20, -10, 1, this,this.bitWidth,"Q");
-    this.qInvOutput = new Node(20, 10, 1, this,this.bitWidth,"Q Inverse");
-    this.reset = new Node(10, 20, 0, this, 1,"Asynchronous Reset");
-    this.preset = new Node(0, 20, 0, this, this.bitWidth,"Preset");
-    this.en = new Node(-10, 20, 0, this, 1,"Enable");
+    this.clockInp = new Node(-20, +10, 0, this, 1, "Clock");
+    this.dInp = new Node(-20, -10, 0, this, this.bitWidth, "T");
+    this.qOutput = new Node(20, -10, 1, this, this.bitWidth, "Q");
+    this.qInvOutput = new Node(20, 10, 1, this, this.bitWidth, "Q Inverse");
+    this.reset = new Node(10, 20, 0, this, 1, "Asynchronous Reset");
+    this.preset = new Node(0, 20, 0, this, this.bitWidth, "Preset");
+    this.en = new Node(-10, 20, 0, this, 1, "Enable");
     this.masterState = 0;
     this.slaveState = 0;
     this.prevClockState = 0;
 
     // this.wasClicked = false;
-    this.isResolvable=function(){
+    this.isResolvable = function() {
         return true;
     }
     this.newBitWidth = function(bitWidth) {
@@ -40,25 +40,22 @@ function TflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
     this.resolve = function() {
         if (this.reset.value == 1) {
 
-            this.masterState = this.slaveState = this.preset.value||0;
+            this.masterState = this.slaveState = this.preset.value || 0;
 
-        }
-        else if (this.en.value == 0) {
+        } else if (this.en.value == 0) {
 
-                this.prevClockState = this.clockInp.value;
+            this.prevClockState = this.clockInp.value;
 
-        }
-        else if(this.en.value==1){
+        } else if (this.en.value == 1) {
             if (this.clockInp.value == this.prevClockState) {
                 if (this.clockInp.value == 0 && this.dInp.value != undefined) {
-                    this.masterState = this.dInp.value^this.slaveState;
+                    this.masterState = this.dInp.value ^ this.slaveState;
                 }
             } else if (this.clockInp.value != undefined) {
                 if (this.clockInp.value == 1) {
                     this.slaveState = this.masterState;
-                }
-                else if (this.clockInp.value == 0 && this.dInp.value != undefined) {
-                    this.masterState = this.dInp.value^this.slaveState;
+                } else if (this.clockInp.value == 0 && this.dInp.value != undefined) {
+                    this.masterState = this.dInp.value ^ this.slaveState;
                 }
                 this.prevClockState = this.clockInp.value;
             }
@@ -114,26 +111,30 @@ function TflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
 
     }
 }
+
 function DflipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.directionFixed = true;
     this.setDimensions(20, 20);
     this.rectangleObject = true;
-    this.clockInp = new Node(-20, +10, 0, this, 1,"Clock");
-    this.dInp = new Node(-20, -10, 0, this,this.bitWidth,"D");
-    this.qOutput = new Node(20, -10, 1, this,this.bitWidth,"Q");
-    this.qInvOutput = new Node(20, 10, 1, this,this.bitWidth,"Q Inverse");
-    this.reset = new Node(10, 20, 0, this, 1,"Asynchronous Reset");
-    this.preset = new Node(0, 20, 0, this, this.bitWidth,"Preset");
-    this.en = new Node(-10, 20, 0, this, 1,"Enable");
+    this.clockInp = new Node(-20, +10, 0, this, 1, "Clock");
+    this.dInp = new Node(-20, -10, 0, this, this.bitWidth, "D");
+    this.qOutput = new Node(20, -10, 1, this, this.bitWidth, "Q");
+    this.qInvOutput = new Node(20, 10, 1, this, this.bitWidth, "Q Inverse");
+    this.reset = new Node(10, 20, 0, this, 1, "Asynchronous Reset");
+    this.preset = new Node(0, 20, 0, this, this.bitWidth, "Preset");
+    this.en = new Node(-10, 20, 0, this, 1, "Enable");
     this.masterState = 0;
     this.slaveState = 0;
     this.prevClockState = 0;
 
-    // this.wasClicked = false;
-    this.isResolvable=function(){
-        return true;
+    this.wasClicked = false;
+    this.isResolvable = function() {
+        if (this.reset.value == 1) return true;
+        if (this.en.value != undefined && this.clockInp.value != undefined && this.dInp.value != undefined) return true;
+        return false;
     }
+
     this.newBitWidth = function(bitWidth) {
         this.bitWidth = bitWidth;
         this.dInp.bitWidth = bitWidth;
@@ -143,41 +144,69 @@ function DflipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     }
     this.resolve = function() {
         if (this.reset.value == 1) {
+            this.masterState = this.slaveState = 0;
+        } else if (this.en.value == 1) { // if(this.en.value==1) // Creating Infintite Loop, WHY ??
 
-            this.masterState = this.slaveState = this.preset.value||0;
-
-
-        }
-
-        else if (this.en.value == 0) {
-
-                this.prevClockState = this.clockInp.value;
-
-            return;
-        }
-
-        else if(this.en.value==1){
             if (this.clockInp.value == this.prevClockState) {
-            if (this.clockInp.value == 0 && this.dInp.value != undefined) {
-                this.masterState = this.dInp.value;
+                if (this.clockInp.value == 0 && this.dInp.value != undefined) {
+                    this.masterState = this.dInp.value;
+                }
+            } else if (this.clockInp.value != undefined) {
+                if (this.clockInp.value == 1) {
+                    this.slaveState = this.masterState;
+                } else if (this.clockInp.value == 0 && this.dInp.value != undefined) {
+                    this.masterState = this.dInp.value;
+                }
+                this.prevClockState = this.clockInp.value;
             }
-        } else if (this.clockInp.value != undefined) {
-            if (this.clockInp.value == 1) {
-                this.slaveState = this.masterState;
-            } else if (this.clockInp.value == 0 && this.dInp.value != undefined) {
-                this.masterState = this.dInp.value;
-            }
-            this.prevClockState = this.clockInp.value;
-        }
         }
 
         if (this.qOutput.value != this.slaveState) {
-            this.qOutput.value = this.slaveState;
-            this.qInvOutput.value = this.flipBits(this.slaveState);
-            this.scope.stack.push(this.qOutput);
-            this.scope.stack.push(this.qInvOutput);
-        }
+                this.qOutput.value = this.slaveState;
+                this.qInvOutput.value = this.flipBits(this.slaveState);
+                this.scope.stack.push(this.qOutput);
+                this.scope.stack.push(this.qInvOutput);
+            }
     }
+
+    // this.resolve = function() {
+    //     if (this.reset.value == 1) {
+    //
+    //         this.masterState = this.slaveState = this.preset.value||0;
+    //
+    //
+    //     }
+    //
+    //     else if (this.en.value == 0) {
+    //
+    //             this.prevClockState = this.clockInp.value;
+    //
+    //         // return;
+    //     }
+    //
+    //     else if(this.en.value==1){
+    //         if (this.clockInp.value == this.prevClockState) {
+    //         if (this.clockInp.value == 0 && this.dInp.value != undefined) {
+    //             this.masterState = this.dInp.value;
+    //         }
+    //     } else if (this.clockInp.value != undefined) {
+    //         if (this.clockInp.value == 1) {
+    //             this.slaveState = this.masterState;
+    //         } else if (this.clockInp.value == 0 && this.dInp.value != undefined) {
+    //             this.masterState = this.dInp.value;
+    //         }
+    //         this.prevClockState = this.clockInp.value;
+    //     }
+    //     }
+    //
+    //     if (this.qOutput.value != this.slaveState) {
+    //         this.qOutput.value = this.slaveState;
+    //         this.qInvOutput.value = this.flipBits(this.slaveState);
+    //         this.scope.stack.push(this.qOutput);
+    //         this.scope.stack.push(this.qInvOutput);
+    //     }
+    // }
+
     this.customSave = function() {
         var data = {
             nodes: {
@@ -221,19 +250,20 @@ function DflipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
     }
 }
+
 function SRflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.directionFixed = true;
     this.fixedBitWidth = true;
     this.setDimensions(20, 20);
     this.rectangleObject = true;
-    this.R = new Node(-20, +10, 0, this, 1,"R");
-    this.S = new Node(-20, -10, 0, this,1,"S");
-    this.qOutput = new Node(20, -10, 1, this,1,"Q");
-    this.qInvOutput = new Node(20, 10, 1, this,1,"Q Inverse");
-    this.reset = new Node(10, 20, 0, this, 1,"Asynchronous Reset");
-    this.preset = new Node(0, 20, 0, this, 1,"Preset");
-    this.en = new Node(-10, 20, 0, this, 1,"Enable");
+    this.R = new Node(-20, +10, 0, this, 1, "R");
+    this.S = new Node(-20, -10, 0, this, 1, "S");
+    this.qOutput = new Node(20, -10, 1, this, 1, "Q");
+    this.qInvOutput = new Node(20, 10, 1, this, 1, "Q Inverse");
+    this.reset = new Node(10, 20, 0, this, 1, "Asynchronous Reset");
+    this.preset = new Node(0, 20, 0, this, 1, "Preset");
+    this.en = new Node(-10, 20, 0, this, 1, "Enable");
     this.state = 0;
     // this.slaveState = 0;
     // this.prevClockState = 0;
@@ -257,17 +287,17 @@ function SRflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
 
         if (this.reset.value == 1) {
 
-            this.state = this.preset.value||0;
+            this.state = this.preset.value || 0;
 
 
         }
 
 
-        if (this.reset.value!=1&&this.en.value&&this.S.value!=undefined&&this.R.value!=undefined&&this.S.value^this.R.value) {
-            this.state=this.S.value;
+        if (this.reset.value != 1 && this.en.value && this.S.value != undefined && this.R.value != undefined && this.S.value ^ this.R.value) {
+            this.state = this.S.value;
         }
 
-        console.log(this.reset.value!=1&&this.en.value&&this.S.value&&this.R.value&&this.S.value^this.R.value);
+        console.log(this.reset.value != 1 && this.en.value && this.S.value && this.R.value && this.S.value ^ this.R.value);
         if (this.qOutput.value != this.state) {
             this.qOutput.value = this.state;
             this.qInvOutput.value = this.flipBits(this.state);
@@ -319,20 +349,21 @@ function SRflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
 
     }
 }
+
 function JKflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
     CircuitElement.call(this, x, y, scope, dir, 1);
     this.directionFixed = true;
     this.fixedBitWidth = true;
     this.setDimensions(20, 20);
     this.rectangleObject = true;
-    this.J = new Node(-20, -10, 0, this, 1,"J");
-    this.K = new Node(-20, 0, 0, this,1,"K");
-    this.clockInp = new Node(-20, 10, 0, this,1,"Clock");
-    this.qOutput = new Node(20, -10, 1, this,1,"Q");
-    this.qInvOutput = new Node(20, 10, 1, this,1,"Q Inverse");
-    this.reset = new Node(10, 20, 0, this, 1,"Asynchronous Reset");
-    this.preset = new Node(0, 20, 0, this, 1,"Preset");
-    this.en = new Node(-10, 20, 0, this, 1,"Enable");
+    this.J = new Node(-20, -10, 0, this, 1, "J");
+    this.K = new Node(-20, 0, 0, this, 1, "K");
+    this.clockInp = new Node(-20, 10, 0, this, 1, "Clock");
+    this.qOutput = new Node(20, -10, 1, this, 1, "Q");
+    this.qInvOutput = new Node(20, 10, 1, this, 1, "Q Inverse");
+    this.reset = new Node(10, 20, 0, this, 1, "Asynchronous Reset");
+    this.preset = new Node(0, 20, 0, this, 1, "Preset");
+    this.en = new Node(-10, 20, 0, this, 1, "Enable");
     this.state = 0;
     this.slaveState = 0;
     this.masterState = 0;
@@ -356,35 +387,32 @@ function JKflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
     this.resolve = function() {
         if (this.reset.value == 1) {
 
-            this.masterState = this.slaveState = this.preset.value||0;
+            this.masterState = this.slaveState = this.preset.value || 0;
 
-        }
-        else if (this.en.value == 0) {
+        } else if (this.en.value == 0) {
 
-                this.prevClockState = this.clockInp.value;
+            this.prevClockState = this.clockInp.value;
 
-        }
-        else if(this.en.value==1){
+        } else if (this.en.value == 1) {
             if (this.clockInp.value == this.prevClockState) {
-                if (this.clockInp.value == 0 && this.J.value != undefined&& this.K.value != undefined) {
-                    if(this.J.value&&this.K.value)
-                        this.masterState =1^this.slaveState;
-                    else if(this.J.value^this.K.value)
-                        this.masterState=this.J.value;
+                if (this.clockInp.value == 0 && this.J.value != undefined && this.K.value != undefined) {
+                    if (this.J.value && this.K.value)
+                        this.masterState = 1 ^ this.slaveState;
+                    else if (this.J.value ^ this.K.value)
+                        this.masterState = this.J.value;
                 }
             } else if (this.clockInp.value != undefined) {
                 if (this.clockInp.value == 1) {
                     this.slaveState = this.masterState;
-                }
-                else if (this.clockInp.value == 0 && this.J.value != undefined&& this.K.value != undefined) {
-                    if(this.J.value&&this.K.value)
-                        this.masterState =1^this.slaveState;
-                    else if(this.J.value^this.K.value)
-                        this.masterState=this.J.value;
+                } else if (this.clockInp.value == 0 && this.J.value != undefined && this.K.value != undefined) {
+                    if (this.J.value && this.K.value)
+                        this.masterState = 1 ^ this.slaveState;
+                    else if (this.J.value ^ this.K.value)
+                        this.masterState = this.J.value;
                 }
                 this.prevClockState = this.clockInp.value;
             }
-        
+
         }
 
         if (this.qOutput.value != this.slaveState) {
