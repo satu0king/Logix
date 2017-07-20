@@ -9,23 +9,106 @@ window.addEventListener('keyup', function(e) {
         simulationArea.controlDown = false;
     }
 });
+document.getElementById("simulationArea").addEventListener('mousedown', function(e) {
+    // return;
+
+
+    // if(simulationArea.mouseDown)return;
+    errorDetected=false;
+    updateSimulation=true;
+    updatePosition=true;
+    updateCanvas=true;
+
+
+
+    simulationArea.lastSelected = undefined;
+    simulationArea.selected = false;
+    simulationArea.hover = undefined;
+    var rect = simulationArea.canvas.getBoundingClientRect();
+    simulationArea.mouseDownRawX = (e.clientX - rect.left)*DPR;
+    simulationArea.mouseDownRawY = (e.clientY - rect.top)*DPR;
+    simulationArea.mouseDownX = Math.round(((simulationArea.mouseDownRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
+    simulationArea.mouseDownY = Math.round(((simulationArea.mouseDownRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
+    simulationArea.mouseDown = true;
+    simulationArea.oldx = globalScope.ox;
+    simulationArea.oldy = globalScope.oy;
+
+
+
+    e.preventDefault();
+
+    // simulationArea.selected=false;
+    // simulationArea.hover=false;
+    scheduleBackup();
+    // update();
+    //console.log("DEBUG:",simulationArea.lastSelected)
+    scheduleUpdate(1);
+    // update();
+    //console.log("DEBUG:",simulationArea.lastSelected)
+    // //console.log(simulationArea.mouseDown);
+    // //console.log(simulationArea.mouseDown, "mouseDOn");
+});
 window.addEventListener('mousemove', function(e) {
+    // return;
     // if(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height)simulationArea.mouseDown=false;
     // return;
-    scheduleUpdate();
-    // toBeUpdated=true;
-    updateCanvas = true;
+
+    // updateSimulation=true;
+
+
     var rect = simulationArea.canvas.getBoundingClientRect();
     simulationArea.mouseRawX = (e.clientX - rect.left)*DPR;
     simulationArea.mouseRawY = (e.clientY - rect.top)*DPR;
     simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
     simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
 
+    // return;
+    // updateSimulation=true;
+
+    updateCanvas=true;
+    //if(simulationArea.lastSelected&&simulationArea.lastSelected.objectType=="Node"){
+        // updatePosition=true;
+        // updateCanvas=true;
+    //}
+        // //console.log(simulationArea.lastSelected)
+        // scheduleUpdate(0,100);
+        // if(simulationArea.lastSelected)simulationArea.lastSelected.update();
+    // }
+
+    if(simulationArea.lastSelected&&(simulationArea.mouseDown||simulationArea.lastSelected.newElement)){
+        updateCanvas = true;
+        var fn;
+
+
+        if(simulationArea.lastSelected==globalScope.root){
+            fn=function(){updateSelectionsAndPane();}
+        }
+        else{
+            fn=function(){simulationArea.lastSelected.update()};
+            // simulationArea.hover.update();
+        }
+        scheduleUpdate(0,20,fn);
+    }
+    else {
+        scheduleUpdate(0,200);
+    }
+
+    // if(simulationArea.hover){
+    //     simulationArea.hover.update();
+    // }
+
+
+    // updateSimulation=true;
+    // updatePosition=true;
+    // updateCanvas=true;
+    // scheduleUpdate(0,20);
+
 });
 window.addEventListener('keydown', function(e) {
 
     errorDetected=false;
-    toBeUpdated=true;
+    updateSimulation=true;
+    updatePosition=true;
 
 
 
@@ -64,7 +147,7 @@ window.addEventListener('keydown', function(e) {
     updateCanvas = true;
     wireToBeChecked = 1;
     // e.preventDefault();
-       console.log("KEY:"+e.key);
+       //console.log("KEY:"+e.key);
 
    if(simulationArea.controlDown&&(e.key=="C"||e.key=="c")){
     //    simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
@@ -122,7 +205,7 @@ window.addEventListener('keydown', function(e) {
             simulationArea.lastSelected.setLabel();
     }
 
-    // console.log()
+    // //console.log()
     // update();
 })
 document.getElementById("simulationArea").addEventListener('dblclick', function(e) {
@@ -133,50 +216,28 @@ document.getElementById("simulationArea").addEventListener('dblclick', function(
     if (!simulationArea.shiftDown) {
         simulationArea.multipleObjectSelections = [];
     }
-    // console.log(simulationArea.mouseDown, "mouseDOn");
+    // //console.log(simulationArea.mouseDown, "mouseDOn");
 });
-document.getElementById("simulationArea").addEventListener('mousedown', function(e) {
-    // return;
-    errorDetected=false;
-    toBeUpdated=true;
-    e.preventDefault();
-    scheduleBackup();
-    update();
-    scheduleUpdate(1);
 
-    simulationArea.lastSelected = undefined;
-    simulationArea.selected = false;
-    var rect = simulationArea.canvas.getBoundingClientRect();
-    simulationArea.mouseDownRawX = (e.clientX - rect.left)*DPR;
-    simulationArea.mouseDownRawY = (e.clientY - rect.top)*DPR;
-    simulationArea.mouseDownX = Math.round(((simulationArea.mouseDownRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
-    simulationArea.mouseDownY = Math.round(((simulationArea.mouseDownRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
-    simulationArea.mouseDown = true;
-    simulationArea.oldx = globalScope.ox;
-    simulationArea.oldy = globalScope.oy;
-
-
-    if (simulationArea.clickCount === 0) {
-        simulationArea.clickCount++;
-        simulationArea.timer();
-    } else if (simulationArea.clickCount === 1) {
-        simulationArea.clickCount = 0;
-        if (simulationArea.lock === "locked")
-            simulationArea.lock = "unlocked";
-        else
-            simulationArea.lock = "locked";
-        // console.log("Double", simulationArea.lock);
-    }
-    // console.log(simulationArea.mouseDown);
-    // console.log(simulationArea.mouseDown, "mouseDOn");
-});
 
 window.addEventListener('mouseup', function(e) {
 
     // return;
     // update();
+    //console.log(simulationArea.hover)
+    simulationArea.mouseDown = false;
+    for(var i=0;i<4;i++){
+        updatePosition=true;
+        wireToBeChecked=true;
+        update();
+    }
     errorDetected=false;
-    toBeUpdated=true;
+    updateSimulation=true;
+    updatePosition=true;
+    updateCanvas=true;
+    gridUpdate=true;
+    wireToBeChecked=true;
+
     scheduleUpdate(1);
     var rect = simulationArea.canvas.getBoundingClientRect();
     // simulationArea.mouseDownX = (e.clientX - rect.left) / globalScope.scale;
@@ -184,62 +245,62 @@ window.addEventListener('mouseup', function(e) {
     // simulationArea.mouseDownX = Math.round((simulationArea.mouseDownX - globalScope.ox / globalScope.scale) / unit) * unit;
     // simulationArea.mouseDownY = Math.round((simulationArea.mouseDownY - globalScope.oy / globalScope.scale) / unit) * unit;
 
-    simulationArea.mouseDown = false;
+
     if(!(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height))
     {
         smartDropXX=simulationArea.mouseX+100;//Math.round(((simulationArea.mouseRawX - globalScope.ox+100) / globalScope.scale) / unit) * unit;
         smartDropYY=simulationArea.mouseY-50;//Math.round(((simulationArea.mouseRawY - globalScope.oy+100) / globalScope.scale) / unit) * unit;
-        // console.log(smartDropXX,smartDropYY);
+        // //console.log(smartDropXX,smartDropYY);
     }
 
-    // console.log(simulationArea.mouseDown);
+    //console.log(simulationArea.mouseDown);
 });
-window.addEventListener('touchmove', function(e) {
-    scheduleUpdate();
-    var rect = simulationArea.canvas.getBoundingClientRect();
-    simulationArea.mouseRawX = (e.touches[0].clientX - rect.left);
-    simulationArea.mouseRawY = (e.touches[0].clientY - rect.top);
-    simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
-    simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
-
-})
-window.addEventListener('touchstart', function(e) {
-    scheduleUpdate();
-    var rect = simulationArea.canvas.getBoundingClientRect();
-
-    simulationArea.mouseDownRawX = (e.touches[0].clientX - rect.left);
-    simulationArea.mouseDownRawY = (e.touches[0].clientY - rect.top);
-    simulationArea.mouseRawX = (e.touches[0].clientX - rect.left);
-    simulationArea.mouseRawY = (e.touches[0].clientY - rect.top);
-    simulationArea.mouseDownX = Math.round(((simulationArea.mouseDownRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
-    simulationArea.mouseDownY = Math.round(((simulationArea.mouseDownRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
-    simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
-    simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
-
-    simulationArea.mouseDown = true;
-    simulationArea.oldx = globalScope.ox;
-    simulationArea.oldy = globalScope.oy;
-
-
-    simulationArea.mouseDown = true;
-    console.log(simulationArea.mouseDown);
-});
-window.addEventListener('touchend', function(e) {
-    scheduleUpdate();
-    // update();
-    var rect = simulationArea.canvas.getBoundingClientRect();
-    simulationArea.mouseDownY = simulationArea.mouseY;
-    simulationArea.mouseDownX = simulationArea.mouseX;
-
-    simulationArea.mouseDown = false;
-    console.log(simulationArea.mouseDown);
-});
-window.addEventListener('touchleave', function(e) {
-    scheduleUpdate();
-    // update();
-    var rect = simulationArea.canvas.getBoundingClientRect();
-    simulationArea.mouseDown = false;
-});
+// window.addEventListener('touchmove', function(e) {
+//     scheduleUpdate();
+//     var rect = simulationArea.canvas.getBoundingClientRect();
+//     simulationArea.mouseRawX = (e.touches[0].clientX - rect.left);
+//     simulationArea.mouseRawY = (e.touches[0].clientY - rect.top);
+//     simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
+//     simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
+//
+// })
+// window.addEventListener('touchstart', function(e) {
+//     scheduleUpdate();
+//     var rect = simulationArea.canvas.getBoundingClientRect();
+//
+//     simulationArea.mouseDownRawX = (e.touches[0].clientX - rect.left);
+//     simulationArea.mouseDownRawY = (e.touches[0].clientY - rect.top);
+//     simulationArea.mouseRawX = (e.touches[0].clientX - rect.left);
+//     simulationArea.mouseRawY = (e.touches[0].clientY - rect.top);
+//     simulationArea.mouseDownX = Math.round(((simulationArea.mouseDownRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
+//     simulationArea.mouseDownY = Math.round(((simulationArea.mouseDownRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
+//     simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
+//     simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
+//
+//     simulationArea.mouseDown = true;
+//     simulationArea.oldx = globalScope.ox;
+//     simulationArea.oldy = globalScope.oy;
+//
+//
+//     simulationArea.mouseDown = true;
+//     //console.log(simulationArea.mouseDown);
+// });
+// window.addEventListener('touchend', function(e) {
+//     scheduleUpdate();
+//     // update();
+//     var rect = simulationArea.canvas.getBoundingClientRect();
+//     simulationArea.mouseDownY = simulationArea.mouseY;
+//     simulationArea.mouseDownX = simulationArea.mouseX;
+//
+//     simulationArea.mouseDown = false;
+//     //console.log(simulationArea.mouseDown);
+// });
+// window.addEventListener('touchleave', function(e) {
+//     scheduleUpdate();
+//     // update();
+//     var rect = simulationArea.canvas.getBoundingClientRect();
+//     simulationArea.mouseDown = false;
+// });
 
 var isIe = (navigator.userAgent.toLowerCase().indexOf("msie") != -1
            || navigator.userAgent.toLowerCase().indexOf("trident") != -1);
@@ -282,7 +343,7 @@ document.addEventListener('paste', function(e) {
     } else {
         data=e.clipboardData.getData('text/plain');
     }
-    console.log(data)
+    //console.log(data)
 
     paste(data);
     e.preventDefault();

@@ -119,7 +119,7 @@ function generateSvg(){
     globalScope.ox = backUpOx
     globalScope.oy = backUpOy;
 
-      toBeUpdated=true;
+      updateSimulation=true;
       updateCanvas=true;
       scheduleUpdate();
       dots(true,false);
@@ -134,7 +134,7 @@ function switchCircuit(id) {
     simulationArea.multipleObjectSelections = [];
     simulationArea.copyList = [];
     globalScope = scopeList[id];
-    toBeUpdated = true;
+    updateSimulation = true;
     scheduleBackup();
     undo();
     dots(true, false);
@@ -311,6 +311,9 @@ function load(data) {
         loadScope(scope, data.scopes[i]);
     }
     simulationArea.changeClockTime(data["timePeriod"] || 500);
+    updateSimulation=true;
+    updateCanvas=true;
+    scheduleUpdate();
 }
 
 function loadModule(data, scope) {
@@ -585,7 +588,7 @@ function generateImage() {
       globalScope.oy = backUpOy;
 
 
-        toBeUpdated=true;
+        updateSimulation=true;
         updateCanvas=true;
         scheduleUpdate();
         dots(true,false);
