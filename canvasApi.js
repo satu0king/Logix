@@ -250,17 +250,26 @@ function showMessage(ctx,str,x1,y1,fontSize=10){
     var width=ctx.measureText(str).width/globalScope.scale+8;
     var height=13;
     ctx.strokeStyle="black";
-    ctx.lineWidth=correctWidth(2);
+    ctx.lineWidth=correctWidth(1);
     ctx.fillStyle="yellow";
     console.log(width,height);
+    ctx.save();
     ctx.beginPath();
     rect(ctx,x1 -width/2 , y1 -height/2-3, width, height);
+    ctx.shadowColor = '#999';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = 3;
+    ctx.shadowOffsetY = 3;
     ctx.stroke();
     ctx.fill();
+    // crx.shadowBlur=0;
+    // crx.shadowOffsetX=0;
+    // crx.shadowOffsetY=0;
+    ctx.restore();
     x1 = x1 * globalScope.scale;
     y1 = y1 * globalScope.scale;
     ctx.beginPath();
-    ctx.fillStyle="red";
+    ctx.fillStyle="black";
     ctx.fillText(str, Math.round(x1 + globalScope.ox), Math.round( y1 + globalScope.oy));
     ctx.fill();
 }
