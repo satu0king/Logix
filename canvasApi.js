@@ -242,7 +242,7 @@ function drawCircle(ctx, x1, y1, r, color) {
     ctx.fill();
 }
 
-function showMessage(ctx,str,x1,y1,fontSize=10){
+function canvasMessage(ctx,str,x1,y1,fontSize=10){
     if(!str||!str.length)return;
 
     ctx.font = Math.round(fontSize * globalScope.scale) + "px Georgia";

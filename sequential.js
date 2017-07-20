@@ -9,7 +9,7 @@ function clockTick() {
 }
 
 
-function FlipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
+function DflipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.directionFixed = true;
     this.setDimensions(20, 20);

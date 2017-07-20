@@ -304,15 +304,15 @@ function Node(x, y, type, parent, bitWidth = undefined,label="") {
                     if(this.value!==undefined)
                     v=this.value.toString(16);
                     if(this.label.length){
-                        showMessage(ctx,this.label+" : "+v,this.absX(),this.absY()-15);
+                        canvasMessage(ctx,this.label+" : "+v,this.absX(),this.absY()-15);
                     }
                     else{
-                        showMessage(ctx, v ,this.absX(),this.absY()-15);
+                        canvasMessage(ctx, v ,this.absX(),this.absY()-15);
                     }
                 }
                 else if(this.label.length){
 
-                            showMessage(ctx,this.label,this.absX(),this.absY()-15);
+                            canvasMessage(ctx,this.label,this.absX(),this.absY()-15);
 
                 }
             }
