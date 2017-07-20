@@ -224,10 +224,40 @@ function Node(x, y, type, parent, bitWidth = undefined,label="") {
 
     }
 
+    this.checkHover=function(){
+        if(!simulationArea.mouseDown){
+            if(simulationArea.hover==this){
+                this.hover=this.isHover();
+                if(!this.hover){
+                    simulationArea.hover=undefined;
+                    this.showHover=false;
+                }
+            }
+            else if(!simulationArea.hover){
+                this.hover=this.isHover();
+                if(this.hover){
+
+                    simulationArea.hover=this;
+                }
+                else{
+                    this.showHover=false;
+                }
+
+            }
+            else{
+                this.hover=false;
+                this.showHover=false;
+
+            }
+        }
+        // this.showHover=true;
+    }
+
     this.draw = function() {
         // if (this.isHover())
         //     //console.log(this, this.id);
-        if(!simulation.mouseDown)this.hover=this.isHover();
+
+        if(this.type==2)this.checkHover();
 
         var ctx = simulationArea.context;
 
@@ -266,23 +296,28 @@ function Node(x, y, type, parent, bitWidth = undefined,label="") {
             //   //console.log("HIT");
         }
 
-        if(this.hover){
-            var v="X";
-            if(this.value!==undefined)
-            v=this.value.toString(16);
+        if(this.hover&&(!simulationArea.lastSelected||simulationArea.lastSelected==this)){
 
-            if(this.type==2){
-                if(this.label.length){
-                    showMessage(ctx,this.label+" : "+v,this.absX(),this.absY()-15);
+            if(this.showHover||simulationArea.lastSelected==this){
+                if(this.type==2){
+                    var v="X";
+                    if(this.value!==undefined)
+                    v=this.value.toString(16);
+                    if(this.label.length){
+                        showMessage(ctx,this.label+" : "+v,this.absX(),this.absY()-15);
+                    }
+                    else{
+                        showMessage(ctx, v ,this.absX(),this.absY()-15);
+                    }
                 }
-                else{
-                    showMessage(ctx, v ,this.absX(),this.absY()-15);
+                else if(this.label.length){
+
+                            showMessage(ctx,this.label,this.absX(),this.absY()-15);
+
                 }
             }
-            else if(this.label.length){
-
-                        showMessage(ctx,this.label,this.absX(),this.absY()-15);
-
+            else{
+                setTimeout(function(){ if(simulationArea.hover)simulationArea.hover.showHover=true;},400);
             }
         }
 

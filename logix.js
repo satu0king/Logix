@@ -749,6 +749,26 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         }
     }
 
+    this.checkHover=function(){
+
+        for(var i=0;i<this.nodeList.length;i++){
+            this.nodeList[i].checkHover();
+        }
+        if(!simulationArea.mouseDown){
+            if(simulationArea.hover==this){
+                this.hover=this.isHover();
+                if(!this.hover)simulationAreas.hover=undefined;
+            }
+            else if(!simulationArea.hover){
+                this.hover=this.isHover();
+                if(this.hover)simulationArea.hover=this;
+            }
+            else{
+                this.hover=false
+            }
+        }
+    }
+
     //This sets the width and height of the element if its rectangluar
     // and the reference point is at the center of the object.
     //width and height define the X and Y distance from the center.
@@ -915,10 +935,11 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     //NOT OVERIDABLE
     this.draw = function() {
 
+        this.checkHover();
         if(this.x*this.scope.scale+this.scope.ox<-this.rightDimensionX*this.scope.scale-00||this.x*this.scope.scale+this.scope.ox>width+this.leftDimensionX*this.scope.scale+00||this.y*this.scope.scale+this.scope.oy<-this.downDimensionY*this.scope.scale-00||this.y*this.scope.scale+this.scope.oy>height+00+this.upDimensionY*this.scope.scale)return;
-        if(!simulationArea.mouseDown){
-            this.hover=this.isHover();
-        }
+        // if(!simulationArea.mouseDown){
+        //     this.hover=this.isHover();
+        // }
         // Draws rectangle and highlighs
         if (this.rectangleObject) {
             ctx = simulationArea.context;
