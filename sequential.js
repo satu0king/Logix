@@ -28,7 +28,9 @@ function TflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
 
     // this.wasClicked = false;
     this.isResolvable = function() {
-        return true;
+        if (this.reset.value == 1) return true;
+        if (this.en.value != undefined && this.clockInp.value != undefined && this.dInp.value != undefined) return true;
+        return false;
     }
     this.newBitWidth = function(bitWidth) {
         this.bitWidth = bitWidth;
@@ -169,44 +171,6 @@ function DflipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
             }
     }
 
-    // this.resolve = function() {
-    //     if (this.reset.value == 1) {
-    //
-    //         this.masterState = this.slaveState = this.preset.value||0;
-    //
-    //
-    //     }
-    //
-    //     else if (this.en.value == 0) {
-    //
-    //             this.prevClockState = this.clockInp.value;
-    //
-    //         // return;
-    //     }
-    //
-    //     else if(this.en.value==1){
-    //         if (this.clockInp.value == this.prevClockState) {
-    //         if (this.clockInp.value == 0 && this.dInp.value != undefined) {
-    //             this.masterState = this.dInp.value;
-    //         }
-    //     } else if (this.clockInp.value != undefined) {
-    //         if (this.clockInp.value == 1) {
-    //             this.slaveState = this.masterState;
-    //         } else if (this.clockInp.value == 0 && this.dInp.value != undefined) {
-    //             this.masterState = this.dInp.value;
-    //         }
-    //         this.prevClockState = this.clockInp.value;
-    //     }
-    //     }
-    //
-    //     if (this.qOutput.value != this.slaveState) {
-    //         this.qOutput.value = this.slaveState;
-    //         this.qInvOutput.value = this.flipBits(this.slaveState);
-    //         this.scope.stack.push(this.qOutput);
-    //         this.scope.stack.push(this.qInvOutput);
-    //     }
-    // }
-
     this.customSave = function() {
         var data = {
             nodes: {
@@ -278,10 +242,9 @@ function SRflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
     }
     this.isResolvable = function() {
         return true;
-        // if (this.reset.value == 1) return true;
-        // if (this.S.value == undefined&&this.R.value==undefined) return true;
-        // else if (this.en.value == 1) return true;
-        // return false;
+        if (this.reset.value == 1) return true;
+        if (this.en.value==1&&this.S.value != undefined&&this.R.value!=undefined) return true;
+        return false;
     }
     this.resolve = function() {
 
@@ -370,6 +333,11 @@ function JKflipFlop(x, y, scope = globalScope, dir = "RIGHT") {
     this.prevClockState = 0;
 
     // this.wasClicked = false;
+    this.isResolvable = function() {
+        if (this.reset.value == 1) return true;
+        if (this.en.value != undefined && this.clockInp.value != undefined && this.J.value != undefined&&this.K.value!=undefined) return true;
+        return false;
+    }
     this.newBitWidth = function(bitWidth) {
         this.bitWidth = bitWidth;
         this.dInp.bitWidth = bitWidth;
