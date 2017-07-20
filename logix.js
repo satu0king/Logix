@@ -22,11 +22,11 @@ loading = false;
 DPR=1;
 projectSaved = true;
 //Exact same name as object constructor
-moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram", "DflipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer", "Buffer", "SubCircuit","Flag","MSB","LSB","PriorityEncoder"];
+moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram","TflipFlop","JKflipFlop","SRflipFlop", "DflipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer", "Buffer", "SubCircuit","Flag","MSB","LSB","PriorityEncoder"];
 
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
-inputList = ["DflipFlop","Buffer", "Stepper", "Ground", "Power", "ConstantVal", "Input", "Clock", "Button"];
+inputList = ["JKflipFlop","TflipFlop","SRflipFlop","DflipFlop","Buffer", "Stepper", "Ground", "Power", "ConstantVal", "Input", "Clock", "Button"];
 
 //Scope object for each circuit level, globalScope for outer level
 scopeList = {};
