@@ -1027,11 +1027,11 @@ function Adder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.setDimensions(20, 20);
 
-    this.inpA = new Node(-20, -10, 0, this, this.bitWidth);
-    this.inpB = new Node(-20, 0, 0, this, this.bitWidth);
-    this.carryIn = new Node(-20, 10, 0, this, 1);
-    this.sum = new Node(20, 0, 1, this, this.bitWidth);
-    this.carryOut = new Node(20, 10, 1, this, 1);
+    this.inpA = new Node(-20, -10, 0, this, this.bitWidth,"A");
+    this.inpB = new Node(-20, 0, 0, this, this.bitWidth,"B");
+    this.carryIn = new Node(-20, 10, 0, this, 1,"Cin");
+    this.sum = new Node(20, 0, 1, this, this.bitWidth,"Sum");
+    this.carryOut = new Node(20, 10, 1, this, 1,"Cout");
 
     this.customSave = function() {
         var data = {
@@ -1734,6 +1734,8 @@ function NorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
         //for debugging
     }
 }
+
+
 
 function DigitalLed(x, y, scope = globalScope) {
     // Calling base class constructor

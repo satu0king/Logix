@@ -1,11 +1,10 @@
 function clockTick() {
     if (errorDetected) return;
-
     updateCanvas = true;
-    toBeUpdated = true;
-    scheduleUpdate();
+
     globalScope.clockTick();
     play();
+    scheduleUpdate();
 
 }
 

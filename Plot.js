@@ -51,9 +51,9 @@ var plotArea = {
       this.ctx=this.c.getContext("2d");
     //   console.log(this.ctx);
       startPlot();
-      this.timeOutPlot = setInterval(function(){
-        plotArea.plot();
-    },100);
+    //   this.timeOutPlot = setInterval(function(){
+    //     plotArea.plot();
+    // },100);
   },
   plot : function()
   {

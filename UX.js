@@ -14,7 +14,7 @@ $(document).ready(function() {
     // });
 
     $('.logixModules').click(function(){
-        console.log(smartDropXX,smartDropYY);
+        //console.log(smartDropXX,smartDropYY);
         if(simulationArea.lastSelected&&simulationArea.lastSelected.newElement)simulationArea.lastSelected.delete();
         obj = new window[this.id]();//(simulationArea.mouseX,simulationArea.mouseY);
         simulationArea.lastSelected=obj;
@@ -61,9 +61,9 @@ $(document).ready(function() {
 
 
     var iconList=$('.icon');
-    // console.log(iconList)
+    // //console.log(iconList)
     for(var i=0;i<iconList.length;i++){
-        console.log(iconList[i].id);
+        //console.log(iconList[i].id);
         $(iconList[i]).append('<img src="./img/'+iconList[i].id+'.svg"/>');
         $(iconList[i]).append('<p class="img__description">'+iconList[i].id+
         '</p>');
@@ -143,7 +143,7 @@ function showProperties(obj){
 
     $(".objectPropertyAttribute").on("change keyup paste click", function(){
         // return;
-        console.log(this.name+":"+this.value);
+        //console.log(this.name+":"+this.value);
         scheduleUpdate();
         updateCanvas = true;
         wireToBeChecked = 1;
