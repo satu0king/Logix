@@ -76,11 +76,11 @@ function generateSvg(){
         //
         // globalScope.ox = (-minX + maxDimension+11)*resolution;
         // globalScope.oy = (-minY + maxDimension-6)*resolution;
-        width = (maxX - minX + 2*maxDimension+10) * resolution;
-        height = (maxY - minY + 2*maxDimension+10) * resolution;
+        width = (maxX - minX + 2*maxDimension+26) * resolution;
+        height = (maxY - minY + 2*maxDimension+26) * resolution;
 
-        globalScope.ox = (-minX + maxDimension+5)*resolution;
-        globalScope.oy = (-minY + maxDimension+5)*resolution;
+        globalScope.ox = (-minX + maxDimension+3)*resolution;
+        globalScope.oy = (-minY + maxDimension+13)*resolution;
     }
     else{
         width=(width*resolution)/backUpScale;
@@ -119,7 +119,7 @@ function generateSvg(){
     globalScope.ox = backUpOx
     globalScope.oy = backUpOy;
 
-      toBeUpdated=true;
+      updateSimulation=true;
       updateCanvas=true;
       scheduleUpdate();
       dots(true,false);
@@ -134,7 +134,7 @@ function switchCircuit(id) {
     simulationArea.multipleObjectSelections = [];
     simulationArea.copyList = [];
     globalScope = scopeList[id];
-    toBeUpdated = true;
+    updateSimulation = true;
     scheduleBackup();
     undo();
     dots(true, false);
@@ -217,7 +217,8 @@ function backUp(scope = globalScope) {
     data["name"] = scope.name;
 
     for (var i = 0; i < moduleList.length; i++) {
-        data[moduleList[i]] = scope[moduleList[i]].map(extract);
+        if(scope[moduleList[i]].length)
+            data[moduleList[i]] = scope[moduleList[i]].map(extract);
     }
 
 
@@ -310,6 +311,9 @@ function load(data) {
         loadScope(scope, data.scopes[i]);
     }
     simulationArea.changeClockTime(data["timePeriod"] || 500);
+    updateSimulation=true;
+    updateCanvas=true;
+    scheduleUpdate();
 }
 
 function loadModule(data, scope) {
@@ -584,7 +588,7 @@ function generateImage() {
       globalScope.oy = backUpOy;
 
 
-        toBeUpdated=true;
+        updateSimulation=true;
         updateCanvas=true;
         scheduleUpdate();
         dots(true,false);
