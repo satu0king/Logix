@@ -11,31 +11,27 @@ function clockTick() {
 
 function FlipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
-    // this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
-    // this.direction = dir;
-    // this.id = 'FlipFlip' + uniqueIdCounter;
-    // uniqueIdCounter++;
-    // this.scope = scope;
-    // this.nodeList = [];
-    // this.element = new Element(x, y, "FlipFlip", 20, this);
     this.directionFixed = true;
     this.setDimensions(20, 20);
     this.rectangleObject = true;
-    this.clockInp = new Node(-20, +10, 0, this, 1);
-    this.dInp = new Node(-20, -10, 0, this);
-    this.qOutput = new Node(20, -10, 1, this);
-    this.reset = new Node(10, 20, 0, this, 1);
-    this.en = new Node(-10, 20, 0, this, 1);
+    this.clockInp = new Node(-20, +10, 0, this, 1,"Clock");
+    this.dInp = new Node(-20, -10, 0, this,this.bitWidth,"D");
+    this.qOutput = new Node(20, -10, 1, this,this.bitWidth,"Q");
+    this.qInvOutput = new Node(20, 10, 1, this,this.bitWidth,"Q Inverse");
+    this.reset = new Node(10, 20, 0, this, 1,"Asynchronous Reset");
+    this.preset = new Node(0, 20, 0, this, this.bitWidth,"Preset");
+    this.en = new Node(-10, 20, 0, this, 1,"Enable");
     this.masterState = 0;
     this.slaveState = 0;
     this.prevClockState = 0;
 
-    // scope.flipflops.push(this);
     // this.wasClicked = false;
     this.newBitWidth = function(bitWidth) {
         this.bitWidth = bitWidth;
         this.dInp.bitWidth = bitWidth;
         this.qOutput.bitWidth = bitWidth;
+        this.qInvOutput.bitWidth = bitWidth;
+        this.preset.bitWidth = bitWidth;
     }
     this.isResolvable = function() {
         if (this.reset.value == 1) return true;
@@ -46,11 +42,13 @@ function FlipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     this.resolve = function() {
         if (this.reset.value == 1) {
 
-            this.masterState = this.slaveState = 0;
+            this.masterState = this.slaveState = this.preset.value||0;
 
             if (this.qOutput.value != this.slaveState) {
                 this.qOutput.value = this.slaveState;
+                this.qInvOutput.value = this.flipBits(this.slaveState);
                 this.scope.stack.push(this.qOutput);
+                this.scope.stack.push(this.qInvOutput);
             }
             return;
         }
@@ -58,8 +56,10 @@ function FlipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         if (this.en.value == 0) {
             if (this.qOutput.value != this.slaveState) {
                 this.qOutput.value = this.slaveState;
+                this.qInvOutput.value = this.flipBits(this.slaveState);
                 this.scope.stack.push(this.qOutput);
-                // console.log("hit", this.slaveState);
+                this.scope.stack.push(this.qInvOutput);
+
                 this.prevClockState = this.clockInp.value;
             }
             return;
@@ -80,7 +80,9 @@ function FlipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
         if (this.qOutput.value != this.slaveState) {
             this.qOutput.value = this.slaveState;
+            this.qInvOutput.value = this.flipBits(this.slaveState);
             this.scope.stack.push(this.qOutput);
+            this.scope.stack.push(this.qInvOutput);
         }
     }
     this.customSave = function() {
@@ -89,8 +91,10 @@ function FlipFlop(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
                 clockInp: findNode(this.clockInp),
                 dInp: findNode(this.dInp),
                 qOutput: findNode(this.qOutput),
+                qInvOutput: findNode(this.qInvOutput),
                 reset: findNode(this.reset),
-                en: findNode(this.en)
+                preset: findNode(this.preset),
+                en: findNode(this.en),
             },
             constructorParamaters: [this.direction, this.bitWidth]
 

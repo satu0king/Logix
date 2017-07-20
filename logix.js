@@ -695,6 +695,9 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.labelDirection = dir;
     this.orientationFixed = true; // should it be false?
     this.fixedBitWidth = false;
+    this.flipBits=function(val){
+        return ((~val >>> 0) << (32 - this.bitWidth)) >>> (32 - this.bitWidth);
+    }
     this.absX = function() {
         return this.x;
     }
