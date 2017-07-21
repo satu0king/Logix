@@ -134,20 +134,14 @@ window.addEventListener('keydown', function(e) {
     if(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height)return;
 
 
-    if (e.keyCode == 16) {
-        simulationArea.shiftDown = true;
-        if (simulationArea.lastSelected&&simulationArea.lastSelected.objectType!="Wire"&&simulationArea.lastSelected.objectType!="CircuitElement" &&!simulationArea.multipleObjectSelections.contains(simulationArea.lastSelected)) {
-            simulationArea.multipleObjectSelections.push(simulationArea.lastSelected);
-            // simulationArea.lastSelected = undefined;
-        }
-    }
+
 
 
     scheduleUpdate(1);
     updateCanvas = true;
     wireToBeChecked = 1;
     // e.preventDefault();
-       //console.log("KEY:"+e.key);
+       console.log("KEY:"+e.key);
 
    if(simulationArea.controlDown&&(e.key=="C"||e.key=="c")){
     //    simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
@@ -160,11 +154,19 @@ window.addEventListener('keydown', function(e) {
     //    paste(simulationArea.copyData);
    }
     if (simulationArea.lastSelected && simulationArea.lastSelected.keyDown) {
-        if (e.key.toString().length == 1) {
-            simulationArea.lastSelected.keyDown(e.key);
+        if (e.key.toString().length == 1||e.key.toString()=="Backspace") {
+            simulationArea.lastSelected.keyDown(e.key.toString());
             return;
         }
-        if (e.key == "Shift") return;
+        // if(e.key.toString()=="Shift")return;
+
+    }
+    if (e.keyCode == 16) {
+        simulationArea.shiftDown = true;
+        if (simulationArea.lastSelected&&!simulationArea.lastSelected.keyDown&&simulationArea.lastSelected.objectType!="Wire"&&simulationArea.lastSelected.objectType!="CircuitElement" &&!simulationArea.multipleObjectSelections.contains(simulationArea.lastSelected)) {
+            simulationArea.multipleObjectSelections.push(simulationArea.lastSelected);
+            // simulationArea.lastSelected = undefined;
+        }
     }
     if (e.keyCode == 8 || e.key=="Delete") {
         if (simulationArea.lastSelected) simulationArea.lastSelected.delete();

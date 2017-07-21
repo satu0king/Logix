@@ -12,7 +12,7 @@ function changeScale(delta,xx,yy) {
     }
 
     var oldScale = globalScope.scale;
-    globalScope.scale += delta;
+    globalScope.scale = Math.max(0.5*DPR,Math.min(4*DPR,globalScope.scale+delta));
     globalScope.scale = Math.round(globalScope.scale * 10) / 10;
     globalScope.ox -= Math.round(xx * (globalScope.scale - oldScale));
     globalScope.oy -= Math.round(yy * (globalScope.scale - oldScale));

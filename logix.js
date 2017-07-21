@@ -22,7 +22,7 @@ loading = false;
 DPR=1;
 projectSaved = true;
 //Exact same name as object constructor
-moduleList = ["Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram","TflipFlop","JKflipFlop","SRflipFlop", "DflipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer", "Buffer", "SubCircuit","Flag","MSB","LSB","PriorityEncoder"];
+moduleList = ["Text","Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram","TflipFlop","JKflipFlop","SRflipFlop", "DflipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer", "Buffer", "SubCircuit","Flag","MSB","LSB","PriorityEncoder"];
 
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
@@ -692,6 +692,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.bitWidth = bitWidth || parseInt(prompt("Enter bitWidth"), 10);
     this.direction = dir;
     this.directionFixed = false;
+    this.labelDirectionFixed = false;
     this.labelDirection = dir;
     this.orientationFixed = true; // should it be false?
     this.fixedBitWidth = false;
@@ -754,6 +755,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
 
     this.checkHover=function(){
 
+        if(simulationArea.mouseDown)return;
         for(var i=0;i<this.nodeList.length;i++){
             this.nodeList[i].checkHover();
         }
