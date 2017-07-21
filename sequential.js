@@ -633,6 +633,7 @@ function Keyboard(x, y, scope = globalScope, bufferSize = 32) {
     }
 
     this.keyDown = function(key) {
+        if(key.length!=1)return;
         this.buffer += key;
         if (this.buffer.length > this.bufferSize)
             this.buffer = this.buffer.slice(1);

@@ -832,6 +832,81 @@ function NotGate(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
 }
 
+
+function Text(x, y, scope = globalScope,label) {
+
+    CircuitElement.call(this, x, y, scope, "RIGHT", 1);
+    // this.setDimensions(15, 15);
+    this.fixedBitWidth=true;
+    this.directionFixed=true;
+    this.labelDirectionFixed=true;
+    this.setHeight(10);
+
+    this.setLabel=function(str=""){
+
+        this.label = str;
+        ctx = simulationArea.context;
+        ctx.font = 14 + "px Georgia";
+        this.leftDimensionX=10;
+        this.rightDimensionX =ctx.measureText(this.label).width+10;
+        console.log(this.leftDimensionX,this.rightDimensionX,ctx.measureText(this.label))
+    }
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.label],
+        }
+        return data;
+    }
+
+    this.setLabel(label||"Enter Text Here");
+
+    this.keyDown=function(key){
+
+
+        if(key.length==1){
+            if(this.label=="Enter Text Here")
+                this.setLabel(key)
+            else
+                this.setLabel(this.label+key);
+        }
+        else if (key=="Backspace") {
+            if(this.label=="Enter Text Here")
+                this.setLabel("")
+            else
+                this.setLabel(this.label.slice(0, -1));
+        }
+    }
+    this.draw = function(){
+
+        if(this.label.length==0&&simulationArea.lastSelected!=this)this.delete();
+
+        ctx = simulationArea.context;
+        ctx.strokeStyle = "black";
+        ctx.lineWidth =1;
+
+
+
+        var xx = this.x;
+        var yy = this.y;
+
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)){
+            ctx.beginPath();
+            ctx.fillStyle = "white";
+            rect2(ctx, -this.leftDimensionX, -this.upDimensionY, this.leftDimensionX + this.rightDimensionX, this.upDimensionY + this.downDimensionY, this.x, this.y, [this.direction, "RIGHT"][+this.directionFixed]);
+            ctx.fillStyle = "rgba(255, 255, 32,0.1)";
+            ctx.fill();
+            ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.textAlign="left";
+        ctx.fillStyle="black"
+        fillText(ctx,this.label,xx,yy+5,14);
+        ctx.fill();
+
+    }
+
+}
+
 function TriState(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.rectangleObject = false;
