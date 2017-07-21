@@ -2591,14 +2591,12 @@ function PriorityEncoder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1)
     }
 }
 
-function Tunnel(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier) {
+function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifier) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
-    //this.setDimensions(20, 80);
-    this.setWidth(60);
-    this.setHeight(20);
+    this.setDimensions(60,20);
     this.rectangleObject = false;
-    this.identifier = identifier || ("F" + this.scope.Flag.length);
+    this.identifier = identifier || ("F" + this.scope.Tunnel.length);
     this.plotValues = [];
     this.inp1 = new Node(0, 0, 0, this);
     this.setPlotValue = function() {
@@ -2641,13 +2639,6 @@ function Tunnel(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifi
         },
     }
 
-    var smallRecY=-this.upDimensionY+8;
-    var smallRecX=-105;
-    var xX=-20;
-    var xY=8;
-    var iX=-100;
-    var iY=6;
-
     this.customDraw = function() {
         ctx = simulationArea.context;
         ctx.beginPath();
@@ -2657,9 +2648,23 @@ function Tunnel(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifi
         var xx = this.x;
         var yy = this.y;
 
-        //rect2(ctx, -120, -20, 120, 40, xx, yy, "RIGHT");
-        rect2(ctx, -2*this.leftDimensionX, -this.upDimensionY, this.leftDimensionX + this.rightDimensionX, this.upDimensionY + this.downDimensionY, xx, yy, "RIGHT");
+        var xShift=0;
+        var yShift=0;
+        if(this.direction=="LEFT") {
+            xShift=0;
+            yShift=0;
+        }else if(this.direction=="RIGHT") {
+            xShift=120;
+            yShift=0;
+        }else if(this.direction=="UP") {
+            xShift=60;
+            yShift=-20;
+        }else{
+            xShift=60;
+            yShift=20;
+        }
 
+        rect2(ctx, -120+xShift, -20+yShift, 120, 40, xx, yy, "RIGHT");
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
@@ -2668,8 +2673,7 @@ function Tunnel(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifi
         ctx.font = "14px Georgia";
         var xOff = ctx.measureText(this.identifier).width;
         ctx.beginPath();
-        //rect2(ctx, -107, -12, xOff + 10, 25, xx, yy, "RIGHT");
-        rect2(ctx, smallRecX, smallRecY, xOff + 10, 25, xx, yy, "RIGHT");
+        rect2(ctx, -105+xShift, -12+yShift, xOff + 10, 25, xx, yy, "RIGHT");
         ctx.fillStyle = "#eee"
         ctx.strokeStyle = "#ccc";
         ctx.fill();
@@ -2678,8 +2682,7 @@ function Tunnel(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifi
         ctx.beginPath();
         ctx.textAlign = "center";
         ctx.fillStyle = "black";
-        //fillText(ctx, this.identifier, xx - 100 + xOff / 2, yy + 5, 14);
-        fillText(ctx, this.identifier,  xx+iX+ xOff / 2, yy + iY, 14);
+        fillText(ctx, this.identifier, xx - 100 + xOff / 2 + xShift, yy + 5 + yShift, 14);
         ctx.fill();
 
         ctx.beginPath();
@@ -2687,70 +2690,10 @@ function Tunnel(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifi
         ctx.textAlign = "center";
         ctx.fillStyle = ["blue", "red"][+(this.inp1.value == undefined)];
         if (this.inp1.value !== undefined)
-            //fillText(ctx, this.inp1.value.toString(16), xx - 23, yy + 8, 25);
-            fillText(ctx, this.inp1.value.toString(16), xx + xX, yy + xY, 25);
+            fillText(ctx, this.inp1.value.toString(16), xx - 23 + xShift, yy + 8 + yShift, 25);
         else
-            fillText(ctx, "x", xx + xX, yy + xY, 25);
+            fillText(ctx, "x", xx - 23 + xShift, yy + 8 + yShift, 25);
         ctx.fill();
     }
 
-    this.newDirection = function(dir) {
-        if (dir == this.direction) return;
-        this.direction = dir;
-        this.inp1.refresh();
-
-        if (dir == "RIGHT") {
-            this.leftDimensionX=-60;
-            this.rightDimensionX=-60;
-            this.upDimensionY=20;
-            this.downDimensionY=20;
-
-            smallRecY=-this.upDimensionY+8;
-            smallRecX=85;
-            xX=20;
-            xY=this.upDimensionY/2-2;
-            iY=xY-2;
-            iX=smallRecX+5;
-        }else if (dir == "LEFT") {
-            this.leftDimensionX=60;
-            this.rightDimensionX=60;
-            this.upDimensionY=20;
-            this.downDimensionY=20;
-
-            smallRecY=-this.upDimensionY+8;
-            smallRecX=-105;
-            xX=-20;
-            xY=this.upDimensionY/2-2;
-            iY=xY-2
-            iX=-100;
-        } else if (dir == "UP") {
-            this.leftDimensionX=10;
-            this.rightDimensionX=30;
-            this.upDimensionY=120;
-            this.downDimensionY=0;
-
-            smallRecY=-this.upDimensionY+15;
-            smallRecX=-this.leftDimensionX-3;
-            xX=0;
-            xY=this.downDimensionY-10;
-            iY=-this.upDimensionY+33;
-            iX=smallRecX+5;
-        } else {
-            this.leftDimensionX=10;
-            this.rightDimensionX=30;
-            this.upDimensionY=0;
-            this.downDimensionY=120;
-
-            smallRecY=this.downDimensionY-40;
-            smallRecX=-this.leftDimensionX-3;
-            xX=0;
-            xY=25;
-            iY=this.downDimensionY-22;
-            iX=smallRecX+5
-        }
-        console.log(iX)
-        
-        this.inp1.refresh();
-    }
-    
 }

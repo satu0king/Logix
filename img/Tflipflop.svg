@@ -1,0 +1,16 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="56" height="56">
+    <defs/>
+    <g>
+        <path fill="rgb(255,255,32)" stroke="black" paint-order="fill stroke markers" d=" M 3 13 L 43 13 L 43 53 L 3 53 L 3 13 Z" fill-opacity="0.8" stroke-miterlimit="10" stroke-width="3" stroke-dasharray="" />
+        <path fill="none" stroke="rgb(0,0,0)" paint-order="fill stroke markers" d=" M 3.5 38.5 L 8.5 43.5 L 3.5 48.5" stroke-opacity="1" stroke-miterlimit="10" stroke-width="3" stroke-dasharray="" />
+        <path fill="none" stroke="none" />
+        <text fill="green" stroke="none" font-family="Georgia" font-size="20px" font-style="normal" font-weight="normal" text-decoration="normal" x="23" y="38" text-anchor="middle" dominant-baseline="alphabetic">0</text>
+        <path fill="green" stroke="none" paint-order="stroke fill markers" d=" M 6 43 A 3 3 0 1 1 5.999998500000125 42.9970000005 Z" />
+        <path fill="green" stroke="none" paint-order="stroke fill markers" d=" M 6 23 A 3 3 0 1 1 5.999998500000125 22.997000000499998 Z" />
+        <path fill="green" stroke="none" paint-order="stroke fill markers" d=" M 46 23 A 3 3 0 1 1 45.999998500000125 22.997000000499998 Z" />
+        <path fill="green" stroke="none" paint-order="stroke fill markers" d=" M 46 43 A 3 3 0 1 1 45.999998500000125 42.9970000005 Z" />
+        <path fill="green" stroke="none" paint-order="stroke fill markers" d=" M 36 53 A 3 3 0 1 1 35.999998500000125 52.9970000005 Z" />
+        <path fill="green" stroke="none" paint-order="stroke fill markers" d=" M 26 53 A 3 3 0 1 1 25.999998500000125 52.9970000005 Z" />
+        <path fill="green" stroke="none" paint-order="stroke fill markers" d=" M 16 53 A 3 3 0 1 1 15.999998500000125 52.9970000005 Z" />
+    </g>
+</svg>
