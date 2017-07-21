@@ -122,9 +122,9 @@ window.addEventListener('keydown', function(e) {
         // if(e.key.toString()=="Shift")return;
 
     }
-    if (e.keyCode == 16) {
-        simulationArea.shiftDown = true;
-    }
+    // if (e.keyCode == 16) {
+    //     simulationArea.shiftDown = true;
+    // }
 
 
     // else{
