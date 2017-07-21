@@ -153,19 +153,8 @@ function setup() {
     // return;
 
 
-    width = document.getElementById("simulation").clientWidth*DPR;
-    height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
-    document.getElementById("canvasArea").style.height=height/DPR;
-    plotArea.c.width = document.getElementById("plot").clientWidth;
-    plotArea.c.height = document.getElementById("plot").clientHeight;
+    resetup();
 
-    // //console.log(width);
-    //setup simulationArea
-    backgroundArea.setup();
-    plotArea.setup();
-    simulationArea.setup();
-    // update();
-    dots();
     // scheduleUpdate();
 
     data = {}
@@ -226,19 +215,34 @@ function setup() {
 function resetup() {
 
     DPR=window.devicePixelRatio||1;
-    width = document.getElementById("simulation").clientWidth*DPR;
-    height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
-    document.getElementById("backgroundArea").style.height=(document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)+100;
-    document.getElementById("backgroundArea").style.width=document.getElementById("simulation").clientWidth+100;
+    width = document.getElementById("simulationArea").clientWidth*DPR;
+    if(!embed){
+        height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
+    }
+    else{
+        height = (document.getElementById("simulationArea").clientHeight)*DPR;
+    }
 
+    // //console.log(width);
+    //setup simulationArea
+    backgroundArea.setup();
+    if(!embed)plotArea.setup();
+    simulationArea.setup();
+    // update();
+    dots();
+
+
+    document.getElementById("backgroundArea").style.height=height/DPR+100;
+    document.getElementById("backgroundArea").style.width=width/DPR+100;
     document.getElementById("canvasArea").style.height = height/DPR;
     simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
     backgroundArea.canvas.width = width+100*DPR;
     backgroundArea.canvas.height = height+100*DPR;
-
-    plotArea.c.width = document.getElementById("plot").clientWidth;
-    plotArea.c.height = document.getElementById("plot").clientHeight
+    if(!embed){
+        plotArea.c.width = document.getElementById("plot").clientWidth;
+        plotArea.c.height = document.getElementById("plot").clientHeight
+    }
     // simulationArea.setup();
     updateCanvas=true;
     update(); // INEFFICENT

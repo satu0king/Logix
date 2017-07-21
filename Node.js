@@ -331,6 +331,7 @@ function Node(x, y, type, parent, bitWidth = undefined,label="") {
     this.update = function() {
 
 
+        if(embed)return;
 
         if (this == simulationArea.hover) simulationArea.hover = undefined;
         this.hover = this.isHover();
@@ -359,6 +360,8 @@ function Node(x, y, type, parent, bitWidth = undefined,label="") {
         } else {
             this.clicked = false;
         }
+
+
 
 
         //console.log("Node:", this.wasClicked, this.clicked);
