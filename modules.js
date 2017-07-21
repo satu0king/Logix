@@ -892,7 +892,7 @@ function Text(x, y, scope = globalScope,label) {
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)){
             ctx.beginPath();
             ctx.fillStyle = "white";
-            rect2(ctx, -this.leftDimensionX, -this.upDimensionY, this.leftDimensionX + this.rightDimensionX, this.upDimensionY + this.downDimensionY, this.x, this.y, [this.direction, "RIGHT"][+this.directionFixed]);
+            rect2(ctx, -this.leftDimensionX, -this.upDimensionY, this.leftDimensionX + this.rightDimensionX, this.upDimensionY + this.downDimensionY, this.x, this.y,"RIGHT");
             ctx.fillStyle = "rgba(255, 255, 32,0.1)";
             ctx.fill();
             ctx.stroke();

@@ -905,7 +905,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         // height = Math.abs(height);
         var mouseX = simulationArea.mouseX;
         var mouseY = simulationArea.mouseY;
-        if(Math.abs(mouseX-this.x>200)||Math.abs(mouseY-this.y>200))return false;
+        if(Math.abs(mouseX-this.x>Math.max(this.leftDimensionX,this.rightDimensionX))||Math.abs(mouseY-this.y>Math.max(this.upDimensionY,this.downDimensionY)))return false;
         var rX = this.rightDimensionX;
         var lX = this.leftDimensionX;
         var uY = this.upDimensionY;
