@@ -119,50 +119,51 @@
                 <div class="moduleProperty effect1" id="moduleProperty"></div>
             </div>
 
-            <div class="simulation" id="simulation" >
+            <div class="rightPanel">
                 <div id="tabsBar"></div>
-                <div id="MessageDiv">
+                <div class="simulation" id="simulation" >
+                    <div id="MessageDiv">
+                    </div>
+
+                    <div class="canvasArea" id="canvasArea">
+                        <canvas id="backgroundArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
+                        <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%;height:100%"></canvas>
+                    </div>
+                    <div id="plot">
+                        <canvas id="plotArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%"></canvas>
+                    </div>
+
                 </div>
 
-                <div class="canvasArea" id="canvasArea">
-                    <canvas id="backgroundArea" style="position: absolute; left: 0; top: 0; z-index: 0; width:100%;height:100%"></canvas>
-                    <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%;height:100%"></canvas>
+                <div id="combinationalAnalysis"  style="display:none;" title="BooleanLogicTable">
+                    <div id="saveImageDialog" style="display:none;" title="Render Image">
+                        <p>
+                            PNG: <input type="radio" name="imgType" value="png" checked="checked" />
+                            JPEG: <input type="radio" name="imgType" value="jpeg" />
+                            SVG: <input type="radio" name="imgType" value="svg" />
+                            BMP: <input type="radio" name="imgType" value="bmp" />
+                            GIF: <input type="radio" name="imgType" value="gif" />
+                            TIFF: <input type="radio" name="imgType" value="tiff" />
+                        </p>
+                        <p>
+                            Full Circuit View: <input type="radio" name="view" value="full" />
+                            Current View: <input type="radio" name="view" value="current" checked="checked" />
+                        </p>
+                        <p>
+                            Transparent Background: <input type="checkbox" name="transparent" value="transparent"/>
+                        </p>
+                        <p>
+                            Resolution:
+                            1x<input type="radio" name="resolution" value="1" checked="checked"  />
+                            2x<input type="radio" name="resolution" value="2"/>
+                            4x<input type="radio" name="resolution" value="4"/>
+                        </p>
+                    </div>
+
+                    <div id="insertSubcircuitDialog" style="display:none;"  title="Insert SubCircuit"></div>
+                    <div id="openProjectDialog" style="display:none;"  title="Open Project"></div>
                 </div>
-                <div id="plot">
-                    <canvas id="plotArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%"></canvas>
-                </div>
-
-            </div>
-
-            <div id="combinationalAnalysis"  style="display:none;" title="BooleanLogicTable">
-                <div id="saveImageDialog" style="display:none;" title="Render Image">
-                    <p>
-                        PNG: <input type="radio" name="imgType" value="png" checked="checked" />
-                        JPEG: <input type="radio" name="imgType" value="jpeg" />
-                        SVG: <input type="radio" name="imgType" value="svg" />
-                        BMP: <input type="radio" name="imgType" value="bmp" />
-                        GIF: <input type="radio" name="imgType" value="gif" />
-                        TIFF: <input type="radio" name="imgType" value="tiff" />
-                    </p>
-                    <p>
-                        Full Circuit View: <input type="radio" name="view" value="full" />
-                        Current View: <input type="radio" name="view" value="current" checked="checked" />
-                    </p>
-                    <p>
-                        Transparent Background: <input type="checkbox" name="transparent" value="transparent"/>
-                    </p>
-                    <p>
-                        Resolution:
-                        1x<input type="radio" name="resolution" value="1" checked="checked"  />
-                        2x<input type="radio" name="resolution" value="2"/>
-                        4x<input type="radio" name="resolution" value="4"/>
-                    </p>
-                </div>
-
-                <div id="insertSubcircuitDialog" style="display:none;"  title="Insert SubCircuit"></div>
-                <div id="openProjectDialog" style="display:none;"  title="Open Project"></div>
-            </div>
-
+            </div> <!-- Right panel -->
         </div>
 
         <!-- <script src="./SAP_DATA.js"></script> -->
