@@ -299,9 +299,11 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         for (var i = 0; i < this.inputSize; i++) {
-            fillText(ctx, String(i), xx + this.inp[i].x + 7, yy + this.inp[i].y + 2, 10);
+            if(this.direction=="RIGHT") fillText(ctx, String(i), xx + this.inp[i].x + 7, yy + this.inp[i].y + 2, 10);
+            else if(this.direction=="LEFT") fillText(ctx, String(i), xx + this.inp[i].x - 7, yy + this.inp[i].y + 2, 10);
+            else if(this.direction=="UP") fillText(ctx, String(i), xx + this.inp[i].x, yy + this.inp[i].y - 4, 10);
+            else fillText(ctx, String(i), xx + this.inp[i].x, yy + this.inp[i].y + 10, 10);
         }
-        ctx.stroke();
         ctx.fill();
     }
 
@@ -830,6 +832,81 @@ function NotGate(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
 }
 
+
+function Text(x, y, scope = globalScope,label) {
+
+    CircuitElement.call(this, x, y, scope, "RIGHT", 1);
+    // this.setDimensions(15, 15);
+    this.fixedBitWidth=true;
+    this.directionFixed=true;
+    this.labelDirectionFixed=true;
+    this.setHeight(10);
+
+    this.setLabel=function(str=""){
+
+        this.label = str;
+        ctx = simulationArea.context;
+        ctx.font = 14 + "px Georgia";
+        this.leftDimensionX=10;
+        this.rightDimensionX =ctx.measureText(this.label).width+10;
+        console.log(this.leftDimensionX,this.rightDimensionX,ctx.measureText(this.label))
+    }
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.label],
+        }
+        return data;
+    }
+
+    this.setLabel(label||"Enter Text Here");
+
+    this.keyDown=function(key){
+
+
+        if(key.length==1){
+            if(this.label=="Enter Text Here")
+                this.setLabel(key)
+            else
+                this.setLabel(this.label+key);
+        }
+        else if (key=="Backspace") {
+            if(this.label=="Enter Text Here")
+                this.setLabel("")
+            else
+                this.setLabel(this.label.slice(0, -1));
+        }
+    }
+    this.draw = function(){
+
+        if(this.label.length==0&&simulationArea.lastSelected!=this)this.delete();
+
+        ctx = simulationArea.context;
+        ctx.strokeStyle = "black";
+        ctx.lineWidth =1;
+
+
+
+        var xx = this.x;
+        var yy = this.y;
+
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)){
+            ctx.beginPath();
+            ctx.fillStyle = "white";
+            rect2(ctx, -this.leftDimensionX, -this.upDimensionY, this.leftDimensionX + this.rightDimensionX, this.upDimensionY + this.downDimensionY, this.x, this.y,"RIGHT");
+            ctx.fillStyle = "rgba(255, 255, 32,0.1)";
+            ctx.fill();
+            ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.textAlign="left";
+        ctx.fillStyle="black"
+        fillText(ctx,this.label,xx,yy+5,14);
+        ctx.fill();
+
+    }
+
+}
+
 function TriState(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.rectangleObject = false;
@@ -1025,11 +1102,11 @@ function Adder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.setDimensions(20, 20);
 
-    this.inpA = new Node(-20, -10, 0, this, this.bitWidth);
-    this.inpB = new Node(-20, 0, 0, this, this.bitWidth);
-    this.carryIn = new Node(-20, 10, 0, this, 1);
-    this.sum = new Node(20, 0, 1, this, this.bitWidth);
-    this.carryOut = new Node(20, 10, 1, this, 1);
+    this.inpA = new Node(-20, -10, 0, this, this.bitWidth,"A");
+    this.inpB = new Node(-20, 0, 0, this, this.bitWidth,"B");
+    this.carryIn = new Node(-20, 10, 0, this, 1,"Cin");
+    this.sum = new Node(20, 0, 1, this, this.bitWidth,"Sum");
+    this.carryOut = new Node(20, 10, 1, this, 1,"Cout");
 
     this.customSave = function() {
         var data = {
@@ -1733,6 +1810,8 @@ function NorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
     }
 }
 
+
+
 function DigitalLed(x, y, scope = globalScope) {
     // Calling base class constructor
 
@@ -2052,6 +2131,7 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
     this.resolve = function() {
         this.output1[this.controlSignalInput.value].value = this.input.value;
         this.scope.stack.push(this.output1[this.controlSignalInput.value]);
+
     }
 
     this.customDraw = function() {
@@ -2086,10 +2166,14 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
         ctx.beginPath();
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
+        //[xFill,yFill] = rotate(xx + this.output1[i].x - 7, yy + this.output1[i].y + 2);
+        //console.log([xFill,yFill])
         for (var i = 0; i < this.outputsize; i++) {
-            fillText(ctx, String(i), xx + this.output1[i].x - 7, yy + this.output1[i].y + 2, 10);
+            if(this.direction=="LEFT") fillText(ctx, String(i), xx + this.output1[i].x - 7, yy + this.output1[i].y + 2, 10);
+            else if(this.direction=="RIGHT") fillText(ctx, String(i), xx + this.output1[i].x + 7, yy + this.output1[i].y + 2, 10);
+            else if(this.direction=="UP") fillText(ctx, String(i), xx + this.output1[i].x , yy + this.output1[i].y - 5, 10);
+            else fillText(ctx, String(i), xx + this.output1[i].x , yy + this.output1[i].y + 10, 10);
         }
-        ctx.stroke();
         ctx.fill();
     }
 }
@@ -2277,7 +2361,8 @@ function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         ctx.beginPath();
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
-        fillText(ctx, "MSB", xx + 5, yy - 10, 10);
+        fillText(ctx, "MSB", xx + 6, yy - 12, 10);
+        fillText(ctx, "EN", xx + this.enable.x-12, yy +this.enable.y+3, 8);
         ctx.fill();
 
         ctx.beginPath();
@@ -2366,7 +2451,8 @@ function LSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
         ctx.beginPath();
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
-        fillText(ctx, "LSB", xx + 5, yy - 10, 10);
+        fillText(ctx, "LSB", xx + 6, yy - 12, 10);
+        fillText(ctx, "EN", xx + this.enable.x-12, yy +this.enable.y+3, 8);
         ctx.fill();
 
         ctx.beginPath();

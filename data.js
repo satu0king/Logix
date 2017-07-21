@@ -119,7 +119,7 @@ function generateSvg(){
     globalScope.ox = backUpOx
     globalScope.oy = backUpOy;
 
-      toBeUpdated=true;
+      updateSimulation=true;
       updateCanvas=true;
       scheduleUpdate();
       dots(true,false);
@@ -134,7 +134,7 @@ function switchCircuit(id) {
     simulationArea.multipleObjectSelections = [];
     simulationArea.copyList = [];
     globalScope = scopeList[id];
-    toBeUpdated = true;
+    updateSimulation = true;
     scheduleBackup();
     undo();
     dots(true, false);
@@ -311,11 +311,19 @@ function load(data) {
         loadScope(scope, data.scopes[i]);
     }
     simulationArea.changeClockTime(data["timePeriod"] || 500);
+    updateSimulation=true;
+    updateCanvas=true;
+    scheduleUpdate();
+}
+function rectifyObjectType(obj){
+    var rectify={"FlipFlop":"DflipFlop"};
+    return rectify[obj]||obj;
+
 }
 
 function loadModule(data, scope) {
     // console.log(data);
-    obj = new window[data["objectType"]](data["x"], data["y"], scope, ...data.customData["constructorParamaters"] || []);
+    obj = new window[rectifyObjectType(data["objectType"])](data["x"], data["y"], scope, ...data.customData["constructorParamaters"] || []);
     obj.label = data["label"];
     obj.labelDirection = data["labelDirection"] || oppositeDirection[fixDirection[obj.direction]];
     obj.fixDirection();
@@ -354,6 +362,8 @@ function download(filename, text) {
 
 function loadScope(scope, data) {
     // console.log(data);
+    var ML=moduleList.slice();
+    ML.push("FlipFlop")
     data["allNodes"].map(function(x) {
         return loadNode(x, scope)
     });
@@ -361,14 +371,14 @@ function loadScope(scope, data) {
     for (var i = 0; i < data["allNodes"].length; i++)
         constructNodeConnections(scope.allNodes[i], data["allNodes"][i]);
 
-    for (var i = 0; i < moduleList.length; i++) {
-        if (data[moduleList[i]]) {
-            if (moduleList[i] == "SubCircuit") {
-                for (var j = 0; j < data[moduleList[i]].length; j++)
-                    loadSubCircuit(data[moduleList[i]][j], scope);
+    for (var i = 0; i < ML.length; i++) {
+        if (data[ML[i]]) {
+            if (ML[i] == "SubCircuit") {
+                for (var j = 0; j < data[ML[i]].length; j++)
+                    loadSubCircuit(data[ML[i]][j], scope);
             } else {
-                for (var j = 0; j < data[moduleList[i]].length; j++)
-                    loadModule(data[moduleList[i]][j], scope);
+                for (var j = 0; j < data[ML[i]].length; j++)
+                    loadModule(data[ML[i]][j], scope);
             }
         }
     }
@@ -585,7 +595,7 @@ function generateImage() {
       globalScope.oy = backUpOy;
 
 
-        toBeUpdated=true;
+        updateSimulation=true;
         updateCanvas=true;
         scheduleUpdate();
         dots(true,false);

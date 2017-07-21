@@ -12,7 +12,7 @@ function changeScale(delta,xx,yy) {
     }
 
     var oldScale = globalScope.scale;
-    globalScope.scale += delta;
+    globalScope.scale = Math.max(0.5*DPR,Math.min(4*DPR,globalScope.scale+delta));
     globalScope.scale = Math.round(globalScope.scale * 10) / 10;
     globalScope.ox -= Math.round(xx * (globalScope.scale - oldScale));
     globalScope.oy -= Math.round(yy * (globalScope.scale - oldScale));
@@ -25,30 +25,41 @@ function dots(dots=true, transparentBackground=false) {
 
 
 
+
+    var scale = unit * globalScope.scale;
+    var ox = globalScope.ox % scale; //offset
+    var oy = globalScope.oy % scale; //offset
+
+
+    document.getElementById("backgroundArea").style.left=(ox-scale)/DPR;
+    document.getElementById("backgroundArea").style.top=(oy-scale)/DPR;
+
+    if(globalScope.scale==simulationArea.prevScale)return;
+
     if(!backgroundArea.context)return;
-    backgroundArea.clear();
+        simulationArea.prevScale=globalScope.scale;
+
     var canvasWidth = backgroundArea.canvas.width; //max X distance
     var canvasHeight = backgroundArea.canvas.height; //max Y distance
 
     var ctx = backgroundArea.context;
+    ctx.beginPath();
+    backgroundArea.clear();
+    ctx.strokeStyle="#eee";
+    ctx.lineWidth=1;
     if (!transparentBackground) {
         ctx.fillStyle = "white";
         ctx.rect(0, 0, canvasWidth, canvasHeight);
         ctx.fill();
     }
-    var scale = unit * globalScope.scale;
-    var ox = globalScope.ox % scale; //offset
-    var oy = globalScope.oy % scale; //offset
 
-    ctx.beginPath();
-    ctx.strokeStyle="#eee";
-    ctx.lineWidth=1;
-    var correction=0.5*(ctx.lineWidth%2)
-    for (var i = 0 + ox; i < canvasWidth; i += scale){
+
+    var correction=0.5*(ctx.lineWidth%2);
+    for (var i = 0 ; i < canvasWidth; i += scale){
         ctx.moveTo(Math.round(i+correction)-correction,0);
         ctx.lineTo(Math.round(i+correction)-correction,canvasHeight);
     }
-    for (var j = 0 + oy; j < canvasHeight; j += scale){
+    for (var j = 0 ; j < canvasHeight; j += scale){
         ctx.moveTo(0,Math.round(j+correction)-correction);
         ctx.lineTo(canvasWidth,Math.round(j+correction)-correction);
     }
@@ -228,6 +239,38 @@ function drawCircle(ctx, x1, y1, r, color) {
     ctx.fillStyle = color;
     ctx.arc(Math.round(x1 + globalScope.ox), Math.round(y1 + globalScope.oy), Math.round(r*globalScope.scale), 0, Math.PI * 2, false);
     ctx.closePath();
+    ctx.fill();
+}
+
+function canvasMessage(ctx,str,x1,y1,fontSize=10){
+    if(!str||!str.length)return;
+
+    ctx.font = Math.round(fontSize * globalScope.scale) + "px Georgia";
+    ctx.textAlign = "center"
+    var width=ctx.measureText(str).width/globalScope.scale+8;
+    var height=13;
+    ctx.strokeStyle="black";
+    ctx.lineWidth=correctWidth(1);
+    ctx.fillStyle="yellow";
+    console.log(width,height);
+    ctx.save();
+    ctx.beginPath();
+    rect(ctx,x1 -width/2 , y1 -height/2-3, width, height);
+    ctx.shadowColor = '#999';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = 3;
+    ctx.shadowOffsetY = 3;
+    ctx.stroke();
+    ctx.fill();
+    // crx.shadowBlur=0;
+    // crx.shadowOffsetX=0;
+    // crx.shadowOffsetY=0;
+    ctx.restore();
+    x1 = x1 * globalScope.scale;
+    y1 = y1 * globalScope.scale;
+    ctx.beginPath();
+    ctx.fillStyle="black";
+    ctx.fillText(str, Math.round(x1 + globalScope.ox), Math.round( y1 + globalScope.oy));
     ctx.fill();
 }
 
