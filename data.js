@@ -4,7 +4,7 @@ function newCircuit(name, id) {
     if (id) scope.id = id;
     scopeList[scope.id] = scope;
     globalScope = scope;
-    $('#toolbar').append("<div class='circuits toolbarButton' id='" + scope.id + "'>" + name + "</div>");
+    $('#tabsBar').append("<div class='circuits toolbarButton' id='" + scope.id + "'>" + name + "</div>");
     $('.circuits').click(function() {
         switchCircuit(this.id)
     });

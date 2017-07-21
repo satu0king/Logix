@@ -6,8 +6,29 @@ height:100%;
 border: 2px solid;
 border-color: rgba(0, 0, 0, 0.5);
 background-color: #fff;
-overflow: scroll;
 }
+
+.navbar.navbar-default {
+    margin: 0px;
+    border-radius: 0px;
+}
+
+#tabsBar {
+    width: 100%;
+    height: 2.5em;
+    background-color: #333;
+}
+
+#tabsBar div {
+    display: inline-block;
+    padding: 0.5em;
+    height: 100%;
+    text-align: center;
+    background-color: #ccc;
+    color: #000;
+    border: 1px solid #000;
+}
+
 th, td {
 
     padding-left: 15px;
@@ -114,18 +135,11 @@ body {
     width: 100%;
     background-color: red;
 }
-.effect1{
-     box-shadow: 0 8px 4px -4px #777;
-}
-
 
 .simulation{
     position: relative;
     width:auto;
       height:100%;
-       border: 2px solid;
-       border-left:none;
-       border-color: rgba(0, 0, 0, 0.5);
        overflow:hidden;
 background-color: "white";
 }
@@ -207,58 +221,4 @@ div.icon img{
     height: 54px;
     background-color: #f5f5f5;
     transition: height 0.2s margin 0.2s;
-}
-
-.menu{
-    margin:5px;
-    /*height:40%;*/
-    /*overflow: scroll;*/
-    /*background-color: green;*/
-}
-
-
-.bottom {
-    position: absolute;
-    bottom: 0;
-  }
-
-/* Style the buttons that are used to open and close the accordion panel */
-button.accordion {
-    background-color: #0099ff;
-    color: white;
-    text-shadow: 2px;
-    cursor: pointer;
-    padding: 18px;
-    width: 100%;
-    text-align: left;
-    border: none;
-    outline: none;
-    transition: 0.4s;
-    border-radius: 0;
-
-}
-
-/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-button.accordion.active, button.accordion:hover {
-    background-color: #0066cc;
-}
-
-/* Style the accordion panel. Note: hidden by default */
-.panel {
-    padding: 10 18px;
-    background-color: white;
-    display: none;
-    /*height:auto;*/
-    max-height: 200px;
-    overflow: scroll;
-}
-
-.logix {
-    width: 100%;
-    height: 100%;
-}
-
-
-#simulationArea {
-    /*background-color: #111;*/
 }
