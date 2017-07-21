@@ -2589,5 +2589,131 @@ function PriorityEncoder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1)
         ctx.fill();
 
     }
+}
 
+function Tunnel(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier) {
+
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.setDimensions(40, 10);
+    this.rectangleObject = false;
+    this.identifier = identifier || ("F" + this.scope.Flag.length);
+    this.plotValues = [];
+    this.inp1 = new Node(40, 0, 0, this);
+    this.setPlotValue = function() {
+        var time = plotArea.stopWatch.ElapsedMilliseconds;
+        if (this.plotValues.length && this.plotValues[this.plotValues.length - 1][0] == time)
+            this.plotValues.pop();
+
+        if (this.plotValues.length == 0) {
+            this.plotValues.push([time, this.inp1.value]);
+            return;
+        }
+
+        if (this.plotValues[this.plotValues.length - 1][1] == this.inp1.value)
+            return;
+        else
+            this.plotValues.push([time, this.inp1.value]);
+    }
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.direction, this.bitWidth],
+            nodes: {
+                inp1: findNode(this.inp1),
+            },
+            values: {
+                identifier: this.identifier
+            }
+        }
+        return data;
+    }
+    this.setIdentifier = function(id = "") {
+        if (id.length == 0) return;
+        this.identifier = id;
+    }
+    this.mutableProperties = {
+        "identifier": {
+            name: "Debug Flag identifier",
+            type: "text",
+            maxlength: "5",
+            func: "setIdentifier",
+        },
+    }
+
+    this.customDraw = function() {
+        ctx = simulationArea.context;
+        ctx.beginPath();
+        ctx.strokeStyle = "grey";
+        ctx.fillStyle = "#fcfcfc";
+        ctx.lineWidth = correctWidth(1);
+        var xx = this.x;
+        var yy = this.y;
+
+        //rect2(ctx, -80, -20, 120, 40, xx, yy, "RIGHT");
+        console.log(this.leftDimensionX,this.rightDimensionX,this.upDimensionY,this.downDimensionY)
+        rect2(ctx, -2*this.leftDimensionX, -2*this.upDimensionY, 2*this.leftDimensionX + this.rightDimensionX, 2*(this.upDimensionY + this.downDimensionY), xx, yy, "RIGHT");
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
+            ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = "14px Georgia";
+        var xOff = ctx.measureText(this.identifier).width;
+        ctx.beginPath();
+        rect2(ctx, -65, -12, xOff + 10, 25, xx, yy, "RIGHT");
+        ctx.fillStyle = "#eee"
+        ctx.strokeStyle = "#ccc";
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.textAlign = "center";
+        ctx.fillStyle = "black";
+        fillText(ctx, this.identifier, xx - 60 + xOff / 2, yy + 5, 14);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.font = "30px Georgia";
+        ctx.textAlign = "center";
+        ctx.fillStyle = ["blue", "red"][+(this.inp1.value == undefined)];
+        if (this.inp1.value !== undefined)
+            fillText(ctx, this.inp1.value.toString(16), xx + 17, yy + 8, 25);
+        else
+            fillText(ctx, "x", xx + 17, yy + 8, 25);
+        ctx.fill();
+    }
+
+    this.newDirection = function(dir) {
+        if (dir == this.direction) return;
+        this.direction = dir;
+        this.inp1.refresh();
+        
+        if (dir == "RIGHT") {
+            //this.inp1.leftx = 40;
+            //this.inp1.lefty = 0;
+            this.leftDimensionX=-80;
+            this.rightDimensionX=40;
+            this.upDimensionY=10;
+            this.downDimensionY=10;
+        }else if (dir == "LEFT") {
+            //this.inp1.leftx = 20;
+            //this.inp1.lefty = -20;
+            this.leftDimensionX=40;
+            this.rightDimensionX=40;
+            this.upDimensionY=10;
+            this.downDimensionY=10;
+        } else if (dir == "UP") {
+            //this.inp1.leftx = 20;
+            //this.inp1.lefty = -20;
+            this.leftDimensionX=10;
+            this.rightDimensionX=10;
+            this.upDimensionY=40;
+            this.downDimensionY=40;
+            
+        } else {
+            //this.inp1.leftx = 20;
+            //this.inp1.lefty = -20;
+        }
+        
+        this.inp1.refresh();
+    }
 }
