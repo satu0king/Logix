@@ -23,7 +23,7 @@ DPR=1;
 projectSaved = true;
 //Exact same name as object constructor
 moduleList = [
-            "Text","Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", 
+            "Text","Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay",
             "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram","TflipFlop",
             "JKflipFlop","SRflipFlop", "DflipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer",
             "Buffer", "SubCircuit","Flag","MSB","LSB","PriorityEncoder","Tunnel"];
@@ -106,6 +106,7 @@ function Scope(name = "localScope",id=undefined) {
     this.ox = 0;
     this.oy = 0;
     this.scale = DPR;
+    this.tunnelList={};
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)

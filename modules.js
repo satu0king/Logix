@@ -2596,9 +2596,28 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
     this.setDimensions(60,20);
     this.rectangleObject = false;
-    this.identifier = identifier || ("F" + this.scope.Tunnel.length);
+
+
+
     this.plotValues = [];
     this.inp1 = new Node(0, 0, 0, this);
+
+    this.setTunnelValue=function(val){
+        this.inp1.value=val;
+        for(var i=0;i<this.inp1.connections.length;i++){
+            if(this.inp1.connections[i].value!=val){
+                this.inp1.connections[i].value=val;
+                this.scope.stack.push(this.inp1.connections[i]);
+            }
+        }
+    }
+    this.resolve=function(){
+        for(var i=0;i<this.scope.tunnelList[this.identifier].length;i++){
+            if(this.scope.tunnelList[this.identifier][i].inp1.value!=this.inp1.value){
+                this.scope.tunnelList[this.identifier][i].setTunnelValue(this.inp1.value);
+            }
+        }
+    }
     this.setPlotValue = function() {
         var time = plotArea.stopWatch.ElapsedMilliseconds;
         if (this.plotValues.length && this.plotValues[this.plotValues.length - 1][0] == time)
@@ -2628,8 +2647,12 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
     }
     this.setIdentifier = function(id = "") {
         if (id.length == 0) return;
+        if(this.identifier)this.scope.tunnelList[this.identifier].clean(this);
         this.identifier = id;
+        if(this.scope.tunnelList[this.identifier])this.scope.tunnelList[this.identifier].push(this);
+        else this.scope.tunnelList[this.identifier]=[this];
     }
+    this.setIdentifier (identifier|| "T");
     this.mutableProperties = {
         "identifier": {
             name: "Debug Flag identifier",
@@ -2665,7 +2688,7 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         }
 
         rect2(ctx, -120+xShift, -20+yShift, 120, 40, xx, yy, "RIGHT");
-        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) 
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
         ctx.stroke();
