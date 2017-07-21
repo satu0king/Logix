@@ -2181,13 +2181,13 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
 function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
-    this.setDimensions(40, 10);
+    this.setDimensions(60, 20);
     this.rectangleObject = false;
     this.directionFixed = true;
     this.orientationFixed = false;
     this.identifier = identifier || ("F" + this.scope.Flag.length);
     this.plotValues = [];
-    this.inp1 = new Node(40, 0, 0, this);
+    this.inp1 = new Node(60, 0, 0, this);
     this.setPlotValue = function() {
         var time = plotArea.stopWatch.ElapsedMilliseconds;
         // console.log("DEB:",time);
@@ -2238,17 +2238,16 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
         var xx = this.x;
         var yy = this.y;
 
-        rect2(ctx, -80, -20, 120, 40, xx, yy, "RIGHT");
+        rect2(ctx, -60, -20, 120, 40, xx, yy, "RIGHT");
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
         ctx.stroke();
 
-
-
         ctx.font = "14px Georgia";
         var xOff = ctx.measureText(this.identifier).width;
+
         ctx.beginPath();
-        rect2(ctx, -65, -12, xOff + 10, 25, xx, yy, "RIGHT");
+        rect2(ctx, -45, -12, xOff + 10, 25, xx, yy, "RIGHT");
         ctx.fillStyle = "#eee"
         ctx.strokeStyle = "#ccc";
         ctx.fill();
@@ -2258,7 +2257,7 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
 
         ctx.textAlign = "center";
         ctx.fillStyle = "black";
-        fillText(ctx, this.identifier, xx - 60 + xOff / 2, yy + 5, 14);
+        fillText(ctx, this.identifier, xx - 40 + xOff / 2, yy + 5, 14);
         ctx.fill();
 
         ctx.beginPath();
@@ -2266,11 +2265,9 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
         ctx.textAlign = "center";
         ctx.fillStyle = ["blue", "red"][+(this.inp1.value == undefined)];
         if (this.inp1.value !== undefined)
-            fillText(ctx, this.inp1.value.toString(16), xx + 17, yy + 8, 25);
+            fillText(ctx, this.inp1.value.toString(16), xx + 37, yy + 8, 25);
         else
-            fillText(ctx, "x", xx + 17, yy + 8, 25);
-        // fillText(ctx,":", xx-12+(xOff/4), yy+5 ,14);
-        // ctx.stroke();
+            fillText(ctx, "x", xx + 37, yy + 8, 25);
         ctx.fill();
     }
 
@@ -2279,17 +2276,17 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
         this.direction = dir;
         this.inp1.refresh();
         if (dir == "RIGHT") {
-            this.inp1.leftx = 40;
+            this.inp1.leftx = 60;
             this.inp1.lefty = 0;
         } else if (dir == "LEFT") {
-            this.inp1.leftx = 80;
+            this.inp1.leftx = 60;
             this.inp1.lefty = 0;
         } else if (dir == "UP") {
             this.inp1.leftx = 20;
-            this.inp1.lefty = -20;
+            this.inp1.lefty = 0;
         } else {
             this.inp1.leftx = 20;
-            this.inp1.lefty = -20;
+            this.inp1.lefty = 0;
         }
         this.inp1.refresh();
     }
@@ -2597,8 +2594,6 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
     this.setDimensions(60,20);
     this.rectangleObject = false;
 
-
-
     this.plotValues = [];
     this.inp1 = new Node(0, 0, 0, this);
 
@@ -2659,7 +2654,9 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         if(this.scope.tunnelList[this.identifier])this.scope.tunnelList[this.identifier].push(this);
         else this.scope.tunnelList[this.identifier]=[this];
     }
+
     this.setIdentifier (identifier|| "T");
+
     this.mutableProperties = {
         "identifier": {
             name: "Debug Flag identifier",
@@ -2707,7 +2704,7 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         ctx.font = "14px Georgia";
         var xOff = ctx.measureText(this.identifier).width;
         ctx.beginPath();
-        rect2(ctx, -105+xShift, -12+yShift, xOff + 10, 25, xx, yy, "RIGHT");
+        rect2(ctx, -105+xShift, -11+yShift, xOff + 10, 23, xx, yy, "RIGHT");
         ctx.fillStyle = "#eee"
         ctx.strokeStyle = "#ccc";
         ctx.fill();
@@ -2716,7 +2713,7 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         ctx.beginPath();
         ctx.textAlign = "center";
         ctx.fillStyle = "black";
-        fillText(ctx, this.identifier, xx - 100 + xOff / 2 + xShift, yy + 5 + yShift, 14);
+        fillText(ctx, this.identifier, xx - 100 + xOff / 2 + xShift, yy + 6 + yShift, 14);
         ctx.fill();
 
         ctx.beginPath();
