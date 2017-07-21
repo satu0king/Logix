@@ -1,0 +1,53 @@
+<html>
+
+<head>
+<title> Logix - Digital Simulator </title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
+
+<body onload="setup()">
+
+
+    <div class="simulation" id="simulation" style="height:100%;width:100%">
+        <div id="MessageDiv" >
+
+        </div>
+
+
+        <div class="canvasArea" id="canvasArea"  style="height:100%;width:100%">
+            <canvas id="backgroundArea" style="position: absolute; left: 0; top: 0; z-index: 0"></canvas>
+            <canvas id="simulationArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%;height:100%"></canvas>
+        </div>
+        <!-- <div id="plot" >
+            <canvas id="plotArea" style="position: absolute; left: 0; top: 0; z-index: 1; width:100%"></canvas>
+        </div> -->
+
+     </div>
+
+
+</div>
+
+
+ <!-- <script src="./SAP_DATA.js"></script> -->
+ <script type="text/javascript">
+     embed=true;
+ </script>
+ <script src="./engine.js"></script>
+ <script src="./logix.js"></script>
+ <script src="./Node.js"></script>
+ <script src="./wire.js"></script>
+ <script src="./subcircuit.js"></script>
+ <script src="./modules.js"></script>
+ <script src="./sequential.js"></script>
+ <script src="./canvasApi.js"></script>
+ <script src="./data.js"></script>
+ <script src="./embedListeners.js"></script>
+ <!-- <script src="./canvas2svg.js"></script> -->
+
+
+</body>
+
+</html>
