@@ -198,9 +198,9 @@ function play(scope = globalScope, resetNodes = true) {
         if (scope.SubCircuit[i].isResolvable()) scope.stack.push(scope.SubCircuit[i]);
     }
 
-    for (var i = 0; i < scope.FlipFlop.length; i++) {
-        scope.stack.push(scope.FlipFlop[i]);
-    }
+    // for (var i = 0; i < scope.FlipFlop.length; i++) {
+    //     scope.stack.push(scope.FlipFlop[i]);
+    // }
 
     for (var i = 0; i < inputList.length; i++) {
         for (var j = 0; j < scope[inputList[i]].length; j++) {

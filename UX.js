@@ -101,11 +101,14 @@ function showProperties(obj){
 
     $('#moduleProperty').append("<p>Label: <input class='objectPropertyAttribute' type='text'  name='setLabel' min='1' max='32' value="+obj.label+"></p>");
 
-    $('#moduleProperty').append("<p></p>");
-    $('#moduleProperty').append("Label Direction: ");
-    var s=$("<select class='objectPropertyAttribute' name='newLabelDirection' ><option value='RIGHT'>RIGHT</option><option value='DOWN'>DOWN</option><option value='LEFT'>LEFT</option><option value='UP'>UP</ option></select>");
-    s.val(obj.labelDirection);
-    $('#moduleProperty').append(s);
+
+    if(!obj.labelDirectionFixed){
+        $('#moduleProperty').append("<p></p>");
+        $('#moduleProperty').append("Label Direction: ");
+        var s=$("<select class='objectPropertyAttribute' name='newLabelDirection' ><option value='RIGHT'>RIGHT</option><option value='DOWN'>DOWN</option><option value='LEFT'>LEFT</option><option value='UP'>UP</ option></select>");
+        s.val(obj.labelDirection);
+        $('#moduleProperty').append(s);
+    }
 
 
     if(!obj.directionFixed){
