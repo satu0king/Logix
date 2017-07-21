@@ -2618,6 +2618,13 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
             }
         }
     }
+    this.updateScope=function(scope){
+        this.scope=scope;
+        this.inp1.updateScope(scope);
+        this.setIdentifier(this.identifier);
+        console.log("ShouldWork!");
+    }
+
     this.setPlotValue = function() {
         var time = plotArea.stopWatch.ElapsedMilliseconds;
         if (this.plotValues.length && this.plotValues[this.plotValues.length - 1][0] == time)
@@ -2635,7 +2642,7 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
     }
     this.customSave = function() {
         var data = {
-            constructorParamaters: [this.direction, this.bitWidth],
+            constructorParamaters: [this.direction, this.bitWidth,this.identifier],
             nodes: {
                 inp1: findNode(this.inp1),
             },
@@ -2647,7 +2654,7 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
     }
     this.setIdentifier = function(id = "") {
         if (id.length == 0) return;
-        if(this.identifier)this.scope.tunnelList[this.identifier].clean(this);
+        if(this.scope.tunnelList[this.identifier])this.scope.tunnelList[this.identifier].clean(this);
         this.identifier = id;
         if(this.scope.tunnelList[this.identifier])this.scope.tunnelList[this.identifier].push(this);
         else this.scope.tunnelList[this.identifier]=[this];
@@ -2660,6 +2667,10 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
             maxlength: "5",
             func: "setIdentifier",
         },
+    }
+    this.delete=function(){
+        this.scope.Tunnel.clean(this);
+        this.scope.tunnelList[this.identifier].clean(this)
     }
 
     this.customDraw = function() {
