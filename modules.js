@@ -2181,13 +2181,17 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
 function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier) {
 
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
-    this.setDimensions(60, 20);
+    this.setWidth(60);
+    this.setHeight(20);
     this.rectangleObject = false;
     this.directionFixed = true;
     this.orientationFixed = false;
     this.identifier = identifier || ("F" + this.scope.Flag.length);
     this.plotValues = [];
-    this.inp1 = new Node(60, 0, 0, this);
+
+    var xSize=10;
+
+    this.inp1 = new Node(40, 0, 0, this);
     this.setPlotValue = function() {
         var time = plotArea.stopWatch.ElapsedMilliseconds;
         // console.log("DEB:",time);
@@ -2219,6 +2223,10 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
     this.setIdentifier = function(id = "") {
         if (id.length == 0) return;
         this.identifier = id;
+        var len=this.identifier.length;
+        if(len==1) xSize=20;
+        else if(len>1 && len<4) xSize=10;
+        else xSize=0;
     }
     this.mutableProperties = {
         "identifier": {
@@ -2238,7 +2246,10 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
         var xx = this.x;
         var yy = this.y;
 
-        rect2(ctx, -60, -20, 120, 40, xx, yy, "RIGHT");
+        if(this.direction=="LEFT" || this.direction=="RIGHT") this.inp1.leftx=50-xSize;
+        this.inp1.refresh();
+
+        rect2(ctx, -50+xSize, -20, 100-2*xSize, 40, xx, yy, "RIGHT");
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
         ctx.stroke();
@@ -2247,17 +2258,16 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
         var xOff = ctx.measureText(this.identifier).width;
 
         ctx.beginPath();
-        rect2(ctx, -45, -12, xOff + 10, 25, xx, yy, "RIGHT");
+        rect2(ctx, -40+xSize, -12, xOff + 10, 25, xx, yy, "RIGHT");
         ctx.fillStyle = "#eee"
         ctx.strokeStyle = "#ccc";
         ctx.fill();
         ctx.stroke();
 
         ctx.beginPath();
-
         ctx.textAlign = "center";
         ctx.fillStyle = "black";
-        fillText(ctx, this.identifier, xx - 40 + xOff / 2, yy + 5, 14);
+        fillText(ctx, this.identifier, xx - 35 + xOff / 2+xSize, yy + 5, 14);
         ctx.fill();
 
         ctx.beginPath();
@@ -2265,28 +2275,23 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
         ctx.textAlign = "center";
         ctx.fillStyle = ["blue", "red"][+(this.inp1.value == undefined)];
         if (this.inp1.value !== undefined)
-            fillText(ctx, this.inp1.value.toString(16), xx + 37, yy + 8, 25);
+            fillText(ctx, this.inp1.value.toString(16), xx + 35-xSize, yy + 8, 25);
         else
-            fillText(ctx, "x", xx + 37, yy + 8, 25);
+            fillText(ctx, "x", xx + 35-xSize, yy + 8, 25);
         ctx.fill();
+
     }
 
     this.newDirection = function(dir) {
         if (dir == this.direction) return;
         this.direction = dir;
         this.inp1.refresh();
-        if (dir == "RIGHT") {
-            this.inp1.leftx = 60;
-            this.inp1.lefty = 0;
-        } else if (dir == "LEFT") {
-            this.inp1.leftx = 60;
-            this.inp1.lefty = 0;
+        if (dir == "RIGHT" || dir == "LEFT") {
+            this.inp1.leftx = 50-xSize;
         } else if (dir == "UP") {
             this.inp1.leftx = 20;
-            this.inp1.lefty = 0;
         } else {
             this.inp1.leftx = 20;
-            this.inp1.lefty = 0;
         }
         this.inp1.refresh();
     }
@@ -2679,23 +2684,23 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         var xx = this.x;
         var yy = this.y;
 
-        var xShift=0;
-        var yShift=0;
+        var xRotate=0;
+        var yRotate=0;
         if(this.direction=="LEFT") {
-            xShift=0;
-            yShift=0;
+            xRotate=0;
+            yRotate=0;
         }else if(this.direction=="RIGHT") {
-            xShift=120;
-            yShift=0;
+            xRotate=120;
+            yRotate=0;
         }else if(this.direction=="UP") {
-            xShift=60;
-            yShift=-20;
+            xRotate=60;
+            yRotate=-20;
         }else{
-            xShift=60;
-            yShift=20;
+            xRotate=60;
+            yRotate=20;
         }
 
-        rect2(ctx, -120+xShift, -20+yShift, 120, 40, xx, yy, "RIGHT");
+        rect2(ctx, -120+xRotate, -20+yRotate, 120, 40, xx, yy, "RIGHT");
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
@@ -2704,7 +2709,7 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         ctx.font = "14px Georgia";
         var xOff = ctx.measureText(this.identifier).width;
         ctx.beginPath();
-        rect2(ctx, -105+xShift, -11+yShift, xOff + 10, 23, xx, yy, "RIGHT");
+        rect2(ctx, -105+xRotate, -11+yRotate, xOff + 10, 23, xx, yy, "RIGHT");
         ctx.fillStyle = "#eee"
         ctx.strokeStyle = "#ccc";
         ctx.fill();
@@ -2713,7 +2718,7 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         ctx.beginPath();
         ctx.textAlign = "center";
         ctx.fillStyle = "black";
-        fillText(ctx, this.identifier, xx - 100 + xOff / 2 + xShift, yy + 6 + yShift, 14);
+        fillText(ctx, this.identifier, xx - 100 + xOff / 2 + xRotate, yy + 6 + yRotate, 14);
         ctx.fill();
 
         ctx.beginPath();
@@ -2721,9 +2726,9 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         ctx.textAlign = "center";
         ctx.fillStyle = ["blue", "red"][+(this.inp1.value == undefined)];
         if (this.inp1.value !== undefined)
-            fillText(ctx, this.inp1.value.toString(16), xx - 23 + xShift, yy + 8 + yShift, 25);
+            fillText(ctx, this.inp1.value.toString(16), xx - 23 + xRotate, yy + 8 + yRotate, 25);
         else
-            fillText(ctx, "x", xx - 23 + xShift, yy + 8 + yShift, 25);
+            fillText(ctx, "x", xx - 23 + xRotate, yy + 8 + yRotate, 25);
         ctx.fill();
     }
 
