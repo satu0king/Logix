@@ -2599,6 +2599,8 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
     this.setDimensions(60,20);
     this.rectangleObject = false;
 
+    var xSize=10;
+
     this.plotValues = [];
     this.inp1 = new Node(0, 0, 0, this);
 
@@ -2658,6 +2660,11 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         this.identifier = id;
         if(this.scope.tunnelList[this.identifier])this.scope.tunnelList[this.identifier].push(this);
         else this.scope.tunnelList[this.identifier]=[this];
+
+        var len=this.identifier.length;
+        if(len==1) xSize=40;
+        else if(len>1 && len<4) xSize=20;
+        else xSize=0;
     }
 
     this.setIdentifier (identifier|| "T");
@@ -2690,17 +2697,17 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
             xRotate=0;
             yRotate=0;
         }else if(this.direction=="RIGHT") {
-            xRotate=120;
+            xRotate=120-xSize;
             yRotate=0;
         }else if(this.direction=="UP") {
-            xRotate=60;
+            xRotate=60-xSize/2;
             yRotate=-20;
         }else{
-            xRotate=60;
+            xRotate=60-xSize/2;
             yRotate=20;
         }
 
-        rect2(ctx, -120+xRotate, -20+yRotate, 120, 40, xx, yy, "RIGHT");
+        rect2(ctx, -120+xRotate+xSize, -20+yRotate, 120-xSize, 40, xx, yy, "RIGHT");
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
             ctx.fillStyle = "rgba(255, 255, 32,0.8)";
         ctx.fill();
@@ -2709,7 +2716,7 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         ctx.font = "14px Georgia";
         var xOff = ctx.measureText(this.identifier).width;
         ctx.beginPath();
-        rect2(ctx, -105+xRotate, -11+yRotate, xOff + 10, 23, xx, yy, "RIGHT");
+        rect2(ctx, -105+xRotate+xSize, -11+yRotate, xOff + 10, 23, xx, yy, "RIGHT");
         ctx.fillStyle = "#eee"
         ctx.strokeStyle = "#ccc";
         ctx.fill();
@@ -2718,7 +2725,7 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         ctx.beginPath();
         ctx.textAlign = "center";
         ctx.fillStyle = "black";
-        fillText(ctx, this.identifier, xx - 100 + xOff / 2 + xRotate, yy + 6 + yRotate, 14);
+        fillText(ctx, this.identifier, xx - 100 + xOff / 2 + xRotate+xSize, yy + 6 + yRotate, 14);
         ctx.fill();
 
         ctx.beginPath();
