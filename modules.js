@@ -1148,22 +1148,24 @@ function Adder(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
 }
 
-function Ram(x, y, scope = globalScope, dir = "RIGHT", data = undefined) {
+function Ram(x, y, scope = globalScope, data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]) {
 
-    CircuitElement.call(this, x, y, scope, dir, 1);
+    CircuitElement.call(this, x, y, scope, "RIGHT", 1);
     this.fixedBitWidth = true;
-    this.setDimensions(30, 30);
+    this.directionFixed=true;
+    this.rectangleObject=false;
+    this.setDimensions(80, 50);
 
-    this.memAddr = new Node(-30, 0, 0, this, 4);
+    this.memAddr = new Node(-80, 0, 0, this, 4);
     this.data = data || prompt("Enter data").split(' ').map(function(x) {
         return parseInt(x, 16);
     });
     console.log(this.data);
-    this.dataOut = new Node(30, 0, 1, this, 8);
+    this.dataOut = new Node(80, 0, 1, this, 8);
 
     this.customSave = function() {
         var data = {
-            constructorParamaters: [this.direction, this.data],
+            constructorParamaters: [this.data],
             nodes: {
                 memAddr: findNode(this.memAddr),
                 dataOut: findNode(this.dataOut)
@@ -1172,10 +1174,109 @@ function Ram(x, y, scope = globalScope, dir = "RIGHT", data = undefined) {
         }
         return data;
     }
-    this.dblclick = function() {
-        this.data = prompt("Enter data").split(' ').map(function(x) {
-            return parseInt(x, 16);
-        });
+
+    this.findPos = function() {
+        var i=Math.floor((simulationArea.mouseX - this.x +35) / 20)
+        var j=Math.floor((simulationArea.mouseY - this.y +35) / 16);
+        if(i<0 || j<0 || i>3 || j>3)return undefined;
+        return j*4+i;
+    }
+
+    this.click = function() { // toggle
+        this.selectedIndex = this.findPos();
+    }
+
+    this.keyDown=function(key){
+        if(key=="Backspace")this.delete();
+        if(this.selectedIndex==undefined)return;
+        key=key.toLowerCase();
+        if(!~"1234567890abcdef".indexOf(key))return;
+        else {
+            this.data[this.selectedIndex]=(this.data[this.selectedIndex]*16+parseInt(key,16))%256;
+        }
+    }
+
+    this.customDraw=function(){
+
+
+
+
+        var ctx=simulationArea.context;
+        var xx=this.x;
+        var yy=this.y;
+
+        var hoverIndex=this.findPos();
+
+
+
+
+            ctx.strokeStyle = "black";
+            ctx.fillStyle = "white";
+            ctx.lineWidth = correctWidth(3);
+            ctx.beginPath();
+            rect2(ctx, -this.leftDimensionX, -this.upDimensionY, this.leftDimensionX + this.rightDimensionX, this.upDimensionY + this.downDimensionY, this.x, this.y, [this.direction, "RIGHT"][+this.directionFixed]);
+            if (hoverIndex==undefined &&((!simulationArea.shiftDown&&this.hover) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+            ctx.fill();
+            ctx.stroke();
+            // if (this.hover)
+            //     //console.log(this);
+
+        ctx.strokeStyle="black";
+        ctx.fillStyle="#fafafa";
+        ctx.lineWidth=correctWidth(1);
+        ctx.beginPath();
+
+        for(var i=0;i<16;i+=4){
+            for(var j=i;j<i+4;j++){
+                 rect2(ctx,(j%4)*20, i*4,20,16, xx-35, yy-35);
+            }
+        }
+        ctx.fill();
+        ctx.stroke();
+
+        if(hoverIndex!=undefined){
+        ctx.beginPath();
+        ctx.fillStyle="yellow";
+        rect2(ctx,(hoverIndex%4)*20, Math.floor(hoverIndex/4)*16,20,16, xx-35, yy-35);
+        ctx.fill();
+        ctx.stroke();
+        }
+        if(this.selectedIndex!=undefined){
+        ctx.beginPath();
+        ctx.fillStyle="lightgreen";
+        rect2(ctx,(this.selectedIndex%4)*20, Math.floor(this.selectedIndex/4)*16,20,16, xx-35, yy-35);
+        ctx.fill();
+        ctx.stroke();
+        }
+        if(this.memAddr.value!=undefined){
+        ctx.beginPath();
+        ctx.fillStyle="green";
+        rect2(ctx,(this.memAddr.value%4)*20, Math.floor(this.memAddr.value/4)*16,20,16, xx-35, yy-35);
+        ctx.fill();
+        ctx.stroke();
+        }
+        ctx.beginPath();
+        ctx.fillStyle="Black";
+        for(var i=0;i<16;i+=4){
+            for(var j=i;j<i+4;j++){
+                var s=this.data[j].toString(16);
+                if(s.length<2)s='0'+s;
+                 fillText3(ctx,s, (j%4)*20, i*4, xx -35+10, yy -35+12, fontSize = 14, font = "Georgia", textAlign = "center")
+            }
+        }
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.fillStyle="Black";
+        for(var i=0;i<16;i+=4){
+
+                var s=i.toString(16);
+                if(s.length<2)s='0'+s;
+                fillText3(ctx,s, 0, i*4, xx -40, yy -35+12, fontSize = 14, font = "Georgia", textAlign = "right")
+
+        }
+        ctx.fill();
+
     }
 
     this.resolve = function() {
@@ -1347,7 +1448,7 @@ function Input(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     // Not sure if its okay to remove commented code...VERIFY!
     this.customDraw = function() {
 
-        // ctx = simulationArea.context;
+        ctx = simulationArea.context;
         ctx.beginPath();
         ctx.strokeStyle = ("rgba(0,0,0,1)");
         ctx.lineWidth = correctWidth(3);
