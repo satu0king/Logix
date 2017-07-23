@@ -33,6 +33,8 @@ function Wire(node1, node2, scope) {
 
     this.update = function() {
 
+        if(embed)return;
+
         if(this.node1.absX()==this.node2.absX()){
             this.x1=this.x2=this.node1.absX();
             this.type="vertical";

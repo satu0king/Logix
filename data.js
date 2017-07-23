@@ -4,10 +4,12 @@ function newCircuit(name, id) {
     if (id) scope.id = id;
     scopeList[scope.id] = scope;
     globalScope = scope;
-    $('#toolbar').append("<div class='circuits toolbarButton' id='" + scope.id + "'>" + name + "</div>");
-    $('.circuits').click(function() {
-        switchCircuit(this.id)
-    });
+    if(!embed){
+        $('#toolbar').append("<div class='circuits toolbarButton' id='" + scope.id + "'>" + name + "</div>");
+        $('.circuits').click(function() {
+            switchCircuit(this.id)
+        });
+    }
     dots(true, false);
     return scope;
 }
@@ -304,7 +306,7 @@ function load(data) {
         projectName=undefined;
     globalScope=undefined;
     scopeList={};
-    $('.circuits').remove();
+    if(!embed)$('.circuits').remove();
 
     for (var i = 0; i < data.scopes.length; i++) {
         var scope = newCircuit(data.scopes[i].name, data.scopes[i].id);

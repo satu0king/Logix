@@ -22,7 +22,11 @@ loading = false;
 DPR=1;
 projectSaved = true;
 //Exact same name as object constructor
-moduleList = ["Text","Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay", "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram","TflipFlop","JKflipFlop","SRflipFlop", "DflipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer", "Buffer", "SubCircuit","Flag","MSB","LSB","PriorityEncoder"];
+moduleList = [
+            "Text","Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay",
+            "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram","TflipFlop",
+            "JKflipFlop","SRflipFlop", "DflipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer",
+            "Buffer", "SubCircuit","Flag","MSB","LSB","PriorityEncoder","Tunnel"];
 
 //Exact same name as object constructor
 //All the combinational modules which give rise to an value(independently)
@@ -102,6 +106,7 @@ function Scope(name = "localScope",id=undefined) {
     this.ox = 0;
     this.oy = 0;
     this.scale = DPR;
+    this.tunnelList={};
 
     this.clockTick = function() {
         for (var i = 0; i < this.Clock.length; i++)
@@ -153,19 +158,8 @@ function setup() {
     // return;
 
 
-    width = document.getElementById("simulation").clientWidth*DPR;
-    height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
-    document.getElementById("canvasArea").style.height=height/DPR;
-    plotArea.c.width = document.getElementById("plot").clientWidth;
-    plotArea.c.height = document.getElementById("plot").clientHeight;
+    resetup();
 
-    // //console.log(width);
-    //setup simulationArea
-    backgroundArea.setup();
-    plotArea.setup();
-    simulationArea.setup();
-    // update();
-    dots();
     // scheduleUpdate();
 
     data = {}
@@ -226,19 +220,34 @@ function setup() {
 function resetup() {
 
     DPR=window.devicePixelRatio||1;
-    width = document.getElementById("simulation").clientWidth*DPR;
-    height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
-    document.getElementById("backgroundArea").style.height=(document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)+100;
-    document.getElementById("backgroundArea").style.width=document.getElementById("simulation").clientWidth+100;
+    width = document.getElementById("simulationArea").clientWidth*DPR;
+    if(!embed){
+        height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
+    }
+    else{
+        height = (document.getElementById("simulationArea").clientHeight)*DPR;
+    }
 
+    // //console.log(width);
+    //setup simulationArea
+    backgroundArea.setup();
+    if(!embed)plotArea.setup();
+    simulationArea.setup();
+    // update();
+    dots();
+
+
+    document.getElementById("backgroundArea").style.height=height/DPR+100;
+    document.getElementById("backgroundArea").style.width=width/DPR+100;
     document.getElementById("canvasArea").style.height = height/DPR;
     simulationArea.canvas.width = width;
     simulationArea.canvas.height = height;
     backgroundArea.canvas.width = width+100*DPR;
     backgroundArea.canvas.height = height+100*DPR;
-
-    plotArea.c.width = document.getElementById("plot").clientWidth;
-    plotArea.c.height = document.getElementById("plot").clientHeight
+    if(!embed){
+        plotArea.c.width = document.getElementById("plot").clientWidth;
+        plotArea.c.height = document.getElementById("plot").clientHeight
+    }
     // simulationArea.setup();
     updateCanvas=true;
     update(); // INEFFICENT
@@ -905,7 +914,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         // height = Math.abs(height);
         var mouseX = simulationArea.mouseX;
         var mouseY = simulationArea.mouseY;
-        if(Math.abs(mouseX-this.x>200)||Math.abs(mouseY-this.y>200))return false;
+        if(Math.abs(mouseX-this.x>Math.max(this.leftDimensionX,this.rightDimensionX))||Math.abs(mouseY-this.y>Math.max(this.upDimensionY,this.downDimensionY)))return false;
         var rX = this.rightDimensionX;
         var lX = this.leftDimensionX;
         var uY = this.upDimensionY;
