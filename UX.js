@@ -3,7 +3,7 @@ var smartDropYY=80;
 
 
 $(document).ready(function() {
-    $("#menu").accordion({collapsible: true, active: false});
+    $("#menu").accordion({collapsible: true, active: false, heightStyle: "content"});
     $( "#sideBar" ).resizable({
     handles: 'e',
         minWidth:200,
