@@ -24,7 +24,7 @@ projectSaved = true;
 //Exact same name as object constructor
 moduleList = [
             "Text","Input", "Output", "NotGate", "OrGate", "AndGate", "NorGate", "NandGate", "XorGate", "XnorGate", "SevenSegDisplay", "HexDisplay",
-            "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram","TflipFlop",
+            "Multiplexer", "BitSelector", "Splitter", "Power", "Ground", "ConstantVal", "ControlledInverter", "TriState", "Adder", "Ram","Rom","TflipFlop",
             "JKflipFlop","SRflipFlop", "DflipFlop", "TTY", "Keyboard", "Clock", "DigitalLed", "Stepper", "VariableLed", "RGBLed", "Button", "Demultiplexer",
             "Buffer", "SubCircuit","Flag","MSB","LSB","PriorityEncoder","Tunnel"];
 
@@ -948,7 +948,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     //Method that draws the outline of the module and calls draw function on module Nodes.
     //NOT OVERIDABLE
     this.draw = function() {
-
+        var ctx=simulationArea.context;
         this.checkHover();
         if(this.x*this.scope.scale+this.scope.ox<-this.rightDimensionX*this.scope.scale-00||this.x*this.scope.scale+this.scope.ox>width+this.leftDimensionX*this.scope.scale+00||this.y*this.scope.scale+this.scope.oy<-this.downDimensionY*this.scope.scale-00||this.y*this.scope.scale+this.scope.oy>height+00+this.upDimensionY*this.scope.scale)return;
         // if(!simulationArea.mouseDown){
@@ -956,7 +956,6 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         // }
         // Draws rectangle and highlighs
         if (this.rectangleObject) {
-            ctx = simulationArea.context;
             ctx.strokeStyle = "black";
             ctx.fillStyle = "white";
             ctx.lineWidth = correctWidth(3);

@@ -318,13 +318,17 @@ function load(data) {
     scheduleUpdate();
 }
 function rectifyObjectType(obj){
-    var rectify={"FlipFlop":"DflipFlop"};
+
+    console.log(obj);
+    // return obj;
+    var rectify={"FlipFlop":"DflipFlop","Ram":"Rom"};
     return rectify[obj]||obj;
 
 }
 
 function loadModule(data, scope) {
     // console.log(data);
+    console.log(data["objectType"])
     obj = new window[rectifyObjectType(data["objectType"])](data["x"], data["y"], scope, ...data.customData["constructorParamaters"] || []);
     obj.label = data["label"];
     obj.labelDirection = data["labelDirection"] || oppositeDirection[fixDirection[obj.direction]];

@@ -165,7 +165,7 @@ function rect(ctx, x1, y1, x2, y2) {
     // ctx.lineWidth=lineWidthBackup
 }
 
-function rect2(ctx, x1, y1, x2, y2, xx, yy, dir) {
+function rect2(ctx, x1, y1, x2, y2, xx, yy, dir="RIGHT") {
     // var lineWidthBackup=ctx.lineWidth;
     // ctx.lineWidth *=globalScope.scale;
     var correction = 0.5*(ctx.lineWidth%2);
