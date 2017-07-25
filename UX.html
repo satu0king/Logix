@@ -3,23 +3,17 @@
         <title>Logix - Digital Simulator</title>
     </head>
 
+    <!--Displays the loading screen  -->
     <script src="pace.js"></script>
 
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <script src="./UX.js"></script>
+    <!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+     <link rel="stylesheet" href="./bootstrap-3.3.7/dist/css/bootstrap.css">
+
     <link rel="stylesheet" type="text/css" href="./UX.css"/>
 
-    <!--Bootstrap CSS  -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-    <!--Bootstrap JS  -->
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     <body onload="setup()">
         <nav class="navbar navbar-default toolbar navbar-inverse">
@@ -57,9 +51,10 @@
         <div>
             <div class="side left" id="sideBar">
                 <div class="modules">
+                    <div id="modules-header">Controls</div>
                     <div class="accordion" id="menu">
-                        <div >Input</div>
-                        <div class="section">
+                        <div class="panelHeader">Input</div>
+                        <div class="panel">
                             <div class="icon logixModules" id="Input" ></div>
                             <div class="icon logixModules" id="Button" ></div>
                             <div class="icon logixModules" id="Power" ></div>
@@ -68,8 +63,8 @@
                             <div class="icon logixModules" id="Stepper" ></div>
                         </div>
 
-                        <div>Output</div>
-                        <div class="section">
+                        <div class="panelHeader">Output</div>
+                        <div class="panel">
                             <div class="icon logixModules" id="Output" ></div>
                             <div class="icon logixModules" id="RGBLed" ></div>
                             <div class="icon logixModules" id="DigitalLed" ></div>
@@ -78,8 +73,8 @@
                             <div class="icon logixModules" id="SevenSegDisplay" ></div>
                         </div>
 
-                        <div>Gates</div>
-                        <div class="section">
+                        <div class="panelHeader">Gates</div>
+                        <div class="panel">
                             <div class="icon logixModules" id="AndGate" ></div>
                             <div class="icon logixModules" id="OrGate" ></div>
                             <div class="icon logixModules" id="NotGate" ></div>
@@ -89,8 +84,8 @@
                             <div class="icon logixModules" id="XnorGate" ></div>
                         </div>
 
-                        <div>Plexers</div>
-                        <div class="section">
+                        <div class="panelHeader">Plexers</div>
+                        <div class="panel">
                             <div class="icon logixModules" id="Multiplexer" ></div>
                             <div class="icon logixModules" id="Demultiplexer" ></div>
                             <div class="icon logixModules" id="BitSelector" ></div>
@@ -99,8 +94,8 @@
                             <div class="icon logixModules" id="PriorityEncoder" ></div>
                         </div>
 
-                        <div>Sequential Elements</div>
-                        <div class="section">
+                        <div class="panelHeader">Sequential Elements</div>
+                        <div class="panel">
                             <div class="icon logixModules" id="TflipFlop" ></div>
                             <div class="icon logixModules" id="JKflipFlop" ></div>
                             <div class="icon logixModules" id="SRflipFlop" ></div>
@@ -110,8 +105,8 @@
                             <div class="icon logixModules" id="Clock" ></div>
                         </div>
 
-                        <div>Misc</div>
-                        <div class="section">
+                        <div class="panelHeader">Misc</div>
+                        <div class="panel">
                             <div class="icon logixModules" id="Text" ></div>
                             <div class="icon logixModules" id="Flag" ></div>
                             <div class="icon logixModules" id="Splitter" ></div>
@@ -122,11 +117,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="moduleProperty effect1" id="moduleProperty"></div>
+                <div class="moduleProperty effect1" id="moduleProperty">
+                    <div id="moduleProperty-title">Properties</div>
+                    <div id="moduleProperty-inner"></div>
+                </div>
             </div>
 
             <div class="rightPanel">
-                <div id="tabsBar"></div>
+                <div id="tabsBar">
+                    <div>Open Circuits</div>
+                </div>
                 <div class="simulation" id="simulation" >
                     <div id="MessageDiv">
                     </div>
@@ -171,6 +171,13 @@
                 </div>
             </div> <!-- Right panel -->
         </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="./UX.js"></script>
+
 
         <!-- <script src="./SAP_DATA.js"></script> -->
         <script src="./engine.js"></script>

@@ -1,46 +1,125 @@
-.side{
-/*display: inline-block;*/
-/*position: relative;*/
-width:270px;
-height:100%;
-border: 2px solid;
-background-color: #555;
+.side {
+    width: 250px;
+    height: 100%;
+    background-color: #333;
+    padding: 1em;
+    color: #fff;
+    border-side: 1px solid #0099ff;
+    border-bottom: 50px solid #0099ff;
 }
 
-.ui-widget-content {
-    background-color: #444;
-    border-color: #000;
+#modules-header {
+    margin-bottom: 0.5em;
+    font-size: 1.3em;
+    text-transform: uppercase;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #0099ff;
 }
 
 .ui-accordion-header {
     background-color: #333;
-    border-color: #000;
     color: #fff;
+    border: 1px solid #0099ff;
+    border-radius: 0;
+    margin-bottom: 0.5em;
+    padding: 0.5em;
 }
 
-.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+.ui-accordion-header.ui-accordion-header-active.ui-state-active {
     background-color: #0099ff;
+    margin-bottom: 0;
+}
+
+/* MODULES */
+
+.moduleProperty{
+    display: none;
+    background-color: #333;
+    color: #fff;
+    padding-bottom: 2em;
+    margin-top: 2em;
+}
+
+#moduleProperty-inner {
+    border: 1px solid #0099ff;
+    padding: 1em;
+}
+
+#moduleProperty-title {
+    text-transform: uppercase;
+    font-size: 1.3em;
+    color: #0099ff;
+    margin-bottom: 0.55em;
+}
+
+#moduleProperty-header {
+    font-size: 1.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5em;
+}
+
+#moduleProperty-inner > p {
+    margin: 0;
+    margin-top: 0.2em;
+}
+
+input, select {
+    padding: 0.25rem;
+}
+
+.moduleProperty input,
+.moduleProperty select {
+    background-color: #333;
+    border: none;
+    border-bottom: 2px solid #ccc;
+}
+
+.moduleProperty input:active,
+.moduleProperty input:focus,
+.moduleProperty select:active,
+.moduleProperty select:focus {
+    border-bottom: 2px solid #0099ff;
+}
+
+.panel {
+    padding: 0.75em;
+    background-color: #333;
+    margin: 0;
+    border-radius: 0;
+    margin-bottom: 0.5em;
+    border: 1px solid #0099ff;
 }
 
 .navbar.navbar-default {
     margin: 0px;
     border-radius: 0px;
+    border: 0;
+    border-bottom: 1px solid #0099ff;
 }
+
+/* END OF MODULES  */
 
 #tabsBar {
     width: 100%;
-    height: 2.5em;
-    background-color: #333;
+    height: 3em;
+    background-color: #000;
+
 }
 
 #tabsBar div {
     display: inline-block;
     padding: 0.5em;
-    height: 100%;
+    margin: 0.2em;
+    color: #fff;
+}
+
+#tabsBar .circuits {
+    color: #fff;
     text-align: center;
-    background-color: #ccc;
-    color: #000;
-    border: 1px solid #000;
+    background-color: #000;
+    padding: 0.5em;
+    border: 1px solid #0099ff;
+
 }
 
 th, td {
@@ -72,9 +151,6 @@ body, html {
     height: 100%;
     margin: 0;
     padding: 0;
-}
-
-body {
     overflow: hidden
 }
 
@@ -122,35 +198,6 @@ body {
 }
 
 
-
-.moduleProperty{
-    display: none;
-    /*display: block;*/
-    background-color: #555;
-    color: #fff;
-    /*margin-top: 30px;*/
-    /*height:30%;*/
-    padding: 1em;
-    padding-bottom: 2em;
-}
-
-input, select {
-    padding: 0.25rem;
-}
-
-.moduleProperty input,
-.moduleProperty select {
-    background-color: #555;
-    border: none;
-    border-bottom: 2px solid #ccc;
-}
-
-.moduleProperty input:active,
-.moduleProperty input:focus,
-.moduleProperty select:active,
-.moduleProperty select:focus {
-    border-bottom: 2px solid #0099ff;
-}
 
 #canvasArea{
     display: block;
