@@ -124,6 +124,8 @@ function addButton(){
 function addDemultiplexer() {
     var a = new Demultiplexer(200, 150, globalScope, "RIGHT");
 }
+
+
 document.getElementById("powerButton").addEventListener("click", addPower);
 document.getElementById("bitSelectorButton").addEventListener("click", addBitSelector);
 document.getElementById("groundButton").addEventListener("click", addGround);

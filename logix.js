@@ -1,7 +1,7 @@
 var width;
 var height;
 
-
+totalObjects = 0;
 uniqueIdCounter = 0;
 unit = 10;
 toBeUpdated = true;
@@ -173,7 +173,7 @@ function setup() {
     plotArea.setup();
     simulationArea.setup();
     // update();
-    dots();
+    dots(backgroundArea);
     // scheduleUpdate();
 
     data = {}
@@ -245,7 +245,7 @@ function resetup() {
     // simulationArea.setup();
     updateCanvas=true;
     update(); // INEFFICENT
-    dots(true, false);
+    dots(backgroundArea,true, false);
 }
 
 window.onresize = resetup;
@@ -296,7 +296,6 @@ function play(scope = globalScope, resetNodes = true) {
             return;
         }
     }
-
     for(var i=0;i<scope.Flag.length;i++)
         scope.Flag[i].setPlotValue();
     // for (var i = 0; i < scope.SubCircuit.length; i++) {
@@ -324,13 +323,14 @@ var backgroundArea = {
         this.canvas.width = width;
         this.canvas.height = height;
         this.context = this.canvas.getContext("2d");
-        dots(true, false);
+        dots(backgroundArea,true, false);
     },
     clear: function() {
         if (!this.context) return;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
+
 //simulation environment object
 var simulationArea = {
     canvas: document.getElementById("simulationArea"),
@@ -339,10 +339,13 @@ var simulationArea = {
     clockState: 0,
     lastSelected: undefined,
     stack: [],
-
+    objectList: [],
     oldx: 0,
     oldy: 0,
-
+    maxHeight:0,
+    maxWidth:0,
+    minHeight:0,
+    minWidth:0,
     multipleObjectSelections: [],
     copyList: [],
     shiftDown: false,
@@ -475,7 +478,7 @@ function update(scope = globalScope) {
             globalScope.ox = Math.round(globalScope.ox);
             globalScope.oy = Math.round(globalScope.oy);
         }
-        dots(true, false);
+        dots(backgroundArea,true, false);
 
     } else if (simulationArea.lastSelected == scope.root) {
         simulationArea.lastSelected = undefined;
@@ -529,9 +532,27 @@ function update(scope = globalScope) {
     if (toBeUpdated || updateCanvas) {
         simulationArea.clear();
         // dots(); // draw dots
-        for (var i = 0; i < scope.objects.length; i++)
-            for (var j = 0; j < scope[scope.objects[i]].length; j++)
+
+        totalObjects = 0;
+        for (var i = 0; i < scope.objects.length; i++){
+              for (var j = 0; j < scope[scope.objects[i]].length; j++){
+
+                totalObjects+=1;
+                if(scope.objects[i]!=='wires'){
+                  if(totalObjects==1 ){
+                    simulationArea.minWidth = scope[scope.objects[i]][j].x;
+                    simulationArea.minHeight = scope[scope.objects[i]][j].y;
+                    simulationArea.maxWidth = scope[scope.objects[i]][j].x;
+                    simulationArea.maxHeight = scope[scope.objects[i]][j].y;
+                  }
+              }
+
                 updated |= scope[scope.objects[i]][j].draw();
+              }
+          }
+          // refresh the list.
+        simulationArea.objectList = scope.objects;
+        miniMapArea.setup();
         if (objectSelection) {
             ctx = simulationArea.context;
             ctx.beginPath();
@@ -870,7 +891,20 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
 
 
         // calls the custom circuit design
-        if (this.customDraw) this.customDraw();
+        if (this.customDraw) {
+          this.customDraw();
+          if(this.objectType!='Wire' ){
+            if(this.y < simulationArea.minHeight)
+              simulationArea.minHeight = this.y;
+            else if(this.y> simulationArea.maxHeight)
+              simulationArea.maxHeight = this.y;
+            if(this.x < simulationArea.minWidth)
+              simulationArea.minWidth = this.x;
+            else if(this.x > simulationArea.maxWidth)
+              simulationArea.maxWidth = this.x;
+            }
+
+        }
 
         //draws nodes
         for (var i = 0; i < this.nodeList.length; i++)

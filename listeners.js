@@ -116,6 +116,9 @@ window.addEventListener('keydown', function(e) {
         if (simulationArea.lastSelected.setLabel !== undefined)
             simulationArea.lastSelected.setLabel();
     }
+    if(e.key == "0"){
+      miniMapArea.setup();
+    }
 
     // console.log()
     // update();

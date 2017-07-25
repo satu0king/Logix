@@ -2109,13 +2109,22 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT",bitWidth=1,identifier) {
 
         if(this.plotValues.length==0){
             this.plotValues.push([time,this.inp1.value]);
+            if(plotArea.count>=1000){
+              plotArea.timeOutPlotFunc();
+            };
+            plotArea.count = 0;
             return;
         }
 
         if(this.plotValues[this.plotValues.length-1][1]==this.inp1.value)
            return;
-        else
-           this.plotValues.push([time,this.inp1.value]);
+        else{
+            this.plotValues.push([time,this.inp1.value]);
+            if(plotArea.count>=1000){
+              plotArea.timeOutPlotFunc();
+            }
+            plotArea.count = 0;
+         }
     }
     this.customSave = function() {
         var data = {

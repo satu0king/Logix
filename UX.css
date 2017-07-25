@@ -170,6 +170,18 @@ body {
 background-color: "white";
 }
 
+#miniMap{
+  position: absolute;
+  z-index: -1;
+  bottom: 50;
+  left: 650;
+  height:150px;
+  width: 25%;
+  overflow-y: scroll;
+  background-color: black;
+  opacity: 0.5;
+  transition: opacity .25s ease-in-out;
+}
 #plot{
     position: absolute;
     z-index: 2;

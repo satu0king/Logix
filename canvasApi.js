@@ -16,21 +16,18 @@ function changeScale(delta,xx,yy) {
     globalScope.scale = Math.round(globalScope.scale * 10) / 10;
     globalScope.ox -= Math.round(xx * (globalScope.scale - oldScale));
     globalScope.oy -= Math.round(yy * (globalScope.scale - oldScale));
-    dots(true,false);
+    dots(backgroundArea,true,false);
 }
 
 //fn to draw Dots on screen
-function dots(dots=true, transparentBackground=false) {
+function dots(canvasArea, dots=true, transparentBackground=false) {
 
+    if(!canvasArea.context)return;
+    canvasArea.clear();
+    var canvasWidth = canvasArea.canvas.width; //max X distance
+    var canvasHeight = canvasArea.canvas.height; //max Y distance
 
-
-
-    if(!backgroundArea.context)return;
-    backgroundArea.clear();
-    var canvasWidth = backgroundArea.canvas.width; //max X distance
-    var canvasHeight = backgroundArea.canvas.height; //max Y distance
-
-    var ctx = backgroundArea.context;
+    var ctx = canvasArea.context;
     if (!transparentBackground) {
         ctx.fillStyle = "white";
         ctx.rect(0, 0, canvasWidth, canvasHeight);
@@ -62,7 +59,7 @@ function dots(dots=true, transparentBackground=false) {
         canvasData.data[index + 2] = b;
         canvasData.data[index + 3] = a;
     }
-    if (dots) {
+    if (dots(backgroundArea)) {
         var canvasData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
 
 

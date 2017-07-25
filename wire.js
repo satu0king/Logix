@@ -90,8 +90,30 @@ function Wire(node1, node2, scope) {
         return updated;
     }
     this.draw = function() {
-        ctx = simulationArea.context;
 
+      // for minheight, max height
+        if(this.node1.type == 2){
+          if(this.node1.y < simulationArea.minHeight)
+            simulationArea.minHeight = this.node1.y;
+          else if(this.node1.y> simulationArea.maxHeight)
+            simulationArea.maxHeight = this.node1.y;
+          if(this.node1.x < simulationArea.minWidth)
+            simulationArea.minWidth = this.node1.x;
+          else if(this.node1.x > simulationArea.maxWidth)
+            simulationArea.maxWidth = this.node1.x;
+        }
+        else if(this.node2.type == 2){
+          if(this.node2.y < simulationArea.minHeight)
+            simulationArea.minHeight = this.node2.y;
+          else if(this.node2.y> simulationArea.maxHeight)
+            simulationArea.maxHeight = this.node2.y;
+          if(this.node2.x < simulationArea.minWidth)
+            simulationArea.minWidth = this.node2.x;
+          else if(this.node2.x > simulationArea.maxWidth)
+            simulationArea.maxWidth = this.node2.x;
+        }
+
+        ctx = simulationArea.context;
         var color;
         if (this.node1.value == undefined||this.node2.value == undefined)
             color = "red";
