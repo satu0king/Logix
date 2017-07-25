@@ -1,5 +1,5 @@
 .side {
-    width: 270px;
+    width: 250px;
     height: 100%;
     background-color: #333;
     padding: 1em;
@@ -7,6 +7,14 @@
     border-side: 1px solid #0099ff;
     border-bottom: 50px solid #0099ff;
 }
+
+.noSelect {
+    -moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;
+}
+.defaultCursor {
+    cursor: default;
+}
+
 
 #modules-header {
     margin-bottom: 0.5em;
@@ -106,26 +114,42 @@ input, select {
 
 #tabsBar {
     width: 100%;
-    height: 3em;
+    /*height: 3em;*/
     background-color: #000;
 
 }
 
 #tabsBar div {
     display: inline-block;
-    padding: 0.5em;
-    margin: 0.2em;
+    padding-left: 0.5em;
+    margin: 0.1em;
     color: #fff;
 }
 
 #tabsBar .circuits {
     color: #fff;
     text-align: center;
-    background-color: #000;
+    background-color: #00284d;
     padding: 0.5em;
-    border: 1px solid #0099ff;
+    border: 1px solid #005cb3;
+    border-radius: 0.1em;
 
 }
+#tabsBar .circuits:hover {
+    background-color: #00ace6;
+    /*border: 1px solid #0099ff;*/
+    transition-duration: 100ms
+
+}
+#tabsBar .current {
+    /*background-color: #0086b3;*/
+    background-color: #004280;
+    border: 1px solid #0099ff;
+
+
+}
+
+
 
 th, td {
 

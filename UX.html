@@ -10,6 +10,7 @@
 
     <!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
      <link rel="stylesheet" href="./bootstrap-3.3.7/dist/css/bootstrap.css">
+     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <link rel="stylesheet" type="text/css" href="./UX.css"/>
 
@@ -31,7 +32,7 @@
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav" id="toolbar">
+                    <ul class="nav navbar-nav noSelect defaultCursor" id="toolbar">
                         <li class="toolbarButton logixButton" id="clearProject" ><a>Clear Project</a></li>
                         <li class="toolbarButton logixButton" id="newProject" ><a>New Project</a></li>
                         <li class="toolbarButton logixButton" id="save"><a>Save Online</a></li>
@@ -50,7 +51,7 @@
 
         <div>
             <div class="side left" id="sideBar">
-                <div class="modules">
+                <div class="modules noSelect defaultCursor" >
                     <div id="modules-header">Circuit Elements</div>
                     <div class="accordion" id="menu">
                         <div class="panelHeader">Input</div>
@@ -118,14 +119,14 @@
                     </div>
                 </div>
                 <div class="moduleProperty effect1" id="moduleProperty">
-                    <div id="moduleProperty-title">Properties</div>
+                    <div id="moduleProperty-title" class="noSelect defaultCursor">Properties</div>
                     <div id="moduleProperty-inner"></div>
                 </div>
             </div>
 
             <div class="rightPanel">
-                <div id="tabsBar">
-                    <div>Open Circuits</div>
+                <div id="tabsBar" class="noSelect defaultCursor">
+                    <div>Circuits: </div>
                 </div>
                 <div class="simulation" id="simulation" >
                     <div id="MessageDiv">
@@ -141,35 +142,38 @@
 
                 </div>
 
-                <div id="combinationalAnalysis"  style="display:none;" title="BooleanLogicTable">
-                    <div id="saveImageDialog" style="display:none;" title="Render Image">
-                        <p>
-                            PNG: <input type="radio" name="imgType" value="png" checked="checked" />
-                            JPEG: <input type="radio" name="imgType" value="jpeg" />
-                            SVG: <input type="radio" name="imgType" value="svg" />
-                            BMP: <input type="radio" name="imgType" value="bmp" />
-                            GIF: <input type="radio" name="imgType" value="gif" />
-                            TIFF: <input type="radio" name="imgType" value="tiff" />
-                        </p>
-                        <p>
-                            Full Circuit View: <input type="radio" name="view" value="full" />
-                            Current View: <input type="radio" name="view" value="current" checked="checked" />
-                        </p>
-                        <p>
-                            Transparent Background: <input type="checkbox" name="transparent" value="transparent"/>
-                        </p>
-                        <p>
-                            Resolution:
-                            1x<input type="radio" name="resolution" value="1" checked="checked"  />
-                            2x<input type="radio" name="resolution" value="2"/>
-                            4x<input type="radio" name="resolution" value="4"/>
-                        </p>
-                    </div>
+                <div id="combinationalAnalysis"  style="display:none;" title="BooleanLogicTable"></div>
+
 
                     <div id="insertSubcircuitDialog" style="display:none;"  title="Insert SubCircuit"></div>
                     <div id="openProjectDialog" style="display:none;"  title="Open Project"></div>
-                </div>
+
             </div> <!-- Right panel -->
+
+        </div>
+
+        <div id="saveImageDialog" style="display:none;" title="Render Image">
+            <p>
+                PNG: <input type="radio" name="imgType" value="png" checked="checked" />
+                JPEG: <input type="radio" name="imgType" value="jpeg" />
+                SVG: <input type="radio" name="imgType" value="svg" />
+                BMP: <input type="radio" name="imgType" value="bmp" />
+                GIF: <input type="radio" name="imgType" value="gif" />
+                TIFF: <input type="radio" name="imgType" value="tiff" />
+            </p>
+            <p>
+                Full Circuit View: <input type="radio" name="view" value="full" />
+                Current View: <input type="radio" name="view" value="current" checked="checked" />
+            </p>
+            <p>
+                Transparent Background: <input type="checkbox" name="transparent" value="transparent"/>
+            </p>
+            <p>
+                Resolution:
+                1x<input type="radio" name="resolution" value="1" checked="checked"  />
+                2x<input type="radio" name="resolution" value="2"/>
+                4x<input type="radio" name="resolution" value="4"/>
+            </p>
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>

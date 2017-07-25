@@ -4,11 +4,14 @@ function newCircuit(name, id) {
     if (id) scope.id = id;
     scopeList[scope.id] = scope;
     globalScope = scope;
-    $('#tabsBar').append("<div class='circuits toolbarButton' id='" + scope.id + "'>" + name + "</div>");
+    $('.circuits').removeClass("current")
+    $('#tabsBar').append("<div class='circuits toolbarButton current' id='" + scope.id + "'>" + name + "</div>");
     $('.circuits').click(function() {
         switchCircuit(this.id)
     });
+
     dots(true, false);
+
     return scope;
 }
 
@@ -130,6 +133,8 @@ function switchCircuit(id) {
     scheduleBackup();
     console.log(id);
     if (id == globalScope.id) return;
+    $('#'+globalScope.id).removeClass("current");
+    $('#'+id).addClass("current");
     simulationArea.lastSelected = undefined;
     simulationArea.multipleObjectSelections = [];
     simulationArea.copyList = [];
