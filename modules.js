@@ -382,7 +382,7 @@ function XorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
         ctx.fill();
         ctx.stroke();
         ctx.beginPath();
-        arc(ctx, -35, 0, 25, 1.70 * (Math.PI), 0.30 * (Math.PI), xx, yy, this.direction);
+        arc2(ctx, -35, 0, 25, 1.70 * (Math.PI), 0.30 * (Math.PI), xx, yy, this.direction);
         ctx.stroke();
 
 
@@ -461,7 +461,7 @@ function XnorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth
         ctx.fill();
         ctx.stroke();
         ctx.beginPath();
-        arc(ctx, -35, 0, 25, 1.70 * (Math.PI), 0.30 * (Math.PI), xx, yy, this.direction);
+        arc2(ctx, -35, 0, 25, 1.70 * (Math.PI), 0.30 * (Math.PI), xx, yy, this.direction);
         ctx.stroke();
         ctx.beginPath();
         drawCircle2(ctx, 25, 0, 5, xx, yy, this.direction);
