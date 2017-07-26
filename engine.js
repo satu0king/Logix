@@ -1,3 +1,4 @@
+var totalObjects = 0;
 function scheduleUpdate(count = 0,time=100,fn) {
     // return;
     // //console.log(willBeUpdated,updateSimulation,);
@@ -49,10 +50,70 @@ function update(scope = globalScope) {
     if(updatePosition){
         //console.log("updatePosition");
         for (var i = 0; i < scope.objects.length; i++)
-            for (var j = 0; j < scope[scope.objects[i]].length; j++)
+            for (var j = 0; j < scope[scope.objects[i]].length; j++){
                 updated |= scope[scope.objects[i]][j].update();
+              }
     }
+
     // updateSimulation |= updated;
+    if(updatePosition){
+      totalObjects = 0;
+
+       for (var i = 0; i < scope.objects.length; i++){
+             for (var j = 0; j < scope[scope.objects[i]].length; j++){
+
+               totalObjects+=1;
+               if(scope.objects[i]!=='wires'){
+                var obj =  scope[scope.objects[i]][j]; 
+                if(totalObjects==1 ){
+                   simulationArea.minWidth =  obj.x-obj.leftDimensionX;
+                   simulationArea.minHeight = obj.y-obj.upDimensionY;
+                   simulationArea.maxWidth = obj.x+obj.rightDimensionX;
+                   simulationArea.maxHeight = obj.y+obj.downDimensionY;
+                 }
+                if(obj.objectType!='Wire' ){
+                if(obj.y-obj.upDimensionY < simulationArea.minHeight)
+                  simulationArea.minHeight = obj.y-obj.upDimensionY;
+                else if(obj.y+obj.downDimensionY> simulationArea.maxHeight)
+                  simulationArea.maxHeight = obj.y+obj.downDimensionY;
+                if(obj.x-obj.leftDimensionX < simulationArea.minWidth)
+                  simulationArea.minWidth = obj.x-obj.leftDimensionX;
+                else if(obj.x+obj.rightDimensionX > simulationArea.maxWidth)
+                  simulationArea.maxWidth = obj.x+obj.rightDimensionX;
+                }
+
+              }
+              else{
+                  var wire = scope[scope.objects[i]][j];
+                  if(wire.node1.type == 2){
+                    totalObjects += 1;
+                    if(wire.node1.y < simulationArea.minHeight || totalObjects ==1)
+                      simulationArea.minHeight = wire.node1.y;
+                    if(wire.node1.y> simulationArea.maxHeight || totalObjects ==1)
+                      simulationArea.maxHeight = wire.node1.y;
+                    if(wire.node1.x < simulationArea.minWidth || totalObjects ==1)
+                      simulationArea.minWidth = wire.node1.x;
+                    if(wire.node1.x > simulationArea.maxWidth || totalObjects ==1)
+                      simulationArea.maxWidth = wire.node1.x;
+                  }
+                  if(wire.node2.type == 2){
+                    if(wire.node2.y < simulationArea.minHeight || totalObjects ==1)
+                      simulationArea.minHeight = wire.node2.y;
+                    if(wire.node2.y> simulationArea.maxHeight || totalObjects ==1)
+                      simulationArea.maxHeight = wire.node2.y;
+                    if(wire.node2.x < simulationArea.minWidth || totalObjects ==1)
+                      simulationArea.minWidth = wire.node2.x;
+                    if(wire.node2.x > simulationArea.maxWidth || totalObjects ==1)
+                      simulationArea.maxWidth = wire.node2.x;
+                  }
+
+
+              }
+          }
+        }
+        simulationArea.objectList = scope.objects;
+        miniMapArea.setup();
+    }
 
     if(updatePosition)updateSelectionsAndPane(scope);
 

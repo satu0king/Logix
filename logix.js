@@ -4,6 +4,7 @@ var height;
 
 uniqueIdCounter = 0;
 unit = 10;
+
 // updateSimulation = true;
 
 wireToBeChecked = 0; // when node disconnects from another node
@@ -233,6 +234,7 @@ function resetup() {
     backgroundArea.setup();
     if(!embed)plotArea.setup();
     simulationArea.setup();
+    miniMapArea.setup();
     // update();
     dots();
 
@@ -286,7 +288,11 @@ var simulationArea = {
     prevScale:0,
     oldx: 0,
     oldy: 0,
-
+    objectList : [],
+    maxHeight:0,
+    maxWidth:0,
+    minHeight:0,
+    minWidth:0,
     multipleObjectSelections: [],
     copyList: [],
     shiftDown: false,
@@ -1018,7 +1024,8 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
 
 
         // calls the custom circuit design
-        if (this.customDraw) this.customDraw();
+        if (this.customDraw) 
+          this.customDraw();
 
         //draws nodes
         for (var i = 0; i < this.nodeList.length; i++)
