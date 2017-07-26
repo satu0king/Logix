@@ -17,6 +17,7 @@ function Wire(node1, node2, scope) {
 
     this.updateScope=function(scope){
         this.scope=scope;
+        this.checkConnections();
     }
 
     this.updateData();
@@ -24,13 +25,15 @@ function Wire(node1, node2, scope) {
 
     //to check if nodes are disconnected
     this.checkConnections = function() {
-        var check = !node1.connections.contains(node2) || !node2.connections.contains(node1);
+        var check = this.node1.deleted||this.node2.deleted||!this.node1.connections.contains(this.node2) || !this.node2.connections.contains(this.node1);
         if (check) this.delete();
         return check;
     }
 
 
     this.update = function() {
+
+        if(embed)return;
 
         if(this.node1.absX()==this.node2.absX()){
             this.x1=this.x2=this.node1.absX();
@@ -48,40 +51,48 @@ function Wire(node1, node2, scope) {
         } // SLOW , REMOVE
         if (simulationArea.shiftDown==false&&simulationArea.mouseDown == true && simulationArea.selected == false && this.checkWithin(simulationArea.mouseDownX, simulationArea.mouseDownY)) {
             simulationArea.selected = true;
+
+
             simulationArea.lastSelected = this;
-            var n = new Node(simulationArea.mouseDownX, simulationArea.mouseDownY, 2, this.scope.root);
-            this.converge(n);
-            n.clicked = true;
-            n.wasClicked = true;
+
             updated = true;
         }
-        if (simulationArea.lastSelected == this) {
-            // console.log("HITT");
+        else if(simulationArea.lastSelected==this&& !this.checkWithin(simulationArea.mouseX, simulationArea.mouseY)){
+            var n = new Node(simulationArea.mouseDownX, simulationArea.mouseDownY, 2, this.scope.root);
+            n.clicked = true;
+            n.wasClicked = true;
+            simulationArea.lastSelected=n;
+            this.converge(n);
+            //console.log("wire:",n);
         }
+        if (simulationArea.lastSelected == this) {
+            // //console.log("HITT");
+        }
+        //console.log("wire:",simulationArea.lastSelected);
 
         if (this.node1.deleted || this.node2.deleted) this.delete(); //if either of the nodes are deleted
         if (simulationArea.mouseDown == false) {
             if (this.type == "horizontal") {
-                if (node1.absY() != this.y1) {
+                if (this.node1.absY() != this.y1) {
                     // if(this.checkConnections()){this.delete();return;}
-                    var n = new Node(node1.absX(), this.y1, 2, this.scope.root);
+                    var n = new Node(this.node1.absX(), this.y1, 2, this.scope.root);
                     this.converge(n);
                     updated = true;
-                } else if (node2.absY() != this.y2) {
+                } else if (this.node2.absY() != this.y2) {
                     // if(this.checkConnections()){this.delete();return;}
-                    var n = new Node(node2.absX(), this.y2, 2, this.scope.root);
+                    var n = new Node(this.node2.absX(), this.y2, 2, this.scope.root);
                     this.converge(n);
                     updated = true;
                 }
             } else if (this.type == "vertical") {
-                if (node1.absX() != this.x1) {
+                if (this.node1.absX() != this.x1) {
                     // if(this.checkConnections()){this.delete();return;}
-                    var n = new Node(this.x1, node1.absY(), 2, this.scope.root);
+                    var n = new Node(this.x1, this.node1.absY(), 2, this.scope.root);
                     this.converge(n);
                     updated = true;
-                } else if (node2.absX() != this.x2) {
+                } else if (this.node2.absX() != this.x2) {
                     // if(this.checkConnections()){this.delete();return;}
-                    var n = new Node(this.x2, node2.absY(), 2, this.scope.root);
+                    var n = new Node(this.x2, this.node2.absY(), 2, this.scope.root);
                     this.converge(n);
                     updated = true;
                 }
@@ -152,9 +163,11 @@ function Wire(node1, node2, scope) {
 
 
     this.delete = function() {
-        toBeUpdated = true;
+        updateSimulation = true;
         this.node1.connections.clean(this.node2);
         this.node2.connections.clean(this.node1);
         this.scope.wires.clean(this);
+        this.node1.checkDeleted();
+        this.node2.checkDeleted();
     }
 }

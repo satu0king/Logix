@@ -53,8 +53,15 @@ var plotArea = {
       this.stopWatch.Start();
       this.ctx=this.c.getContext("2d");
     //   console.log(this.ctx);
+<<<<<<< HEAD
     startPlot();
     plotArea.timeOutPlotFunc();
+=======
+      startPlot();
+    //   this.timeOutPlot = setInterval(function(){
+    //     plotArea.plot();
+    // },100);
+>>>>>>> master
   },
 
   plot : function()

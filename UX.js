@@ -14,7 +14,7 @@ $(document).ready(function() {
     // });
 
     $('.logixModules').click(function(){
-        console.log(smartDropXX,smartDropYY);
+        //console.log(smartDropXX,smartDropYY);
         if(simulationArea.lastSelected&&simulationArea.lastSelected.newElement)simulationArea.lastSelected.delete();
         obj = new window[this.id]();//(simulationArea.mouseX,simulationArea.mouseY);
         simulationArea.lastSelected=obj;
@@ -61,9 +61,9 @@ $(document).ready(function() {
 
 
     var iconList=$('.icon');
-    // console.log(iconList)
+    // //console.log(iconList)
     for(var i=0;i<iconList.length;i++){
-        console.log(iconList[i].id);
+        //console.log(iconList[i].id);
         $(iconList[i]).append('<img src="./img/'+iconList[i].id+'.svg"/>');
         $(iconList[i]).append('<p class="img__description">'+iconList[i].id+
         '</p>');
@@ -99,13 +99,16 @@ function showProperties(obj){
     $('#moduleProperty').append("<p>Input Size: <input class='objectPropertyAttribute' type='number'  name='changeInputSize' min='2' max='10' value="+obj.inputSize+"></p>");
 
 
-    $('#moduleProperty').append("<p>Label: <input class='objectPropertyAttribute' type='text'  name='setLabel' min='1' max='32' value="+obj.label+"></p>");
+    $('#moduleProperty').append("<p>Label: <input class='objectPropertyAttribute' type='text'  name='setLabel' min='1' max='32' value='"+obj.label+"'></p>");
 
-    $('#moduleProperty').append("<p></p>");
-    $('#moduleProperty').append("Label Direction: ");
-    var s=$("<select class='objectPropertyAttribute' name='newLabelDirection' ><option value='RIGHT'>RIGHT</option><option value='DOWN'>DOWN</option><option value='LEFT'>LEFT</option><option value='UP'>UP</ option></select>");
-    s.val(obj.labelDirection);
-    $('#moduleProperty').append(s);
+
+    if(!obj.labelDirectionFixed){
+        $('#moduleProperty').append("<p></p>");
+        $('#moduleProperty').append("Label Direction: ");
+        var s=$("<select class='objectPropertyAttribute' name='newLabelDirection' ><option value='RIGHT'>RIGHT</option><option value='DOWN'>DOWN</option><option value='LEFT'>LEFT</option><option value='UP'>UP</ option></select>");
+        s.val(obj.labelDirection);
+        $('#moduleProperty').append(s);
+    }
 
 
     if(!obj.directionFixed){
@@ -143,7 +146,7 @@ function showProperties(obj){
 
     $(".objectPropertyAttribute").on("change keyup paste click", function(){
         // return;
-        console.log(this.name+":"+this.value);
+        //console.log(this.name+":"+this.value);
         scheduleUpdate();
         updateCanvas = true;
         wireToBeChecked = 1;
