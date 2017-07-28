@@ -32,21 +32,38 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav noSelect pointerCursor" id="toolbar">
-                        <li class="toolbarButton logixButton" id="clearProject" ><a>Clear Project</a></li>
-                        <li class="toolbarButton logixButton" id="newProject" ><a>New Project</a></li>
-                        <li class="toolbarButton logixButton" id="save"><a>Save Online</a></li>
-                        <li class="toolbarButton logixButton" id="newCircuit"><a>New Circuit +</a></li>
-                        <li class="toolbarButton logixButton" id="createSubCircuitPrompt"><a>Insert SubCircuit</a></li>
-                        <li class="" id="createCombinationalAnalysisPrompt"><a>Combinational Analysis</a></li>
-                        <li class="" id="startPlot"><a>Start Plot</a></li>
+
+
+
+
+
                         <li class="dropdown">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Project<span class="caret"></span></a>
                           <ul class="dropdown-menu">
+                            <li class="toolbarButton logixButton" id="newProject" ><a>New Project</a></li>
+                            <li class="toolbarButton logixButton" id="clearProject" ><a>Clear Project</a></li>
+                            <li class="toolbarButton logixButton" id="save"><a>Save Online</a></li>
                             <li class="toolbarButton logixButton" id="saveOffline"><a>Save Offline</a></li>
                             <li class="toolbarButton logixButton" id="createOpenLocalPrompt"><a>Open Offline</a></li>
-                            <li class="toolbarButton logixButton" id="createSaveAsImgPrompt" ><a>Download Image</a></li>
                           </ul>
                         </li>
+                        <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Circuit<span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                              <li class="toolbarButton logixButton" id="newCircuit"><a>New Circuit +</a></li>
+                              <li class="toolbarButton logixButton" id="createSubCircuitPrompt"><a>Insert SubCircuit</a></li>
+                         </ul>
+                        </li>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools<span class="caret"></span></a>
+                      <ul class="dropdown-menu">
+                          <li class="" id="createCombinationalAnalysisPrompt"><a>Combinational Analysis</a></li>
+                          <li class="" id="startPlot"><a>Start Plot</a></li>
+                          <li class="toolbarButton logixButton" id="createSaveAsImgPrompt" ><a>Download Image</a></li>
+                      </ul>
+                     </li>
+
 
                     </ul>
                 </div><!-- /.navbar-collapse -->
@@ -190,9 +207,16 @@
 
          <!-- on hover for dropdowns -->
          <script>
+
            $('.dropdown-toggle').hover( function() {
+
+            $('.dropdown.open').removeClass('open');
              $(this).parent('.dropdown').addClass('open');
            });
+        //    $('.dropdown-toggle').onClick( function() {
+           //
+        //      $(this).parent('.dropdown').addClass('open');
+        //    });
          </script>
 
         <!-- <script src="./SAP_DATA.js"></script> -->
