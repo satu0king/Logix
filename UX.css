@@ -5,7 +5,7 @@
     padding: 3px;
     color: #fff;
     border-side: 1px solid #0099ff;
-    border-bottom: 50px solid #0099ff;
+    border-bottom: 40px solid #0099ff;
 }
 
 .noSelect {
@@ -121,7 +121,7 @@ input, select {
     border-bottom: 1px solid #0099ff;
 }
 .navbar-brand{
-    padding: 5px 15px;
+    padding: 7px 15px;
     height: auto;
 }
 
@@ -215,7 +215,7 @@ body, html {
 .errorMessage{
     /*position: absolute;*/
     /*margin-left: 30%;*/
-    /*bottom: 150px;*/
+    /*bottom: 1px;*/
     height:auto;
     width:100%;
     /*margin-bottom: 10px;*/
@@ -375,12 +375,13 @@ div.icon img{
   border: 1px solid #09f;
   border-top: none;
 }
+
+.navbar-nav > li > a {
+    padding: 7px 15px;
+}
 .dropdown-menu > li > a {
   color: #939393;
-  padding: 0px 20px;
-}
-.navbar-nav > li > a {
-    padding: 5px 15px;
+  padding: 0px 14px;
 }
 .dropdown-menu > li > a:hover {
   color: #4db8ff;
