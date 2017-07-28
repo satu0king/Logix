@@ -367,8 +367,11 @@ div.icon img{
 /* dropdown-menu styles */
 
 .dropdown-menu {
+  margin-top: -1px;
   background-color: black;
-  border: 1px solid #09f;
+  border-bottom: 1px solid #09f;
+  border-left: 1px solid #09f;
+  border-right: 1px solid #09f;
 }
 .dropdown-menu > li > a {
   color: #939393;
