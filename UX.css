@@ -363,3 +363,17 @@ div.icon img{
   width: 50%;
   height: 5px;
 }
+
+/* dropdown-menu styles */
+
+.dropdown-menu {
+  background-color: black;
+  border: 1px solid #09f;
+}
+.dropdown-menu > li > a {
+  color: #939393;
+}
+.dropdown-menu > li > a:hover {
+  color: #4db8ff;
+  background-color: black;
+}
