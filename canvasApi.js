@@ -12,7 +12,7 @@ function changeScale(delta,xx,yy) {
     }
 
     var oldScale = globalScope.scale;
-    globalScope.scale = Math.max(0.5*DPR,Math.min(4*DPR,globalScope.scale+delta));
+    globalScope.scale = Math.max(0.5,Math.min(4*DPR,globalScope.scale+delta));
     globalScope.scale = Math.round(globalScope.scale * 10) / 10;
     globalScope.ox -= Math.round(xx * (globalScope.scale - oldScale));
     globalScope.oy -= Math.round(yy * (globalScope.scale - oldScale));
@@ -165,7 +165,7 @@ function rect(ctx, x1, y1, x2, y2) {
     // ctx.lineWidth=lineWidthBackup
 }
 
-function rect2(ctx, x1, y1, x2, y2, xx, yy, dir) {
+function rect2(ctx, x1, y1, x2, y2, xx, yy, dir="RIGHT") {
     // var lineWidthBackup=ctx.lineWidth;
     // ctx.lineWidth *=globalScope.scale;
     var correction = 0.5*(ctx.lineWidth%2);

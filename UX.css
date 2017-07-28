@@ -381,7 +381,7 @@ div.icon img{
 }
 .dropdown-menu > li > a {
   color: #939393;
-  padding: 0px 14px;
+  padding: 3px 14px;
 }
 .dropdown-menu > li > a:hover {
   color: #4db8ff;

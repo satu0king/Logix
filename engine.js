@@ -60,7 +60,7 @@ function update(scope = globalScope) {
         play();
     }
 
-    if(prevPropertyObj!=simulationArea.lastSelected){
+    if(!embed&&prevPropertyObj!=simulationArea.lastSelected){
         if (simulationArea.lastSelected !== undefined && simulationArea.lastSelected.objectType !== "Wire" && simulationArea.lastSelected.objectType !== "CircuitElement") {
             showProperties(simulationArea.lastSelected);
             //console.log("yo");
@@ -184,7 +184,7 @@ function play(scope = globalScope, resetNodes = true) {
     // //console.log("simulation");
     if (loading == true) return;
 
-    plotArea.stopWatch.Stop();
+    if(!embed)plotArea.stopWatch.Stop();
 
     if (resetNodes) {
         for (var i = 0; i < scope.allNodes.length; i++)

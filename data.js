@@ -4,11 +4,14 @@ function newCircuit(name, id) {
     if (id) scope.id = id;
     scopeList[scope.id] = scope;
     globalScope = scope;
-    $('.circuits').removeClass("current")
+
+if(!embed){
+    $('.circuits').removeClass("current");
     $('#tabsBar').append("<div class='circuits toolbarButton current' id='" + scope.id + "'>" + name + "</div>");
     $('.circuits').click(function() {
         switchCircuit(this.id)
     });
+}
 
     dots(true, false);
 
@@ -309,7 +312,7 @@ function load(data) {
         projectName=undefined;
     globalScope=undefined;
     scopeList={};
-    $('.circuits').remove();
+    if(!embed)$('.circuits').remove();
 
     for (var i = 0; i < data.scopes.length; i++) {
         var scope = newCircuit(data.scopes[i].name, data.scopes[i].id);
@@ -321,13 +324,17 @@ function load(data) {
     scheduleUpdate();
 }
 function rectifyObjectType(obj){
-    var rectify={"FlipFlop":"DflipFlop"};
+
+    console.log(obj);
+    // return obj;
+    var rectify={"FlipFlop":"DflipFlop","Ram":"Rom"};
     return rectify[obj]||obj;
 
 }
 
 function loadModule(data, scope) {
     // console.log(data);
+    console.log(data["objectType"])
     obj = new window[rectifyObjectType(data["objectType"])](data["x"], data["y"], scope, ...data.customData["constructorParamaters"] || []);
     obj.label = data["label"];
     obj.labelDirection = data["labelDirection"] || oppositeDirection[fixDirection[obj.direction]];
