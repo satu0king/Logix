@@ -120,6 +120,10 @@ input, select {
     min-height: 0px;
     border-bottom: 1px solid #0099ff;
 }
+.navbar-brand{
+    padding: 5px 15px;
+    height: auto;
+}
 
 /* END OF MODULES  */
 
@@ -373,6 +377,10 @@ div.icon img{
 }
 .dropdown-menu > li > a {
   color: #939393;
+  padding: 0px 20px;
+}
+.navbar-nav > li > a {
+    padding: 5px 15px;
 }
 .dropdown-menu > li > a:hover {
   color: #4db8ff;
