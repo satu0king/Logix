@@ -35,14 +35,19 @@
                         <li class="toolbarButton logixButton" id="clearProject" ><a>Clear Project</a></li>
                         <li class="toolbarButton logixButton" id="newProject" ><a>New Project</a></li>
                         <li class="toolbarButton logixButton" id="save"><a>Save Online</a></li>
-                        <li class="toolbarButton logixButton" id="saveOffline"><a>Save Offline</a></li>
-                        <li class="toolbarButton logixButton" id="createOpenLocalPrompt"><a>Open Offline</a></li>
-                        <li class="toolbarButton logixButton" id="createSaveAsImgPrompt" ><a>Download Image</a></li>
                         <li class="toolbarButton logixButton" id="newCircuit"><a>New Circuit +</a></li>
                         <li class="toolbarButton logixButton" id="createSubCircuitPrompt"><a>Insert SubCircuit</a></li>
-
                         <li class="" id="createCombinationalAnalysisPrompt"><a>Combinational Analysis</a></li>
                         <li class="" id="startPlot"><a>Start Plot</a></li>
+                        <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More<span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li class="toolbarButton logixButton" id="saveOffline"><a>Save Offline</a></li>
+                            <li class="toolbarButton logixButton" id="createOpenLocalPrompt"><a>Open Offline</a></li>
+                            <li class="toolbarButton logixButton" id="createSaveAsImgPrompt" ><a>Download Image</a></li>
+                          </ul>
+                        </li>
+
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
@@ -183,6 +188,12 @@
         <script src="./UX.js"></script>
          <link rel="stylesheet" type="text/css" href="./UX.css"/>
 
+         <!-- on hover for dropdowns -->
+         <script>
+           $('.dropdown-toggle').hover( function() {
+             $(this).parent('.dropdown').addClass('open');
+           });
+         </script>
 
         <!-- <script src="./SAP_DATA.js"></script> -->
         <script src="./engine.js"></script>
