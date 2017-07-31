@@ -17,8 +17,8 @@ var miniMapArea = {
     this.canvas.height = Math.max(this.canvas.height,80);
     // console.log("Width"+this.canvas.width);
     // console.log("Height"+this.canvas.height);
-    document.getElementById("miniMap").style.height = this.canvas.height + 10 ;
-    document.getElementById("miniMap").style.width = this.canvas.width + 10 ;
+    document.getElementById("miniMap").style.height = this.canvas.height  ;
+    document.getElementById("miniMap").style.width = this.canvas.width  ;
     this.ctx = this.canvas.getContext("2d");
     $("#miniMap").css("z-index", "1");
     this.play(len + 10 , wid + 10);
@@ -34,25 +34,27 @@ var miniMapArea = {
 
     var unitHeight = (this.canvas.height-30)/(length);
     var unitWidth = (this.canvas.width-30)/(width);
+    var unit=Math.min((this.canvas.height-30)/(length),(this.canvas.width-30)/(width));
+
     for(var i=0;i< lst.length;i++){
+        // var unit = unitHeight;
+        // if(unitWidth>unitHeight)
+        //     unit = unitWidth;
       if(lst[i]==='wires'){
 
         for(var j=0;j<globalScope[lst[i]].length;j++)
         {
           this.ctx.beginPath();
           // console.log("wirex"+globalScope[lst[i]][j].node2.absX());
-          this.ctx.moveTo((15+globalScope[lst[i]][j].node1.absX()-simulationArea.minWidth)*unitWidth,(15+globalScope[lst[i]][j].node1.absY()-simulationArea.minHeight+5)*unitHeight);
-          this.ctx.lineTo((15+globalScope[lst[i]][j].node2.absX()-simulationArea.minWidth)*unitWidth,(15+globalScope[lst[i]][j].node2.absY()-simulationArea.minHeight+5)*unitHeight);
+          this.ctx.moveTo((10+globalScope[lst[i]][j].node1.absX()-simulationArea.minWidth)*unit,(10+globalScope[lst[i]][j].node1.absY()-simulationArea.minHeight+5)*unit);
+          this.ctx.lineTo((10+globalScope[lst[i]][j].node2.absX()-simulationArea.minWidth)*unit,(10+globalScope[lst[i]][j].node2.absY()-simulationArea.minHeight+5)*unit);
           this.ctx.strokeStyle = "white";
           this.ctx.lineWidth = 1;
           this.ctx.stroke();
         }
       }
       else if(lst[i]!='nodes'){
-          var relUnit;
-          var relRectUnit;
-          var xadj;
-          var yadj;
+
 
           for(var j=0;j<globalScope[lst[i]].length;j++)
           {
@@ -68,7 +70,10 @@ var miniMapArea = {
             // console.log("YY"+yy);
             this.ctx.beginPath();
             var obj = globalScope[lst[i]][j];
-            this.ctx.rect((15+obj.x-obj.leftDimensionX-simulationArea.minWidth)*unitWidth,(15+obj.y-obj.upDimensionY-simulationArea.minHeight)*unitHeight,(obj.rightDimensionX+obj.leftDimensionX)*unitWidth,(obj.downDimensionY+obj.upDimensionY)*unitHeight);
+            // var unit = unitHeight;
+            // if(unitWidth<unitHeight)
+            //     unit = unitWidth;
+            this.ctx.rect((15+obj.x-obj.leftDimensionX-simulationArea.minWidth)*unit,(15+obj.y-obj.upDimensionY-simulationArea.minHeight)*unit,(obj.rightDimensionX+obj.leftDimensionX)*unit,(obj.downDimensionY+obj.upDimensionY)*unit);
             // console.log("lx"+obj.leftDimensionX);
             // console.log("rx"+obj.rightDimensionX);
             // console.log("uy"+obj.upDimensionY);
