@@ -1,11 +1,16 @@
 .side {
-    width: 260px;
+    width: 270px;
     height: 100%;
     background-color: #333;
     padding: 3px;
     color: #fff;
     border-side: 1px solid #0099ff;
     border-bottom: 40px solid #0099ff;
+    padding: 0.5em;
+}
+
+.ui-accordion-header-icon.ui-icon {
+    background-image: url("./ui-icons_white_256x240.png");
 }
 
 .noSelect {
@@ -79,6 +84,7 @@
     font-size: 1.3em;
     color: #0099ff;
     margin-bottom: 0.55em;
+    text-align: center;
 }
 
 #moduleProperty-header {
