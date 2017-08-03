@@ -50,7 +50,7 @@ var miniMapArea = {
 
 //  to show the area of current canvas
     this.ctx.beginPath();
-    this.ctx.rect((this.pageX - this.pageWidth - this.minX)*unitWidth, (this.pageY - this.pageHeight - this.minY)*unitHeight, this.pageWidth*unitWidth, this.pageHeight*unitHeight);
+    this.ctx.rect(2.5+(this.pageX - this.pageWidth - this.minX)*unitWidth, 2.5+(this.pageY - this.pageHeight - this.minY)*unitHeight, this.pageWidth*unitWidth, this.pageHeight*unitHeight);
     this.ctx.fillStyle = "pink";
     this.ctx.fill();
     this.ctx.stroke();
@@ -64,8 +64,8 @@ var miniMapArea = {
         {
           this.ctx.beginPath();
           // console.log("wirex"+globalScope[lst[i]][j].node2.absX());
-          this.ctx.moveTo((globalScope[lst[i]][j].node1.absX()-this.minX)*unitWidth,(globalScope[lst[i]][j].node1.absY()-this.minY)*unitHeight);
-          this.ctx.lineTo((globalScope[lst[i]][j].node2.absX()-this.minX)*unitWidth,(globalScope[lst[i]][j].node2.absY()-this.minY)*unitHeight);
+          this.ctx.moveTo((2.5+globalScope[lst[i]][j].node1.absX()-this.minX)*unitWidth,(2.5+globalScope[lst[i]][j].node1.absY()-this.minY)*unitHeight);
+          this.ctx.lineTo((2.5+globalScope[lst[i]][j].node2.absX()-this.minX)*unitWidth,(2.5+globalScope[lst[i]][j].node2.absY()-this.minY)*unitHeight);
           this.ctx.strokeStyle = "green";
           this.ctx.lineWidth = 1;
           this.ctx.stroke();
@@ -92,7 +92,7 @@ var miniMapArea = {
             // if(unitWidth<unitHeight)
             //     unit = unitWidth;
             var len = Math.max((obj.rightDimensionX+obj.leftDimensionX),(obj.downDimensionY+obj.upDimensionY));
-            this.ctx.rect((obj.x-obj.leftDimensionX-this.minX)*unitWidth,(obj.y-obj.upDimensionY-this.minY)*unitHeight,len*unit,len*unit);
+            this.ctx.rect(2.5+(obj.x-obj.leftDimensionX-this.minX)*unitWidth,(2.5+obj.y-obj.upDimensionY-this.minY)*unitHeight,len*unit,len*unit);
             // console.log("lx"+obj.leftDimensionX);
             // console.log("rx"+obj.rightDimensionX);
             // console.log("uy"+obj.upDimensionY);
