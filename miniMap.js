@@ -92,7 +92,7 @@ var miniMapArea = {
             // if(unitWidth<unitHeight)
             //     unit = unitWidth;
             var len = Math.max((obj.rightDimensionX+obj.leftDimensionX),(obj.downDimensionY+obj.upDimensionY));
-            this.ctx.rect((5+obj.x-obj.leftDimensionX-this.minX)*unitWidth,(5+obj.y-obj.upDimensionY-this.minY)*unitHeight,len*unit,len*unit);
+            this.ctx.rect((obj.x-obj.leftDimensionX-this.minX)*unitWidth,(obj.y-obj.upDimensionY-this.minY)*unitHeight,len*unit,len*unit);
             // console.log("lx"+obj.leftDimensionX);
             // console.log("rx"+obj.rightDimensionX);
             // console.log("uy"+obj.upDimensionY);
