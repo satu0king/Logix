@@ -44,9 +44,9 @@ var miniMapArea = {
   },
   resolve : function(lst, length, width){
 
-    var unitHeight = (this.canvas.height)/(length);
-    var unitWidth = (this.canvas.width)/(width);
-    var unit=Math.max((this.canvas.height)/(length),(this.canvas.width)/(width));
+    var unitHeight = (this.canvas.height-5)/(length);
+    var unitWidth = (this.canvas.width-5)/(width);
+    var unit=Math.max((this.canvas.height-5)/(length),(this.canvas.width-5)/(width));
 
 //  to show the area of current canvas
     this.ctx.beginPath();
