@@ -13,10 +13,6 @@ var miniMapArea = {
     this.minX = Math.min(simulationArea.minWidth,(this.pageX - this.pageWidth)/globalScope.scale);
     this.maxX = Math.max(simulationArea.maxWidth,(this.pageX)/globalScope.scale);
 
-    // console.log("smh"+simulationArea.maxHeight);
-    // console.log("maxPageY"+(this.pageY));
-    // console.log("maxY"+this.maxY);
-    console.log(this.pageHeight);
 
     var len = this.maxY - this.minY;
     var wid = this.maxX - this.minX;
