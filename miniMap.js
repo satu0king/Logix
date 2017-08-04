@@ -46,7 +46,7 @@ var miniMapArea = {
 
     var unitHeight = (this.canvas.height-5)/(length);
     var unitWidth = (this.canvas.width-5)/(width);
-    var unit=Math.max((this.canvas.height-5)/(length),(this.canvas.width-5)/(width));
+    var unit=Math.max(unitHeight,unitWidth);
 
 //  to show the area of current canvas
     this.ctx.beginPath();
@@ -64,8 +64,8 @@ var miniMapArea = {
         {
           this.ctx.beginPath();
           // console.log("wirex"+globalScope[lst[i]][j].node2.absX());
-          this.ctx.moveTo((2.5+globalScope[lst[i]][j].node1.absX()-this.minX)*unitWidth,(2.5+globalScope[lst[i]][j].node1.absY()-this.minY)*unitHeight);
-          this.ctx.lineTo((2.5+globalScope[lst[i]][j].node2.absX()-this.minX)*unitWidth,(2.5+globalScope[lst[i]][j].node2.absY()-this.minY)*unitHeight);
+          this.ctx.moveTo(2.5+(globalScope[lst[i]][j].node1.absX()-this.minX)*unitWidth,2.5+(globalScope[lst[i]][j].node1.absY()-this.minY)*unitHeight);
+          this.ctx.lineTo(2.5+(globalScope[lst[i]][j].node2.absX()-this.minX)*unitWidth,2.5+(globalScope[lst[i]][j].node2.absY()-this.minY)*unitHeight);
           this.ctx.strokeStyle = "green";
           this.ctx.lineWidth = 1;
           this.ctx.stroke();
@@ -91,8 +91,7 @@ var miniMapArea = {
             // var unit = unitHeight;
             // if(unitWidth<unitHeight)
             //     unit = unitWidth;
-            var len = Math.max((obj.rightDimensionX+obj.leftDimensionX),(obj.downDimensionY+obj.upDimensionY));
-            this.ctx.rect(2.5+(obj.x-obj.leftDimensionX-this.minX)*unitWidth,(2.5+obj.y-obj.upDimensionY-this.minY)*unitHeight,len*unit,len*unit);
+            this.ctx.rect(2.5+(obj.x-obj.leftDimensionX-this.minX)*unitWidth,2.5+(obj.y-obj.upDimensionY-this.minY)*unitHeight,(obj.rightDimensionX+obj.leftDimensionX)*unit,(obj.downDimensionY+obj.upDimensionY)*unit);
             // console.log("lx"+obj.leftDimensionX);
             // console.log("rx"+obj.rightDimensionX);
             // console.log("uy"+obj.upDimensionY);
