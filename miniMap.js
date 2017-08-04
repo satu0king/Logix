@@ -3,15 +3,20 @@ var miniMapArea = {
   canvas: document.getElementById("miniMapArea"),
   setup : function(){
 
-    this.pageHeight = Math.round(((parseInt($("#simulationArea").height()))/globalScope.scale)/unit)*unit;
-    this.pageWidth = Math.round(((parseInt($("#simulationArea").width()))/globalScope.scale)/unit)*unit;
-    this.pageY = (this.pageHeight-50-globalScope.oy);  // -50 for tool bar? Check again
+    this.pageHeight = Math.round(((parseInt($("#simulationArea").height())))/unit)*unit-50; // -50 for tool bar? Check again
+    this.pageWidth = Math.round(((parseInt($("#simulationArea").width())))/unit)*unit;
+    this.pageY = (this.pageHeight-globalScope.oy);
     this.pageX =  (this.pageWidth-globalScope.ox);
 
-    this.minY = Math.min(simulationArea.minHeight,this.pageY - this.pageHeight);
-    this.maxY = Math.max(simulationArea.maxHeight ,this.pageY);
-    this.minX = Math.min(simulationArea.minWidth,this.pageX - this.pageWidth);
-    this.maxX = Math.max(simulationArea.maxWidth,this.pageX);
+    this.minY = Math.min(simulationArea.minHeight,(this.pageY - this.pageHeight)/globalScope.scale);
+    this.maxY = Math.max(simulationArea.maxHeight ,this.pageY/globalScope.scale);
+    this.minX = Math.min(simulationArea.minWidth,(this.pageX - this.pageWidth)/globalScope.scale);
+    this.maxX = Math.max(simulationArea.maxWidth,(this.pageX)/globalScope.scale);
+
+    // console.log("smh"+simulationArea.maxHeight);
+    // console.log("maxPageY"+(this.pageY));
+    // console.log("maxY"+this.maxY);
+    console.log(this.pageHeight);
 
     var len = this.maxY - this.minY;
     var wid = this.maxX - this.minX;
@@ -50,7 +55,7 @@ var miniMapArea = {
 
 //  to show the area of current canvas
     this.ctx.beginPath();
-    this.ctx.rect(2.5+(this.pageX - this.pageWidth - this.minX)*unitWidth, 2.5+(this.pageY - this.pageHeight - this.minY)*unitHeight, this.pageWidth*unitWidth, this.pageHeight*unitHeight);
+    this.ctx.rect(2.5+((this.pageX - this.pageWidth)/globalScope.scale - this.minX)*unitWidth, 2.5+((this.pageY - this.pageHeight)/globalScope.scale - this.minY)*unitHeight, this.pageWidth*unitWidth/globalScope.scale, this.pageHeight*unitHeight/globalScope.scale);
     this.ctx.fillStyle = "pink";
     this.ctx.fill();
     this.ctx.stroke();
