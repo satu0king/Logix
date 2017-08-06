@@ -112,3 +112,7 @@ var miniMapArea = {
 
   }
 };
+
+<div id="miniMap">
+  <canvas id="miniMapArea" style="position: absolute; left:0; top: 0; z-index: 2;"></canvas>
+</div>
