@@ -229,6 +229,7 @@ window.addEventListener('mouseup', function(e) {
     // return;
     // update();
     //console.log(simulationArea.hover)
+    $('#miniMap').fadeOut('fast');
     simulationArea.mouseDown = false;
     for(var i=0;i<4;i++){
         updatePosition=true;

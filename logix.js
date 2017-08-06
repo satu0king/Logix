@@ -223,7 +223,7 @@ function resetup() {
     DPR=window.devicePixelRatio||1;
     width = document.getElementById("simulationArea").clientWidth*DPR;
     if(!embed){
-        height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight)*DPR;
+        height = (document.getElementById("simulation").clientHeight - document.getElementById("plot").clientHeight- document.getElementById("toolbar").clientHeight)*DPR;
     }
     else{
         height = (document.getElementById("simulationArea").clientHeight)*DPR;
@@ -1024,7 +1024,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
 
 
         // calls the custom circuit design
-        if (this.customDraw) 
+        if (this.customDraw)
           this.customDraw();
 
         //draws nodes
