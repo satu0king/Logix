@@ -230,7 +230,7 @@ window.addEventListener('mouseup', function(e) {
     // return;
     // update();
     //console.log(simulationArea.hover)
-    $('#miniMap').fadeOut('fast');
+    setTimeout(function(){if(simulationArea.lastSelected==globalScope.root&&simulationArea.mouseDown)return;$('#miniMap').fadeOut('fast');},2000);
     simulationArea.mouseDown = false;
     for(var i=0;i<4;i++){
         updatePosition=true;
