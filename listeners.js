@@ -47,6 +47,7 @@ document.getElementById("simulationArea").addEventListener('mousedown', function
     //console.log("DEBUG:",simulationArea.lastSelected)
     // //console.log(simulationArea.mouseDown);
     // //console.log(simulationArea.mouseDown, "mouseDOn");
+    $('.dropdown.open').removeClass('open');
 });
 window.addEventListener('mousemove', function(e) {
     // return;

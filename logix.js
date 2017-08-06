@@ -174,8 +174,8 @@ function setup() {
     //     // //console.log(localStorage.getItem("localHash"));
     //
     // }
+    resetup();
     setTimeout(function(){
-        resetup();
         if (window.location.hash.length > 1) {
 
             var http = new XMLHttpRequest();
@@ -209,7 +209,7 @@ function setup() {
             localStorage.removeItem("recover");
 
         }
-    },10);
+    },1000);
 
 
 
