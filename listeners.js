@@ -207,7 +207,9 @@ window.addEventListener('keydown', function(e) {
         if (simulationArea.lastSelected.setLabel !== undefined)
             simulationArea.lastSelected.setLabel();
     }
-
+    if(e.key == "0") {
+    miniMapArea.setup();
+  }
     // //console.log()
     // update();
 })
@@ -228,6 +230,7 @@ window.addEventListener('mouseup', function(e) {
     // return;
     // update();
     //console.log(simulationArea.hover)
+    setTimeout(function(){if(simulationArea.lastSelected==globalScope.root&&simulationArea.mouseDown)return;$('#miniMap').fadeOut('fast');},2000);
     simulationArea.mouseDown = false;
     for(var i=0;i<4;i++){
         updatePosition=true;

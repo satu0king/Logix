@@ -23,6 +23,18 @@
     cursor: default;
 }
 
+#container {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+#container > div{
+    display: table-row;
+    height: 0;
+}
+#container > div.fill{
+    height: auto;
+}
 
 #modules-header {
     margin-bottom: 0.5em;
@@ -265,6 +277,21 @@ body, html {
       height:100%;
        overflow:hidden;
 background-color: "white";
+}
+
+#miniMap{
+  position: absolute;
+  z-index: -1;
+  bottom: 40px;
+  right: 40px;
+  /*height:150px;
+  width: 25%;*/
+  overflow-y: scroll;
+  background-color: black;
+  /*border:1px solid #aaa;*/
+  opacity: 1;
+  box-shadow: 0px 0px 15px #888888;
+  /*transition: opacity .25s ease-in-out;*/
 }
 
 #plot{
