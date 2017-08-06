@@ -23,6 +23,18 @@
     cursor: default;
 }
 
+#container {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+#container > div{
+    display: table-row;
+    height: 0;
+}
+#container > div.fill{
+    height: auto;
+}
 
 #modules-header {
     margin-bottom: 0.5em;
