@@ -121,16 +121,14 @@ window.addEventListener('keydown', function(e) {
 
     if (simulationArea.controlDown&&e.keyCode == 187) {
         e.preventDefault();
-        if(globalScope.scale<4*DPR){
-          changeScale(.1*DPR);
-        }
+        if(globalScope.scale<4*DPR)
+        changeScale(.1*DPR);
     }
     // zoom out (-)
     if (simulationArea.controlDown&&e.keyCode == 189 ) {
         e.preventDefault();
-        if(globalScope.scale>0.5*DPR){
-          changeScale(-.1*DPR);
-        }
+        if(globalScope.scale>0.5*DPR)
+        changeScale(-.1*DPR);
     }
 
 
