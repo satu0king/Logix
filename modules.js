@@ -3016,43 +3016,25 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
 
 }
 
-function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8, controlSignalSize = 3) {
+function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
     // console.log("HIT");
     // console.log(x,y,scope,dir,bitWidth,controlSignalSize);
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
-    this.controlSignalSize = controlSignalSize;
+   
     this.setDimensions(50,50);
     this.rectangleObject = false;
 
     //this.inp = [];
     this.inp1 = new Node(-40, -30, 0, this, this.bitwidth, "A");
     this.inp2 = new Node(-40, 30, 0, this, this.bitwidth, "B");
-    this.inp3 = new Node(0, 0, 0, this, this.bitwidth);
+    
     //this.inp.push(this.inp1);
     //this.inp.push(this.inp2);
-    this.controlSignalInput = new Node(-10, -50, 0, this, this.controlSignalSize, "Ctrl");
+    this.controlSignalInput = new Node(-10, -50, 0, this, 3, "Ctrl");
     this.carryOut = new Node(-10, 50, 1, this, 1, "Cout");
     this.output = new Node(30, 10, 1, this, this.bitwidth, "Out");
     //this.overflow = new Node(0, -10, 1, this);
 
-    this.changeControlSignalSize = function(size) {
-        if (size == undefined || size < 1 || size > 32) return;
-        if (this.controlSignalSize == size) return;
-        var obj = new window[this.objectType](this.x, this.y, this.scope, this.direction, this.bitWidth, size);
-        this.cleanDelete();
-        simulationArea.lastSelected = obj;
-        return obj;
-    }
-
-    this.mutableProperties = {
-        "controlSignalSize": {
-            name: "Control Signal Size",
-            type: "number",
-            max: "32",
-            min: "1",
-            func: "changeControlSignalSize",
-        },
-    }
 
     this.newBitWidth = function(bitWidth) {
         this.bitWidth = bitWidth;
@@ -3070,7 +3052,6 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8, controlSign
                 inp2: findNode(this.inp2),
                 output: findNode(this.output),
                 carryOut: findNode(this.carryOut),
-                overflow: findNode(this.overflow),
                 controlSignalInput: findNode(this.controlSignalInput)
             },
         }
