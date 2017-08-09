@@ -3015,3 +3015,145 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
     }
 
 }
+
+function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8, controlSignalSize = 3) {
+    // console.log("HIT");
+    // console.log(x,y,scope,dir,bitWidth,controlSignalSize);
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    this.controlSignalSize = controlSignalSize;
+    this.setDimensions(50,50);
+    this.rectangleObject = false;
+
+    //this.inp = [];
+    this.inp1 = new Node(-40, -30, 0, this, this.bitwidth, "A");
+    this.inp2 = new Node(-40, 30, 0, this, this.bitwidth, "B");
+    this.inp3 = new Node(0, 0, 0, this, this.bitwidth);
+    //this.inp.push(this.inp1);
+    //this.inp.push(this.inp2);
+    this.controlSignalInput = new Node(-10, -50, 0, this, this.controlSignalSize, "Ctrl");
+    this.carryOut = new Node(-10, 50, 1, this, 1, "Cout");
+    this.output = new Node(30, 10, 1, this, this.bitwidth, "Out");
+    //this.overflow = new Node(0, -10, 1, this);
+
+    this.changeControlSignalSize = function(size) {
+        if (size == undefined || size < 1 || size > 32) return;
+        if (this.controlSignalSize == size) return;
+        var obj = new window[this.objectType](this.x, this.y, this.scope, this.direction, this.bitWidth, size);
+        this.cleanDelete();
+        simulationArea.lastSelected = obj;
+        return obj;
+    }
+
+    this.mutableProperties = {
+        "controlSignalSize": {
+            name: "Control Signal Size",
+            type: "number",
+            max: "32",
+            min: "1",
+            func: "changeControlSignalSize",
+        },
+    }
+
+    this.newBitWidth = function(bitWidth) {
+        this.bitWidth = bitWidth;
+        this.inp1.bitWidth = bitWidth;
+        this.inp2.bitWidth = bitWidth;
+        this.output.bitWidth = bitWidth;
+    }
+
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.direction, this.bitWidth, this.controlSignalSize],
+            nodes: {
+                //inp: this.inp.map(findNode),
+                inp1: findNode(this.inp1),
+                inp2: findNode(this.inp2),
+                output: findNode(this.output),
+                carryOut: findNode(this.carryOut),
+                overflow: findNode(this.overflow),
+                controlSignalInput: findNode(this.controlSignalInput)
+            },
+        }
+        return data;
+    }
+
+    this.customDraw = function() {
+        ctx = simulationArea.context;
+        var xx = this.x;
+        var yy = this.y;
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "white";
+        ctx.lineWidth = correctWidth(3);
+        ctx.beginPath();
+        moveTo(ctx, 30, 10, xx, yy, this.direction);
+        lineTo(ctx, 30, -20, xx, yy, this.direction);
+        moveTo(ctx, 30, -20, xx, yy, this.direction);
+        lineTo(ctx, 10, -50, xx, yy, this.direction);
+        moveTo(ctx, 10, -50, xx, yy, this.direction);
+        lineTo(ctx, -40, -50, xx, yy, this.direction);
+        moveTo(ctx, -40, -50, xx, yy, this.direction);
+        lineTo(ctx, -40, -20, xx, yy, this.direction);
+        moveTo(ctx, -40, -20, xx, yy, this.direction);
+        lineTo(ctx, -20, -10, xx, yy, this.direction);
+        moveTo(ctx, -20, -10, xx, yy, this.direction);
+        lineTo(ctx, -20, 10, xx, yy, this.direction);
+        moveTo(ctx, -20, 10, xx, yy, this.direction);
+        lineTo(ctx, -40, 20, xx, yy, this.direction);
+        moveTo(ctx, -40, 20, xx, yy, this.direction);
+        lineTo(ctx, -40, 50, xx, yy, this.direction);
+        moveTo(ctx, -40, 50, xx, yy, this.direction);
+        lineTo(ctx, 10, 50, xx, yy, this.direction);
+        moveTo(ctx, 10, 50, xx, yy, this.direction);
+        lineTo(ctx, 30, 20, xx, yy, this.direction);
+        moveTo(ctx, 30, 20, xx, yy, this.direction);
+        lineTo(ctx, 30, 0, xx, yy, this.direction);
+        ctx.closePath();
+        ctx.stroke();
+
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
+            ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+
+      }
+    this.resolve = function() {
+        if (this.isResolvable() == false) {
+            return;
+        }
+        if(this.controlSignalInput.value == 0){
+          this.output.value = ((this.inp1.value)&(this.inp2.value));
+          this.scope.stack.push(this.output);
+        }
+        else if (this.controlSignalInput.value == 1) {
+          this.output.value = ((this.inp1.value)|(this.inp2.value));
+          this.scope.stack.push(this.output);
+        }
+        else if (this.controlSignalInput.value == 2) {
+          var sum = this.inp1.value + this.inp2.value;
+          this.output.value = ((sum) << (32 - this.bitWidth)) >>> (32 - this.bitWidth);
+          this.carryOut.value = +((sum >>> (this.bitWidth)) !== 0);
+          this.scope.stack.push(this.carryOut);
+          this.scope.stack.push(this.output);
+        }
+        else if (this.controlSignalInput.value == 3) {
+          return;
+        }
+        else if(this.controlSignalInput.value == 4) {
+          this.output.value = ((this.inp1.value))&(~(this.inp2.value));
+          this.scope.stack.push(this.output);
+        }
+        else if(this.controlSignalInput.value == 5){
+          this.output.value = ((this.inp1.value)) | (~(this.inp2.value));
+          this.scope.stack.push(this.output);
+        }
+        else if (this.controlSignalInput.value == 7) {
+          if(this.inp1.value < this.inp2.value)
+            this.output.value = 1;
+          else
+            this.output.value = 0;
+          this.scope.stack.push(this.output);
+        }
+
+    }
+
+}
