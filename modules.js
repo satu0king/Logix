@@ -3032,7 +3032,7 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
     //this.inp.push(this.inp2);
     this.controlSignalInput = new Node(-10, -50, 0, this, 3, "Ctrl");
     this.carryOut = new Node(-10, 50, 1, this, 1, "Cout");
-    this.output = new Node(30, 10, 1, this, this.bitwidth, "Out");
+    this.output = new Node(30, 0, 1, this, this.bitwidth, "Out");
     //this.overflow = new Node(0, -10, 1, this);
 
 
@@ -3068,25 +3068,22 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
         ctx.beginPath();
         moveTo(ctx, 30, 10, xx, yy, this.direction);
         lineTo(ctx, 30, -20, xx, yy, this.direction);
-        moveTo(ctx, 30, -20, xx, yy, this.direction);
+       
         lineTo(ctx, 10, -50, xx, yy, this.direction);
-        moveTo(ctx, 10, -50, xx, yy, this.direction);
+       
         lineTo(ctx, -40, -50, xx, yy, this.direction);
-        moveTo(ctx, -40, -50, xx, yy, this.direction);
-        lineTo(ctx, -40, -20, xx, yy, this.direction);
-        moveTo(ctx, -40, -20, xx, yy, this.direction);
+       
+        lineTo(ctx, -40, -30, xx, yy, this.direction);
+       
         lineTo(ctx, -20, -10, xx, yy, this.direction);
-        moveTo(ctx, -20, -10, xx, yy, this.direction);
+       
         lineTo(ctx, -20, 10, xx, yy, this.direction);
-        moveTo(ctx, -20, 10, xx, yy, this.direction);
-        lineTo(ctx, -40, 20, xx, yy, this.direction);
-        moveTo(ctx, -40, 20, xx, yy, this.direction);
+      
+        lineTo(ctx, -40, 30, xx, yy, this.direction);
+
         lineTo(ctx, -40, 50, xx, yy, this.direction);
-        moveTo(ctx, -40, 50, xx, yy, this.direction);
         lineTo(ctx, 10, 50, xx, yy, this.direction);
-        moveTo(ctx, 10, 50, xx, yy, this.direction);
         lineTo(ctx, 30, 20, xx, yy, this.direction);
-        moveTo(ctx, 30, 20, xx, yy, this.direction);
         lineTo(ctx, 30, 0, xx, yy, this.direction);
         ctx.closePath();
         ctx.stroke();
