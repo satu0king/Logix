@@ -234,7 +234,7 @@ function resetup() {
     backgroundArea.setup();
     if(!embed)plotArea.setup();
     simulationArea.setup();
-    miniMapArea.setup();
+    if(!embed)miniMapArea.setup();
     // update();
     dots();
 

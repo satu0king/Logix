@@ -154,9 +154,11 @@ function updateSelectionsAndPane(scope = globalScope) {
         if (simulationArea.shiftDown) {
             objectSelection = true;
         } else {
-            findDimensions(scope);
-            miniMapArea.setup();
-            $('#miniMap').show();
+            if(!embed){
+                findDimensions(scope);
+                miniMapArea.setup();
+                $('#miniMap').show();
+            }
         }
     } else if (simulationArea.lastSelected == scope.root && simulationArea.mouseDown) {
         //pane canvas
@@ -166,7 +168,7 @@ function updateSelectionsAndPane(scope = globalScope) {
             globalScope.ox = Math.round(globalScope.ox);
             globalScope.oy = Math.round(globalScope.oy);
             gridUpdate = true;
-            miniMapArea.setup();
+            if(!embed)miniMapArea.setup();
         } else {
 
         }
