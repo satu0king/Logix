@@ -2521,8 +2521,6 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
         var xx = this.x;
         var yy = this.y;
 
-        if(this.direction=="LEFT" || this.direction=="RIGHT") this.inp1.leftx=50-xSize;
-        this.inp1.refresh();
 
         rect2(ctx, -50+xSize, -20, 100-2*xSize, 40, xx, yy, "RIGHT");
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
@@ -2568,6 +2566,9 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
         } else {
             this.inp1.leftx = 20;
         }
+        // if(this.direction=="LEFT" || this.direction=="RIGHT") this.inp1.leftx=50-xSize;
+        //     this.inp1.refresh();
+
         this.inp1.refresh();
     }
 }
@@ -3020,14 +3021,14 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
     // console.log("HIT");
     // console.log(x,y,scope,dir,bitWidth,controlSignalSize);
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
-   
+
     this.setDimensions(50,50);
     this.rectangleObject = false;
 
     //this.inp = [];
     this.inp1 = new Node(-40, -30, 0, this, this.bitwidth, "A");
     this.inp2 = new Node(-40, 30, 0, this, this.bitwidth, "B");
-    
+
     //this.inp.push(this.inp1);
     //this.inp.push(this.inp2);
     this.controlSignalInput = new Node(-10, -50, 0, this, 3, "Ctrl");
@@ -3068,17 +3069,17 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
         ctx.beginPath();
         moveTo(ctx, 30, 10, xx, yy, this.direction);
         lineTo(ctx, 30, -20, xx, yy, this.direction);
-       
+
         lineTo(ctx, 10, -50, xx, yy, this.direction);
-       
+
         lineTo(ctx, -40, -50, xx, yy, this.direction);
-       
+
         lineTo(ctx, -40, -30, xx, yy, this.direction);
-       
+
         lineTo(ctx, -20, -10, xx, yy, this.direction);
-       
+
         lineTo(ctx, -20, 10, xx, yy, this.direction);
-      
+
         lineTo(ctx, -40, 30, xx, yy, this.direction);
 
         lineTo(ctx, -40, 50, xx, yy, this.direction);
