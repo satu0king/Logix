@@ -226,7 +226,6 @@ function updateSelectionsAndPane(scope = globalScope) {
 
 
 function renderCanvas(scope) {
-    console.log(gridUpdate);
     simulationArea.clear();
     if (gridUpdate) {
         gridUpdate = false;
@@ -241,8 +240,10 @@ function renderCanvas(scope) {
         ctx.beginPath();
         ctx.lineWidth = 2;
         ctx.strokeStyle = "black"
+        ctx.fillStyle = "rgba(0,0,0,0.1)"
         rect2(ctx, simulationArea.mouseDownX, simulationArea.mouseDownY, simulationArea.mouseX - simulationArea.mouseDownX, simulationArea.mouseY - simulationArea.mouseDownY, 0, 0, "RIGHT");
         ctx.stroke();
+        ctx.fill();
     }
 }
 
