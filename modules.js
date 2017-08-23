@@ -214,7 +214,7 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
     }
 
     this.output1 = new Node(20 - xOff, 0, 1, this);
-    this.controlSignalInput = new Node(0, yOff * 10 * (this.inputSize / 2 - 1) + xOff + 10, 0, this, this.controlSignalSize);
+    this.controlSignalInput = new Node(0, yOff * 10 * (this.inputSize / 2 - 1) + xOff + 10, 0, this, this.controlSignalSize,"Control Signal");
 
     this.changeControlSignalSize = function(size) {
         if (size == undefined || size < 1 || size > 32) return;
@@ -914,7 +914,7 @@ function TriState(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
     this.inp1 = new Node(-10, 0, 0, this);
     this.output1 = new Node(20, 0, 1, this);
-    this.state = new Node(0, 0, 0, this, 1);
+    this.state = new Node(0, 0, 0, this, 1,"Enable");
     this.customSave = function() {
         var data = {
             constructorParamaters: [this.direction, this.bitWidth],
@@ -974,7 +974,7 @@ function Buffer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     this.state = 0;
     this.preState = 0;
     this.inp1 = new Node(-10, 0, 0, this);
-    this.reset = new Node(0, 0, 0, this, 1);
+    this.reset = new Node(0, 0, 0, this, 1,"reset");
     this.output1 = new Node(20, 0, 1, this);
     this.customSave = function() {
         var data = {
@@ -1041,7 +1041,7 @@ function ControlledInverter(x, y, scope = globalScope, dir = "RIGHT", bitWidth =
 
     this.inp1 = new Node(-10, 0, 0, this);
     this.output1 = new Node(30, 0, 1, this);
-    this.state = new Node(0, 0, 0, this, 1);
+    this.state = new Node(0, 0, 0, this, 1,"Enable");
     this.customSave = function() {
         var data = {
             constructorParamaters: [this.direction, this.bitWidth],
@@ -1156,9 +1156,9 @@ function Rom(x, y, scope = globalScope, data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     this.rectangleObject=false;
     this.setDimensions(80, 50);
 
-    this.memAddr = new Node(-80, 0, 0, this, 4);
-    this.en = new Node(0, 50, 0, this, 1);
-    this.dataOut = new Node(80, 0, 1, this, 8);
+    this.memAddr = new Node(-80, 0, 0, this, 4,"Address");
+    this.en = new Node(0, 50, 0, this, 1,"Enable");
+    this.dataOut = new Node(80, 0, 1, this, 8,"DataOut");
     this.data = data || prompt("Enter data").split(' ').map(function(x) {
         return parseInt(x, 16);
     });
@@ -1852,9 +1852,9 @@ function BitSelector(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 2, sel
     this.setDimensions(20, 20);
     this.selectorBitWidth = selectorBitWidth || parseInt(prompt("Enter Selector bitWidth"), 10);
     this.rectangleObject = false;
-    this.inp1 = new Node(-20, 0, 0, this, this.bitWidth);
-    this.output1 = new Node(20, 0, 1, this, 1);
-    this.bitSelectorInp = new Node(0, 20, 0, this, this.selectorBitWidth);
+    this.inp1 = new Node(-20, 0, 0, this, this.bitWidth,"Input");
+    this.output1 = new Node(20, 0, 1, this, 1,"Output");
+    this.bitSelectorInp = new Node(0, 20, 0, this, this.selectorBitWidth,"Bit Selector");
 
 
     this.changeSelectorBitWidth = function(size) {
@@ -2084,8 +2084,6 @@ function NorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
         //for debugging
     }
 }
-
-
 
 function DigitalLed(x, y, scope = globalScope) {
     // Calling base class constructor
@@ -2389,7 +2387,7 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
         this.output1.push(a);
     }
 
-    this.controlSignalInput = new Node(0, yOff * 10 * (this.outputsize / 2 - 1) + xOff + 10, 0, this, this.controlSignalSize);
+    this.controlSignalInput = new Node(0, yOff * 10 * (this.outputsize / 2 - 1) + xOff + 10, 0, this, this.controlSignalSize,"Control Signal");
 
     this.customSave = function() {
         var data = {
@@ -2654,7 +2652,6 @@ function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     }
 
 }
-
 
 function LSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
