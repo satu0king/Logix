@@ -226,17 +226,22 @@ function updateSelectionsAndPane(scope = globalScope) {
 
 
 function renderCanvas(scope) {
+    var ctx = simulationArea.context;
     simulationArea.clear();
     if (gridUpdate) {
         gridUpdate = false;
         dots();
     }
     // dots(); // draw dots
+    canvasMessageData=undefined;
     for (var i = 0; i < scope.objects.length; i++)
         for (var j = 0; j < scope[scope.objects[i]].length; j++)
             scope[scope.objects[i]][j].draw();
+    if(canvasMessageData){
+        canvasMessage(ctx,canvasMessageData.string,canvasMessageData.x,canvasMessageData.y)
+    }
     if (objectSelection) {
-        ctx = simulationArea.context;
+
         ctx.beginPath();
         ctx.lineWidth = 2;
         ctx.strokeStyle = "black"

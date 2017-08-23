@@ -296,28 +296,28 @@ function Node(x, y, type, parent, bitWidth = undefined,label="") {
             //   //console.log("HIT");
         }
 
-        if(this.hover&&(!simulationArea.lastSelected||simulationArea.lastSelected==this)){
+        if(this.hover||(simulationArea.lastSelected==this)){
 
             if(this.showHover||simulationArea.lastSelected==this){
+                canvasMessageData={x:this.absX(),y:this.absY()-15}
                 if(this.type==2){
                     var v="X";
                     if(this.value!==undefined)
                     v=this.value.toString(16);
+                    // var ctx=simulationArea.context;
                     if(this.label.length){
-                        canvasMessage(ctx,this.label+" : "+v,this.absX(),this.absY()-15);
+                        canvasMessageData.string=this.label+" : "+v;
                     }
                     else{
-                        canvasMessage(ctx, v ,this.absX(),this.absY()-15);
+                        canvasMessageData.string=v;
                     }
                 }
                 else if(this.label.length){
-
-                            canvasMessage(ctx,this.label,this.absX(),this.absY()-15);
-
+                    canvasMessageData.string=this.label;
                 }
             }
             else{
-                setTimeout(function(){ if(simulationArea.hover)simulationArea.hover.showHover=true;},400);
+                setTimeout(function(){ if(simulationArea.hover)simulationArea.hover.showHover=true;canvasUpdate=true;renderCanvas(globalScope)},400);
             }
         }
 

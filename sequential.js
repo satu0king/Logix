@@ -4,7 +4,7 @@ function clockTick() {
 
     globalScope.clockTick();
     play();
-    scheduleUpdate();
+    scheduleUpdate(0,20);
 
 }
 
@@ -459,11 +459,11 @@ function TTY(x, y, scope = globalScope, rows = 3, cols = 32) {
     this.setHeight(this.elementHeight / 2);
     // this.element = new Element(x, y, "TTY",this.elementWidth/2, this,this.elementHeight/2);
 
-    this.clockInp = new Node(-this.elementWidth / 2, this.elementHeight / 2 - 10, 0, this, 1);
-    this.asciiInp = new Node(-this.elementWidth / 2, this.elementHeight / 2 - 30, 0, this, 7);
+    this.clockInp = new Node(-this.elementWidth / 2, this.elementHeight / 2 - 10, 0, this, 1,"Clock");
+    this.asciiInp = new Node(-this.elementWidth / 2, this.elementHeight / 2 - 30, 0, this, 7,"Ascii Input");
     // this.qOutput = new Node(20, -10, 1, this);
-    this.reset = new Node(30 - this.elementWidth / 2, this.elementHeight / 2, 0, this, 1);
-    this.en = new Node(10 - this.elementWidth / 2, this.elementHeight / 2, 0, this, 1);
+    this.reset = new Node(30 - this.elementWidth / 2, this.elementHeight / 2, 0, this, 1,"Reset");
+    this.en = new Node(10 - this.elementWidth / 2, this.elementHeight / 2, 0, this, 1,"Enable");
     // this.masterState = 0;
     // this.slaveState = 0;
     this.prevClockState = 0;
@@ -512,7 +512,7 @@ function TTY(x, y, scope = globalScope, rows = 3, cols = 32) {
     // }
     this.isResolvable = function() {
         if (this.reset.value == 1) return true;
-        else if (this.en.value == 0) return false;
+        else if (this.en.value == 0||(this.en.connections.length&&this.en.value==undefined)) return false;
         else if (this.clockInp.value == undefined) return false;
         else if (this.asciiInp.value == undefined) return false;
         return true;
@@ -612,11 +612,11 @@ function Keyboard(x, y, scope = globalScope, bufferSize = 32) {
     this.setWidth(this.elementWidth / 2);
     this.setHeight(this.elementHeight / 2);
 
-    this.clockInp = new Node(-this.elementWidth / 2, this.elementHeight / 2 - 10, 0, this, 1);
-    this.asciiOutput = new Node(30, this.elementHeight / 2, 1, this, 7);
-    this.available = new Node(10, this.elementHeight / 2, 1, this, 1);
-    this.reset = new Node(-10, this.elementHeight / 2, 0, this, 1);
-    this.en = new Node(-30, this.elementHeight / 2, 0, this, 1);
+    this.clockInp = new Node(-this.elementWidth / 2, this.elementHeight / 2 - 10, 0, this, 1,"Clock");
+    this.asciiOutput = new Node(30, this.elementHeight / 2, 1, this, 7,"Ascii Output");
+    this.available = new Node(10, this.elementHeight / 2, 1, this, 1,"Available");
+    this.reset = new Node(-10, this.elementHeight / 2, 0, this, 1,"Reset");
+    this.en = new Node(-30, this.elementHeight / 2, 0, this, 1,"Enable");
     this.prevClockState = 0;
     this.buffer = "";
     this.bufferOutValue = undefined;
@@ -632,7 +632,7 @@ function Keyboard(x, y, scope = globalScope, bufferSize = 32) {
     this.mutableProperties = {
         "bufferSize": {
             name: "Buffer Size",
-            type: "number",
+            type: "number",«»
             max: "100",
             min: "20",
             func: "changeBufferSize",
@@ -649,7 +649,7 @@ function Keyboard(x, y, scope = globalScope, bufferSize = 32) {
     }
     this.isResolvable = function() {
         if (this.reset.value == 1) return true;
-        else if (this.en.value == 0) return false;
+        else if (this.en.value == 0||(this.en.connections.length&&this.en.value==undefined)) return false;
         else if (this.clockInp.value == undefined) return false;
         return true;
     }
