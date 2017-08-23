@@ -1949,12 +1949,13 @@ function ConstantVal(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, sta
         this.scope.stack.push(this.output1);
     }
     this.dblclick = function() {
-        this.state = prompt("Re enter the value");
-        console.log(this.state);
+        this.state = prompt("Re enter the value")||"0";
         this.newBitWidth(this.state.toString().length);
         console.log(this.state, this.bitWidth);
     }
     this.newBitWidth = function(bitWidth) {
+        if(bitWidth>this.bitWidth)this.state='0'.repeat(bitWidth - this.bitWidth)+this.state;
+        else if(bitWidth<this.bitWidth)this.state=this.state.slice(this.bitWidth-bitWidth);
         this.bitWidth = bitWidth; //||parseInt(prompt("Enter bitWidth"),10);
         this.output1.bitWidth = bitWidth;
         this.setDimensions(10 * this.bitWidth, 10);
