@@ -632,7 +632,7 @@ function Keyboard(x, y, scope = globalScope, bufferSize = 32) {
     this.mutableProperties = {
         "bufferSize": {
             name: "Buffer Size",
-            type: "number",«»
+            type: "number",
             max: "100",
             min: "20",
             func: "changeBufferSize",

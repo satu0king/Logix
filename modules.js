@@ -299,6 +299,7 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         for (var i = 0; i < this.inputSize; i++) {
+            // fillText2(ctx, String(i), this.inp[i].x+7,  this.inp[i].y, xx, yy, "RIGHT")
             if(this.direction=="RIGHT") fillText(ctx, String(i), xx + this.inp[i].x + 7, yy + this.inp[i].y + 2, 10);
             else if(this.direction=="LEFT") fillText(ctx, String(i), xx + this.inp[i].x - 7, yy + this.inp[i].y + 2, 10);
             else if(this.direction=="UP") fillText(ctx, String(i), xx + this.inp[i].x, yy + this.inp[i].y - 4, 10);
@@ -1555,7 +1556,7 @@ function Splitter(x, y, scope = globalScope, dir = "RIGHT", bitWidth = undefined
         ctx.stroke();
         ctx.beginPath();
         for (var i = this.splitCount - 1; i >= 0; i--) {
-            fillText2(ctx, bitCount + ":" + (bitCount + this.bitWidthSplit[this.splitCount - i - 1]), 10, -20 * i + 14 + this.yOffset, xx, yy, this.direction);
+            fillText2(ctx, bitCount + ":" + (bitCount + this.bitWidthSplit[this.splitCount - i - 1]), 12, -20 * i + this.yOffset+10, xx, yy, this.direction);
             bitCount += this.bitWidthSplit[this.splitCount - i - 1];
         }
         ctx.fill();
