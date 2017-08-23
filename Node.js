@@ -309,7 +309,7 @@ function Node(x, y, type, parent, bitWidth = undefined,label="") {
                         canvasMessageData.string=this.label+" : "+v;
                     }
                     else{
-                        canvasMessageData.string=v;
+                         canvasMessageData.string=v;
                     }
                 }
                 else if(this.label.length){
