@@ -5,7 +5,7 @@ window.addEventListener('keyup', function(e) {
         // simulationArea.lastSelected.delete(); // delete key
         simulationArea.shiftDown = false;
     }
-    if (e.key == "Meta"||e.key=="Control") {
+    if (e.key == "Meta" || e.key == "Control") {
         simulationArea.controlDown = false;
     }
 });
@@ -14,10 +14,10 @@ document.getElementById("simulationArea").addEventListener('mousedown', function
 
 
     // if(simulationArea.mouseDown)return;
-    errorDetected=false;
-    updateSimulation=true;
-    updatePosition=true;
-    updateCanvas=true;
+    errorDetected = false;
+    updateSimulation = true;
+    updatePosition = true;
+    updateCanvas = true;
 
 
 
@@ -25,8 +25,8 @@ document.getElementById("simulationArea").addEventListener('mousedown', function
     simulationArea.selected = false;
     simulationArea.hover = undefined;
     var rect = simulationArea.canvas.getBoundingClientRect();
-    simulationArea.mouseDownRawX = (e.clientX - rect.left)*DPR;
-    simulationArea.mouseDownRawY = (e.clientY - rect.top)*DPR;
+    simulationArea.mouseDownRawX = (e.clientX - rect.left) * DPR;
+    simulationArea.mouseDownRawY = (e.clientY - rect.top) * DPR;
     simulationArea.mouseDownX = Math.round(((simulationArea.mouseDownRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
     simulationArea.mouseDownY = Math.round(((simulationArea.mouseDownRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
     simulationArea.mouseDown = true;
@@ -58,40 +58,42 @@ window.addEventListener('mousemove', function(e) {
 
 
     var rect = simulationArea.canvas.getBoundingClientRect();
-    simulationArea.mouseRawX = (e.clientX - rect.left)*DPR;
-    simulationArea.mouseRawY = (e.clientY - rect.top)*DPR;
+    simulationArea.mouseRawX = (e.clientX - rect.left) * DPR;
+    simulationArea.mouseRawY = (e.clientY - rect.top) * DPR;
     simulationArea.mouseX = Math.round(((simulationArea.mouseRawX - globalScope.ox) / globalScope.scale) / unit) * unit;
     simulationArea.mouseY = Math.round(((simulationArea.mouseRawY - globalScope.oy) / globalScope.scale) / unit) * unit;
 
     // return;
     // updateSimulation=true;
 
-    updateCanvas=true;
+    updateCanvas = true;
     //if(simulationArea.lastSelected&&simulationArea.lastSelected.objectType=="Node"){
-        // updatePosition=true;
-        // updateCanvas=true;
+    // updatePosition=true;
+    // updateCanvas=true;
     //}
-        // //console.log(simulationArea.lastSelected)
-        // scheduleUpdate(0,100);
-        // if(simulationArea.lastSelected)simulationArea.lastSelected.update();
+    // //console.log(simulationArea.lastSelected)
+    // scheduleUpdate(0,100);
+    // if(simulationArea.lastSelected)simulationArea.lastSelected.update();
     // }
 
-    if(simulationArea.lastSelected&&(simulationArea.mouseDown||simulationArea.lastSelected.newElement)){
+    if (simulationArea.lastSelected && (simulationArea.mouseDown || simulationArea.lastSelected.newElement)) {
         updateCanvas = true;
         var fn;
 
 
-        if(simulationArea.lastSelected==globalScope.root){
-            fn=function(){updateSelectionsAndPane();}
-        }
-        else{
-            fn=function(){simulationArea.lastSelected.update()};
+        if (simulationArea.lastSelected == globalScope.root) {
+            fn = function() {
+                updateSelectionsAndPane();
+            }
+        } else {
+            fn = function() {
+                simulationArea.lastSelected.update()
+            };
             // simulationArea.hover.update();
         }
-        scheduleUpdate(0,20,fn);
-    }
-    else {
-        scheduleUpdate(0,200);
+        scheduleUpdate(0, 20, fn);
+    } else {
+        scheduleUpdate(0, 200);
     }
 
     // if(simulationArea.hover){
@@ -107,34 +109,34 @@ window.addEventListener('mousemove', function(e) {
 });
 window.addEventListener('keydown', function(e) {
 
-    errorDetected=false;
-    updateSimulation=true;
-    updatePosition=true;
+    errorDetected = false;
+    updateSimulation = true;
+    updatePosition = true;
 
 
 
     // zoom in (+)
-    if (e.key == "Meta"||e.key=="Control") {
+    if (e.key == "Meta" || e.key == "Control") {
         simulationArea.controlDown = true;
     }
 
 
-    if (simulationArea.controlDown&&e.keyCode == 187) {
+    if (simulationArea.controlDown && e.keyCode == 187) {
         e.preventDefault();
-        if(globalScope.scale<4*DPR){
-          changeScale(.1*DPR);
+        if (globalScope.scale < 4 * DPR) {
+            changeScale(.1 * DPR);
         }
     }
     // zoom out (-)
-    if (simulationArea.controlDown&&e.keyCode == 189 ) {
+    if (simulationArea.controlDown && e.keyCode == 189) {
         e.preventDefault();
-        if(globalScope.scale>0.5*DPR){
-          changeScale(-.1*DPR);
+        if (globalScope.scale > 0.5 * DPR) {
+            changeScale(-.1 * DPR);
         }
     }
 
 
-    if(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height)return;
+    if (simulationArea.mouseRawX < 0 || simulationArea.mouseRawY < 0 || simulationArea.mouseRawX > width || simulationArea.mouseRawY > height) return;
 
 
 
@@ -144,20 +146,20 @@ window.addEventListener('keydown', function(e) {
     updateCanvas = true;
     wireToBeChecked = 1;
     // e.preventDefault();
-       console.log("KEY:"+e.key);
+    console.log("KEY:" + e.key);
 
-   if(simulationArea.controlDown&&(e.key=="C"||e.key=="c")){
-    //    simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
-    //    if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
-    //        simulationArea.copyList.push(simulationArea.lastSelected);
-    //    }
-    //    copy(simulationArea.copyList);
-   }
-   if(simulationArea.controlDown&&(e.key=="V"||e.key=="v")){
-    //    paste(simulationArea.copyData);
-   }
+    if (simulationArea.controlDown && (e.key == "C" || e.key == "c")) {
+        //    simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
+        //    if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
+        //        simulationArea.copyList.push(simulationArea.lastSelected);
+        //    }
+        //    copy(simulationArea.copyList);
+    }
+    if (simulationArea.controlDown && (e.key == "V" || e.key == "v")) {
+        //    paste(simulationArea.copyData);
+    }
     if (simulationArea.lastSelected && simulationArea.lastSelected.keyDown) {
-        if (e.key.toString().length == 1||e.key.toString()=="Backspace") {
+        if (e.key.toString().length == 1 || e.key.toString() == "Backspace") {
             simulationArea.lastSelected.keyDown(e.key.toString());
             return;
         }
@@ -166,12 +168,12 @@ window.addEventListener('keydown', function(e) {
     }
     if (e.keyCode == 16) {
         simulationArea.shiftDown = true;
-        if (simulationArea.lastSelected&&!simulationArea.lastSelected.keyDown&&simulationArea.lastSelected.objectType!="Wire"&&simulationArea.lastSelected.objectType!="CircuitElement" &&!simulationArea.multipleObjectSelections.contains(simulationArea.lastSelected)) {
+        if (simulationArea.lastSelected && !simulationArea.lastSelected.keyDown && simulationArea.lastSelected.objectType != "Wire" && simulationArea.lastSelected.objectType != "CircuitElement" && !simulationArea.multipleObjectSelections.contains(simulationArea.lastSelected)) {
             simulationArea.multipleObjectSelections.push(simulationArea.lastSelected);
             // simulationArea.lastSelected = undefined;
         }
     }
-    if (e.keyCode == 8 || e.key=="Delete") {
+    if (e.keyCode == 8 || e.key == "Delete") {
         if (simulationArea.lastSelected) simulationArea.lastSelected.delete();
         for (var i = 0; i < simulationArea.multipleObjectSelections.length; i++) {
             simulationArea.multipleObjectSelections[i].cleanDelete();
@@ -179,7 +181,7 @@ window.addEventListener('keydown', function(e) {
     }
 
 
-    if (simulationArea.controlDown&&e.key.charCodeAt(0) == 122) { // detect the special CTRL-Z code
+    if (simulationArea.controlDown && e.key.charCodeAt(0) == 122) { // detect the special CTRL-Z code
         undo();
     }
     // else{
@@ -202,22 +204,22 @@ window.addEventListener('keydown', function(e) {
         if (simulationArea.lastSelected.bitWidth !== undefined)
             simulationArea.lastSelected.newBitWidth(parseInt(prompt("Enter new bitWidth"), 10));
     }
-    if (e.key=="T"||e.key=="t") {
+    if (e.key == "T" || e.key == "t") {
         simulationArea.changeClockTime(prompt("Enter Time:"));
     }
     if ((e.keyCode == 108 || e.keyCode == 76) && simulationArea.lastSelected != undefined) {
         if (simulationArea.lastSelected.setLabel !== undefined)
             simulationArea.lastSelected.setLabel();
     }
-    if(e.key == "0") {
-    miniMapArea.setup();
-  }
+    if (e.key == "0") {
+        miniMapArea.setup();
+    }
     // //console.log()
     // update();
 })
 document.getElementById("simulationArea").addEventListener('dblclick', function(e) {
     scheduleUpdate(2);
-    if (simulationArea.lastSelected&&simulationArea.lastSelected.dblclick !== undefined) {
+    if (simulationArea.lastSelected && simulationArea.lastSelected.dblclick !== undefined) {
         simulationArea.lastSelected.dblclick();
     }
     if (!simulationArea.shiftDown) {
@@ -226,25 +228,35 @@ document.getElementById("simulationArea").addEventListener('dblclick', function(
     // //console.log(simulationArea.mouseDown, "mouseDOn");
 });
 
+function removeMiniMap(){
 
+        if (simulationArea.lastSelected == globalScope.root && simulationArea.mouseDown) return;
+        if (lastMiniMapShown+2000>= new Date().getTime()){
+            setTimeout(removeMiniMap,lastMiniMapShown+2000-new Date().getTime());
+            return;
+        }
+        $('#miniMap').fadeOut('fast');
+
+}
 window.addEventListener('mouseup', function(e) {
 
     // return;
     // update();
     //console.log(simulationArea.hover)
-    setTimeout(function(){if(simulationArea.lastSelected==globalScope.root&&simulationArea.mouseDown)return;$('#miniMap').fadeOut('fast');},2000);
+    lastMiniMapShown = new Date().getTime();
+    setTimeout(removeMiniMap, 2000);
     simulationArea.mouseDown = false;
-    for(var i=0;i<4;i++){
-        updatePosition=true;
-        wireToBeChecked=true;
+    for (var i = 0; i < 4; i++) {
+        updatePosition = true;
+        wireToBeChecked = true;
         update();
     }
-    errorDetected=false;
-    updateSimulation=true;
-    updatePosition=true;
-    updateCanvas=true;
-    gridUpdate=true;
-    wireToBeChecked=true;
+    errorDetected = false;
+    updateSimulation = true;
+    updatePosition = true;
+    updateCanvas = true;
+    gridUpdate = true;
+    wireToBeChecked = true;
 
     scheduleUpdate(1);
     var rect = simulationArea.canvas.getBoundingClientRect();
@@ -254,10 +266,9 @@ window.addEventListener('mouseup', function(e) {
     // simulationArea.mouseDownY = Math.round((simulationArea.mouseDownY - globalScope.oy / globalScope.scale) / unit) * unit;
 
 
-    if(!(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height))
-    {
-        smartDropXX=simulationArea.mouseX+100;//Math.round(((simulationArea.mouseRawX - globalScope.ox+100) / globalScope.scale) / unit) * unit;
-        smartDropYY=simulationArea.mouseY-50;//Math.round(((simulationArea.mouseRawY - globalScope.oy+100) / globalScope.scale) / unit) * unit;
+    if (!(simulationArea.mouseRawX < 0 || simulationArea.mouseRawY < 0 || simulationArea.mouseRawX > width || simulationArea.mouseRawY > height)) {
+        smartDropXX = simulationArea.mouseX + 100; //Math.round(((simulationArea.mouseRawX - globalScope.ox+100) / globalScope.scale) / unit) * unit;
+        smartDropYY = simulationArea.mouseY - 50; //Math.round(((simulationArea.mouseRawY - globalScope.oy+100) / globalScope.scale) / unit) * unit;
         // //console.log(smartDropXX,smartDropYY);
     }
 
@@ -310,12 +321,12 @@ window.addEventListener('mouseup', function(e) {
 //     simulationArea.mouseDown = false;
 // });
 
-var isIe = (navigator.userAgent.toLowerCase().indexOf("msie") != -1
-           || navigator.userAgent.toLowerCase().indexOf("trident") != -1);
+var isIe = (navigator.userAgent.toLowerCase().indexOf("msie") != -1 ||
+    navigator.userAgent.toLowerCase().indexOf("trident") != -1);
 
 document.addEventListener('cut', function(e) {
-    simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
-    if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
+    simulationArea.copyList = simulationArea.multipleObjectSelections.slice();
+    if (simulationArea.lastSelected && simulationArea.lastSelected !== simulationArea.root && !simulationArea.copyList.contains(simulationArea.lastSelected)) {
         simulationArea.copyList.push(simulationArea.lastSelected);
     }
 
@@ -329,8 +340,8 @@ document.addEventListener('cut', function(e) {
     e.preventDefault();
 });
 document.addEventListener('copy', function(e) {
-    simulationArea.copyList=simulationArea.multipleObjectSelections.slice();
-    if(simulationArea.lastSelected&&simulationArea.lastSelected!==simulationArea.root&&!simulationArea.copyList.contains(simulationArea.lastSelected)){
+    simulationArea.copyList = simulationArea.multipleObjectSelections.slice();
+    if (simulationArea.lastSelected && simulationArea.lastSelected !== simulationArea.root && !simulationArea.copyList.contains(simulationArea.lastSelected)) {
         simulationArea.copyList.push(simulationArea.lastSelected);
     }
 
@@ -347,9 +358,9 @@ document.addEventListener('copy', function(e) {
 document.addEventListener('paste', function(e) {
     var data;
     if (isIe) {
-        data=window.clipboardData.getData('Text');
+        data = window.clipboardData.getData('Text');
     } else {
-        data=e.clipboardData.getData('text/plain');
+        data = e.clipboardData.getData('text/plain');
     }
     //console.log(data)
 

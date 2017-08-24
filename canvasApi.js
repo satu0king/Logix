@@ -1,6 +1,7 @@
 function changeScale(delta,xx,yy) {
     // var xx, yy;
 
+
     if(xx===undefined||yy===undefined){
         if (simulationArea.lastSelected) { // selected object
             xx = simulationArea.lastSelected.x;
@@ -17,10 +18,17 @@ function changeScale(delta,xx,yy) {
     globalScope.ox -= Math.round(xx * (globalScope.scale - oldScale));
     globalScope.oy -= Math.round(yy * (globalScope.scale - oldScale));
     dots(true,false);
-    findDimensions(scope);
-    miniMapArea.setup();
-    $('#miniMap').show();
-    setTimeout(function(){if(simulationArea.lastSelected==globalScope.root&&simulationArea.mouseDown)return;$('#miniMap').fadeOut('fast');},2000);
+
+    if(!embed){
+        findDimensions(globalScope);
+        miniMapArea.setup();
+        $('#miniMap').show();
+        lastMiniMapShown = new Date().getTime();
+        $('#miniMap').show();
+        setTimeout(removeMiniMap,2000);
+    }
+
+
 }
 
 //fn to draw Dots on screen
