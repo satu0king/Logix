@@ -49,6 +49,9 @@ document.getElementById("simulationArea").addEventListener('mousedown', function
     // //console.log(simulationArea.mouseDown, "mouseDOn");
     $('.dropdown.open').removeClass('open');
 });
+document.getElementById("simulationArea").addEventListener('mouseup', function(e) {
+    if(simulationArea.lastSelected)simulationArea.lastSelected.newElement=false;
+});
 window.addEventListener('mousemove', function(e) {
     // return;
     // if(simulationArea.mouseRawX<0||simulationArea.mouseRawY<0||simulationArea.mouseRawX>width||simulationArea.mouseRawY>height)simulationArea.mouseDown=false;

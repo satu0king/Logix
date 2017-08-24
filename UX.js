@@ -14,7 +14,7 @@ $(document).ready(function() {
     //     // minHeight:200,
     // });
 
-    $('.logixModules').click(function(){
+    $('.logixModules').mousedown(function(){
         //console.log(smartDropXX,smartDropYY);
         if(simulationArea.lastSelected&&simulationArea.lastSelected.newElement)simulationArea.lastSelected.delete();
         obj = new window[this.id]();//(simulationArea.mouseX,simulationArea.mouseY);
@@ -27,10 +27,9 @@ $(document).ready(function() {
             smartDropYY+=80;
         }
     });
-    $('.logixButton').click(function(){
-        window[this.id]();
-
-    });
+    // $('.logixButton').click(function(){
+    //     window[this.id]();
+    // });
 // var dummyCounter=0;
     window.addEventListener('mousewheel', function ( event ) {
         updateCanvas=true;
