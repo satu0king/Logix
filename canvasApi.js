@@ -321,7 +321,7 @@ function fillText2(ctx, str, x1, y1, xx, yy, dir) {
     ctx.translate( Math.round(xx + x1 + globalScope.ox), Math.round( yy + y1 + globalScope.oy));
     ctx.rotate(angle[dir]);
     ctx.textAlign = "center";
-    ctx.fillText(str, 0, 0);
+    ctx.fillText(str, 0, Math.round(4 * globalScope.scale)*(1-0*(+(dir=="DOWN"))));
     ctx.restore();
 
     // ctx.fillText(str, xx+x1+globalScope.ox,yy+ y1+globalScope.oy);

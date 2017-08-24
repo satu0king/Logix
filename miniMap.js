@@ -98,14 +98,16 @@ var miniMapArea = {
       }
       else if(lst[i]!='nodes'){
 
-
+          var ledY = 0;
+          if(lst[i]=="DigitalLed" || lst[i] == "VariableLed" || lst[i] == "RGBLed")
+              ledY = 20;
           for(var j=0;j<globalScope[lst[i]].length;j++)
           {
             var xx=(globalScope[lst[i]][j].x-simulationArea.minWidth);
             var yy=(globalScope[lst[i]][j].y-simulationArea.minHeight);
             this.ctx.beginPath();
             var obj = globalScope[lst[i]][j];
-            this.ctx.rect(2.5+(obj.x-obj.leftDimensionX-this.minX)*ratio,2.5+(obj.y-obj.upDimensionY-this.minY)*ratio,(obj.rightDimensionX+obj.leftDimensionX)*ratio,(obj.downDimensionY+obj.upDimensionY)*ratio);
+            this.ctx.rect(2.5+(obj.x-obj.leftDimensionX-this.minX)*ratio,2.5+(obj.y-obj.upDimensionY-this.minY)*ratio,(obj.rightDimensionX+obj.leftDimensionX)*ratio,(obj.downDimensionY+obj.upDimensionY+ledY)*ratio);
 
             this.ctx.fill();
             this.ctx.stroke();
