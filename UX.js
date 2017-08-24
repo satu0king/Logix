@@ -27,9 +27,9 @@ $(document).ready(function() {
             smartDropYY+=80;
         }
     });
-    // $('.logixButton').click(function(){
-    //     window[this.id]();
-    // });
+    $('.logixButton').click(function(){
+        window[this.id]();
+    });
 // var dummyCounter=0;
     window.addEventListener('mousewheel', function ( event ) {
         updateCanvas=true;
