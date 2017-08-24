@@ -4,11 +4,17 @@ function newCircuit(name, id) {
     if (id) scope.id = id;
     scopeList[scope.id] = scope;
     globalScope = scope;
-    $('#toolbar').append("<div class='circuits toolbarButton' id='" + scope.id + "'>" + name + "</div>");
+
+if(!embed){
+    $('.circuits').removeClass("current");
+    $('#tabsBar').append("<div class='circuits toolbarButton current' id='" + scope.id + "'>" + name + "</div>");
     $('.circuits').click(function() {
         switchCircuit(this.id)
     });
+}
+
     dots(true, false);
+
     return scope;
 }
 
@@ -17,6 +23,7 @@ function clearProject(){
     scopeList={};
     $('.circuits').remove();
     newCircuit("main");
+    showMessage("Your project is as good as new!");
 
 }
 function newProject(verify){
@@ -25,6 +32,7 @@ function newProject(verify){
         clearProject();
         projectName = undefined;
         projectId = generateId();
+        showMessage("New Project has been created!");
     }
 
 }
@@ -74,11 +82,11 @@ function generateSvg(){
         //
         // globalScope.ox = (-minX + maxDimension+11)*resolution;
         // globalScope.oy = (-minY + maxDimension-6)*resolution;
-        width = (maxX - minX + 2*maxDimension+10) * resolution;
-        height = (maxY - minY + 2*maxDimension+10) * resolution;
+        width = (maxX - minX + 2*maxDimension+26) * resolution;
+        height = (maxY - minY + 2*maxDimension+26) * resolution;
 
-        globalScope.ox = (-minX + maxDimension+5)*resolution;
-        globalScope.oy = (-minY + maxDimension+5)*resolution;
+        globalScope.ox = (-minX + maxDimension+13)*resolution;
+        globalScope.oy = (-minY + maxDimension+13)*resolution;
     }
     else{
         width=(width*resolution)/backUpScale;
@@ -117,7 +125,7 @@ function generateSvg(){
     globalScope.ox = backUpOx
     globalScope.oy = backUpOy;
 
-      toBeUpdated=true;
+      updateSimulation=true;
       updateCanvas=true;
       scheduleUpdate();
       dots(true,false);
@@ -128,11 +136,13 @@ function switchCircuit(id) {
     scheduleBackup();
     console.log(id);
     if (id == globalScope.id) return;
+    $('#'+globalScope.id).removeClass("current");
+    $('#'+id).addClass("current");
     simulationArea.lastSelected = undefined;
     simulationArea.multipleObjectSelections = [];
     simulationArea.copyList = [];
     globalScope = scopeList[id];
-    toBeUpdated = true;
+    updateSimulation = true;
     scheduleBackup();
     undo();
     dots(true, false);
@@ -215,7 +225,8 @@ function backUp(scope = globalScope) {
     data["name"] = scope.name;
 
     for (var i = 0; i < moduleList.length; i++) {
-        data[moduleList[i]] = scope[moduleList[i]].map(extract);
+        if(scope[moduleList[i]].length)
+            data[moduleList[i]] = scope[moduleList[i]].map(extract);
     }
 
 
@@ -287,6 +298,7 @@ function save() {
     http.send(params);
     http.onload = function() {
         window.location.hash = http.responseText; // assign hash key
+        showMessage("We have saved your project: "+projectName+" in our servers.");
     }
 }
 
@@ -300,18 +312,30 @@ function load(data) {
         projectName=undefined;
     globalScope=undefined;
     scopeList={};
-    $('.circuits').remove();
+    if(!embed)$('.circuits').remove();
 
     for (var i = 0; i < data.scopes.length; i++) {
         var scope = newCircuit(data.scopes[i].name, data.scopes[i].id);
         loadScope(scope, data.scopes[i]);
     }
     simulationArea.changeClockTime(data["timePeriod"] || 500);
+    updateSimulation=true;
+    updateCanvas=true;
+    scheduleUpdate();
+}
+function rectifyObjectType(obj){
+
+    console.log(obj);
+    // return obj;
+    var rectify={"FlipFlop":"DflipFlop","Ram":"Rom"};
+    return rectify[obj]||obj;
+
 }
 
 function loadModule(data, scope) {
     // console.log(data);
-    obj = new window[data["objectType"]](data["x"], data["y"], scope, ...data.customData["constructorParamaters"] || []);
+    console.log(data["objectType"])
+    obj = new window[rectifyObjectType(data["objectType"])](data["x"], data["y"], scope, ...data.customData["constructorParamaters"] || []);
     obj.label = data["label"];
     obj.labelDirection = data["labelDirection"] || oppositeDirection[fixDirection[obj.direction]];
     obj.fixDirection();
@@ -350,6 +374,8 @@ function download(filename, text) {
 
 function loadScope(scope, data) {
     // console.log(data);
+    var ML=moduleList.slice();
+    ML.push("FlipFlop")
     data["allNodes"].map(function(x) {
         return loadNode(x, scope)
     });
@@ -357,14 +383,14 @@ function loadScope(scope, data) {
     for (var i = 0; i < data["allNodes"].length; i++)
         constructNodeConnections(scope.allNodes[i], data["allNodes"][i]);
 
-    for (var i = 0; i < moduleList.length; i++) {
-        if (data[moduleList[i]]) {
-            if (moduleList[i] == "SubCircuit") {
-                for (var j = 0; j < data[moduleList[i]].length; j++)
-                    loadSubCircuit(data[moduleList[i]][j], scope);
+    for (var i = 0; i < ML.length; i++) {
+        if (data[ML[i]]) {
+            if (ML[i] == "SubCircuit") {
+                for (var j = 0; j < data[ML[i]].length; j++)
+                    loadSubCircuit(data[ML[i]][j], scope);
             } else {
-                for (var j = 0; j < data[moduleList[i]].length; j++)
-                    loadModule(data[moduleList[i]][j], scope);
+                for (var j = 0; j < data[ML[i]].length; j++)
+                    loadModule(data[ML[i]][j], scope);
             }
         }
     }
@@ -448,6 +474,7 @@ function saveOffline(){
     var temp=JSON.parse(localStorage.getItem("projectList"))||{};
     temp[projectId]=projectName;
     localStorage.setItem("projectList",JSON.stringify(temp));
+    showMessage("We have saved your project: "+projectName+" in your browser's localStorage");
 }
 function checkToSave(){
     var save=false
@@ -580,7 +607,7 @@ function generateImage() {
       globalScope.oy = backUpOy;
 
 
-        toBeUpdated=true;
+        updateSimulation=true;
         updateCanvas=true;
         scheduleUpdate();
         dots(true,false);

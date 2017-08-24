@@ -3,18 +3,19 @@ var smartDropYY=80;
 
 
 $(document).ready(function() {
-    $("#menu").accordion({collapsible: true, active: false});
+
     $( "#sideBar" ).resizable({
     handles: 'e',
-        minWidth:200,
+        // minWidth:270,
     });
+    $("#menu").accordion({collapsible: true, active: false, heightStyle: "content"});
     // $( "#plot" ).resizable({
     // handles: 'n',
     //     // minHeight:200,
     // });
 
     $('.logixModules').click(function(){
-        console.log(smartDropXX,smartDropYY);
+        //console.log(smartDropXX,smartDropYY);
         if(simulationArea.lastSelected&&simulationArea.lastSelected.newElement)simulationArea.lastSelected.delete();
         obj = new window[this.id]();//(simulationArea.mouseX,simulationArea.mouseY);
         simulationArea.lastSelected=obj;
@@ -45,12 +46,12 @@ $(document).ready(function() {
         // if(dummyCounter!=3)return;
         // dummyCounter=0;
         if(event.ctrlKey){
-          if ( scrolledUp && globalScope.scale > 0.5) { changeScale(-.1); }
-         if ( scrolledDown && globalScope.scale < 4) { changeScale(.1); }
+          if ( scrolledUp && globalScope.scale > 0.5*DPR) { changeScale(-.1*DPR); }
+         if ( scrolledDown && globalScope.scale < 4*DPR) { changeScale(.1*DPR); }
         }
         else{
-            if ( scrolledUp && globalScope.scale < 4) { changeScale(.1); }
-           if ( scrolledDown && globalScope.scale >0.5) { changeScale(-.1); }
+            if ( scrolledUp && globalScope.scale < 4*DPR) { changeScale(.1*DPR); }
+           if ( scrolledDown && globalScope.scale >0.5*DPR) { changeScale(-.1*DPR); }
         }
 
         updateCanvas=true;
@@ -61,13 +62,28 @@ $(document).ready(function() {
 
 
     var iconList=$('.icon');
-    // console.log(iconList)
+    // //console.log(iconList)
     for(var i=0;i<iconList.length;i++){
-        console.log(iconList[i].id);
+        //console.log(iconList[i].id);
         $(iconList[i]).append('<img src="./img/'+iconList[i].id+'.svg"/>');
         $(iconList[i]).append('<p class="img__description">'+iconList[i].id+
         '</p>');
+        // $(iconList[i]).hover()
+
     }
+    $('.logixModules').hover(function(){
+        if(!help[this.id])return;
+        $("#Help").addClass("show");
+        $("#Help").empty();
+        console.log("SHOWING")
+        $("#Help").append(help[this.id]);
+    }); // code goes in document ready fn only
+    $('.logixModules').mouseleave(function(){
+        $("#Help").removeClass("show");
+
+    }); // code goes in document ready fn only
+
+
     // $('#saveAsImg').click(function(){
     //     saveAsImg();
     // });
@@ -77,6 +93,27 @@ $(document).ready(function() {
     // $('#moduleProperty').draggable();
 
 }); // accordion
+
+var help={
+    "Input":"Input ToolTip: Toggle the individual bits by clicking on them.",
+    "Button":"Button ToolTip: High(1) when pressed and Low(0) when released.",
+    "Power":"Power ToolTip: All bits are High(1).",
+    "Ground":"Ground ToolTip: All bits are Low(0).",
+    "ConstantVal":"Constant ToolTip: Bits are fixed. Double click element to change the bits.",
+    "Stepper":"Stepper ToolTip: Increase/Decrease value by selecting the stepper and using +/- keys.",
+    "Output":"Output ToolTip: Simple output element showing output in binary.",
+    "RGBLed":"RGB Led ToolTip: RGB Led inputs 8 bit values for the colors RED, GREEN and BLUE.",
+    "DigitalLed":"Digital Led ToolTip: Digital LED glows high when input is High(1).",
+    "VariableLed":"Variable Led ToolTip: Variable LED inputs an 8 bit value and glows with a proportional intensity.",
+    "HexDisplay":"Hex Display ToolTip: Inputs a 4 Bit Hex number and displays it.",
+    "SevenSegDisplay":"Seven Display ToolTip: Consists of 7+1 single bit inputs.",
+    "TTY":"TTY ToolTip: Console buffer",
+    "Keyboard":"Keyboard ToolTip: Select the Keyboard and type into the buffer.",
+    "Text":"Text ToolTip: Use this to document your circuit.",
+    "Flag":"FLag ToolTip: Use this for debugging and plotting.",
+    "Splitter":"Splitter ToolTip: Split multiBit Input into smaller bitwidths or vice versa.",
+
+}
 
 
 
@@ -90,38 +127,35 @@ function showProperties(obj){
     prevPropertyObj=obj;
     $('#moduleProperty').show();
 
-    $('#moduleProperty').append("<h3>"+obj.objectType+"</h3>");
+    $('#moduleProperty-inner').append("<div id='moduleProperty-header'>" + obj.objectType + "</div>");
     // $('#moduleProperty').append("<input type='range' name='points' min='1' max='32' value="+obj.bitWidth+">");
     if(!obj.fixedBitWidth)
-    $('#moduleProperty').append("<p>BitWidth: <input class='objectPropertyAttribute' type='number'  name='newBitWidth' min='1' max='32' value="+obj.bitWidth+"></p>");
+    $('#moduleProperty-inner').append("<p>BitWidth: <input class='objectPropertyAttribute' type='number'  name='newBitWidth' min='1' max='32' value="+obj.bitWidth+"></p>");
 
     if(obj.changeInputSize)
-    $('#moduleProperty').append("<p>Input Size: <input class='objectPropertyAttribute' type='number'  name='changeInputSize' min='2' max='10' value="+obj.inputSize+"></p>");
+    $('#moduleProperty-inner').append("<p>Input Size: <input class='objectPropertyAttribute' type='number'  name='changeInputSize' min='2' max='10' value="+obj.inputSize+"></p>");
 
 
-    $('#moduleProperty').append("<p>Label: <input class='objectPropertyAttribute' type='text'  name='setLabel' min='1' max='32' value="+obj.label+"></p>");
+    $('#moduleProperty-inner').append("<p>Label: <input class='objectPropertyAttribute' type='text'  name='setLabel' min='1' max='32' value="+obj.label+"></p>");
 
-    $('#moduleProperty').append("<p></p>");
-    $('#moduleProperty').append("Label Direction: ");
-    var s=$("<select class='objectPropertyAttribute' name='newLabelDirection' ><option value='RIGHT'>RIGHT</option><option value='DOWN'>DOWN</option><option value='LEFT'>LEFT</option><option value='UP'>UP</ option></select>");
-    s.val(obj.labelDirection);
-    $('#moduleProperty').append(s);
+
+    if(!obj.labelDirectionFixed){
+        var s=$("<select class='objectPropertyAttribute' name='newLabelDirection' ><option value='RIGHT'>RIGHT</option><option value='DOWN'>DOWN</option><option value='LEFT'>LEFT</option><option value='UP'>UP</ option></select>");
+        s.val(obj.labelDirection);
+        $('#moduleProperty-inner').append("<p>Label Direction: " + $(s).prop('outerHTML') + "</p>");
+    }
 
 
     if(!obj.directionFixed){
-        $('#moduleProperty').append("<p></p>");
-        $('#moduleProperty').append("Direction: ");
-        var s=$("<select class='objectPropertyAttribute' name='newDirection' ><option value='RIGHT'>RIGHT</option><option value='DOWN'>DOWN</option><option value='LEFT'>LEFT</option><option value='UP'>UP</ option></select>");
+        var s = $("<select class='objectPropertyAttribute' name='newDirection' ><option value='RIGHT'>RIGHT</option><option value='DOWN'>DOWN</option><option value='LEFT'>LEFT</option><option value='UP'>UP</ option></select>");
         s.val(obj.direction);
-        $('#moduleProperty').append(s);
+        $('#moduleProperty-inner').append("<p>Direction: " + $(s).prop('outerHTML') + "</p>");
 
     }
     else if(!obj.orientationFixed){
-        $('#moduleProperty').append("<p></p>");
-        $('#moduleProperty').append("Orientation: ");
-        var s=$("<select class='objectPropertyAttribute' name='newDirection' ><option value='RIGHT'>RIGHT</option><option value='DOWN'>DOWN</option><option value='LEFT'>LEFT</option><option value='UP'>UP</ option></select>");
+        var s = $("<select class='objectPropertyAttribute' name='newDirection' ><option value='RIGHT'>RIGHT</option><option value='DOWN'>DOWN</option><option value='LEFT'>LEFT</option><option value='UP'>UP</ option></select>");
         s.val(obj.direction);
-        $('#moduleProperty').append(s);
+        $('#moduleProperty-inner').append("<p>Orientation: " + $(s).prop('outerHTML') + "</p>");
     }
 
     if(obj.mutableProperties){
@@ -129,21 +163,23 @@ function showProperties(obj){
             var prop=obj.mutableProperties[attr];
             if(obj.mutableProperties[attr].type=="number"){
                 var s="<p>" +prop.name+ "<input class='objectPropertyAttribute' type='number'  name='"+prop.func+"' min='"+(prop.min||0)+"' max='"+(prop.max||200)+"' value="+obj[attr]+"></p>";
-                $('#moduleProperty').append(s);
+                $('#moduleProperty-inner').append(s);
             }
             else if(obj.mutableProperties[attr].type=="text"){
                 var s="<p>" +prop.name+ "<input class='objectPropertyAttribute' type='text'  name='"+prop.func+"' maxlength='"+(prop.maxlength||200)+"' value="+obj[attr]+"></p>";
-                $('#moduleProperty').append(s);
+                $('#moduleProperty-inner').append(s);
             }
 
         }
     }
+    $('#moduleProperty-toolTip').empty();
+    if(help[obj.objectType])$('#moduleProperty-toolTip').append(help[obj.objectType])
 
 
 
     $(".objectPropertyAttribute").on("change keyup paste click", function(){
         // return;
-        console.log(this.name+":"+this.value);
+        //console.log(this.name+":"+this.value);
         scheduleUpdate();
         updateCanvas = true;
         wireToBeChecked = 1;
@@ -153,7 +189,7 @@ function showProperties(obj){
 
 
 function hideProperties(){
-    $('#moduleProperty').empty();
+    $('#moduleProperty-inner').empty();
     $('#moduleProperty').hide();
     prevPropertyObj=undefined;
     $(".objectPropertyAttribute").unbind("change keyup paste click");

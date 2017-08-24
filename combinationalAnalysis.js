@@ -7,6 +7,7 @@ var sampleInputListNames=["A", "B"];
 var sampleOutputListNames=["X"];
 
 createCombinationalAnalysisPrompt=function(scope=globalScope){
+    console.log("Ya");
     $('#combinationalAnalysis').empty();
     $('#combinationalAnalysis').append("<p>Enter Input names separated by spaces: <input id='inputNameList' type='text'  placeHolder='eg. A B C'></p>");
     $('#combinationalAnalysis').append("<p>Enter Output names separated by spaces: <input id='outputNameList' type='text'  placeHolder='eg. X Y Z'></p>");
