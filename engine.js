@@ -67,6 +67,9 @@ function update(scope = globalScope) {
     if (updatePosition) {
         updateSelectionsAndPane(scope);
     }
+    if(!embed&&simulationArea.mouseDown&&simulationArea.lastSelected&&simulationArea.lastSelected!=globalScope.root){
+        $('#miniMap').fadeOut('fast');
+    }
 
     if (updateSimulation) {
         play();
