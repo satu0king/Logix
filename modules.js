@@ -299,7 +299,7 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         for (var i = 0; i < this.inputSize; i++) {
-            // fillText2(ctx, String(i), this.inp[i].x+7,  this.inp[i].y, xx, yy, "RIGHT")
+
             if(this.direction=="RIGHT") fillText(ctx, String(i), xx + this.inp[i].x + 7, yy + this.inp[i].y + 2, 10);
             else if(this.direction=="LEFT") fillText(ctx, String(i), xx + this.inp[i].x - 7, yy + this.inp[i].y + 2, 10);
             else if(this.direction=="UP") fillText(ctx, String(i), xx + this.inp[i].x, yy + this.inp[i].y - 4, 10);
@@ -3020,7 +3020,7 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     // console.log("HIT");
     // console.log(x,y,scope,dir,bitWidth,controlSignalSize);
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
-    var message="-";
+    var message="ALU";
 
     this.setDimensions(30,40);
     this.rectangleObject = false;
@@ -3122,7 +3122,7 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
           message="A+B";
         }
         else if (this.controlSignalInput.value == 3) {
-          message="-";
+          message="ALU";
           return;
         }
         else if(this.controlSignalInput.value == 4) {

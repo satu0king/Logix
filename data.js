@@ -85,7 +85,7 @@ function generateSvg(){
         width = (maxX - minX + 2*maxDimension+26) * resolution;
         height = (maxY - minY + 2*maxDimension+26) * resolution;
 
-        globalScope.ox = (-minX + maxDimension+3)*resolution;
+        globalScope.ox = (-minX + maxDimension+13)*resolution;
         globalScope.oy = (-minY + maxDimension+13)*resolution;
     }
     else{
