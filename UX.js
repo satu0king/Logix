@@ -136,7 +136,7 @@ function showProperties(obj){
     $('#moduleProperty-inner').append("<p>Input Size: <input class='objectPropertyAttribute' type='number'  name='changeInputSize' min='2' max='10' value="+obj.inputSize+"></p>");
 
 
-    $('#moduleProperty-inner').append("<p>Label: <input class='objectPropertyAttribute' type='text'  name='setLabel' min='1' max='32' value="+obj.label+"></p>");
+    $('#moduleProperty-inner').append("<p>Label: <input class='objectPropertyAttribute' type='text'  name='setLabel'  value='"+obj.label+"'></p>");
 
 
     if(!obj.labelDirectionFixed){
@@ -172,8 +172,28 @@ function showProperties(obj){
 
         }
     }
-    $('#moduleProperty-toolTip').empty();
-    if(help[obj.objectType])$('#moduleProperty-toolTip').append(help[obj.objectType])
+    // $('#moduleProperty-toolTip').empty();
+    // if(help[obj.objectType])$('#moduleProperty-toolTip').append(help[obj.objectType])
+    if(help[obj.objectType]){
+        $('#moduleProperty-inner').append('<p><button id="toolTipButton" class="btn btn-primary btn-xs" type="button" >Logix Tip</button></p>');
+        // $('#moduleProperty-toolTip').append('<div class="collapse" id="collapseExample"><div class="card card-body">'+help[obj.objectType]+'</div></div>')
+
+        $('#toolTipButton').hover(function(){
+            if(!help[obj.objectType])return;
+            $("#Help").addClass("show");
+            $("#Help").empty();
+            console.log("SHOWING")
+            $("#Help").append(help[obj.objectType]);
+        }); // code goes in document ready fn only
+        $('#toolTipButton').mouseleave(function(){
+            $("#Help").removeClass("show");
+
+        });
+    }
+
+
+
+
 
 
 
