@@ -339,6 +339,27 @@ function fillText2(ctx, str, x1, y1, xx, yy, dir) {
     // ctx.fillText(str, xx+x1+globalScope.ox,yy+ y1+globalScope.oy);
 
 }
+function fillText4(ctx, str, x1, y1, xx, yy, dir,fontSize=14,textAlign="center") {
+    angle = {
+        "RIGHT": 0,
+        "LEFT": 0,
+        "DOWN": Math.PI / 2,
+        "UP": -Math.PI / 2,
+    }
+    x1 = x1 * globalScope.scale;
+    y1 = y1 * globalScope.scale;
+    [x1, y1] = rotate(x1, y1, dir);
+    xx = xx * globalScope.scale;
+    yy = yy * globalScope.scale;
+
+    ctx.font =  Math.round(fontSize * globalScope.scale) + "px Georgia";
+    // ctx.font = 20+"px Georgia";
+    //console.log(str);
+    ctx.textAlign = textAlign;
+    ctx.fillText(str,xx+x1+globalScope.ox,yy+y1+globalScope.oy+  Math.round(fontSize/3 * globalScope.scale));
+
+
+}
 
 function fillText3(ctx, str, x1, y1, xx = 0, yy = 0, fontSize = 14, font = "Georgia", textAlign = "center") {
 

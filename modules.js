@@ -299,7 +299,7 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         for (var i = 0; i < this.inputSize; i++) {
-            // fillText2(ctx, String(i), this.inp[i].x+7,  this.inp[i].y, xx, yy, "RIGHT")
+
             if(this.direction=="RIGHT") fillText(ctx, String(i), xx + this.inp[i].x + 7, yy + this.inp[i].y + 2, 10);
             else if(this.direction=="LEFT") fillText(ctx, String(i), xx + this.inp[i].x - 7, yy + this.inp[i].y + 2, 10);
             else if(this.direction=="UP") fillText(ctx, String(i), xx + this.inp[i].x, yy + this.inp[i].y - 4, 10);
@@ -3016,24 +3016,21 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
 
 }
 
-function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
+function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     // console.log("HIT");
     // console.log(x,y,scope,dir,bitWidth,controlSignalSize);
     CircuitElement.call(this, x, y, scope, dir, bitWidth);
+    var message="ALU";
 
-    this.setDimensions(50,50);
+    this.setDimensions(30,40);
     this.rectangleObject = false;
 
-    //this.inp = [];
-    this.inp1 = new Node(-40, -30, 0, this, this.bitwidth, "A");
-    this.inp2 = new Node(-40, 30, 0, this, this.bitwidth, "B");
+    this.inp1 = new Node(-30, -30, 0, this, this.bitwidth, "A");
+    this.inp2 = new Node(-30, 30, 0, this, this.bitwidth, "B");
 
-    //this.inp.push(this.inp1);
-    //this.inp.push(this.inp2);
-    this.controlSignalInput = new Node(-10, -50, 0, this, 3, "Ctrl");
-    this.carryOut = new Node(-10, 50, 1, this, 1, "Cout");
+    this.controlSignalInput = new Node(-10, -40, 0, this, 3, "Ctrl");
+    this.carryOut = new Node(-10, 40, 1, this, 1, "Cout");
     this.output = new Node(30, 0, 1, this, this.bitwidth, "Out");
-    //this.overflow = new Node(0, -10, 1, this);
 
 
     this.newBitWidth = function(bitWidth) {
@@ -3045,9 +3042,8 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
 
     this.customSave = function() {
         var data = {
-            constructorParamaters: [this.direction, this.bitWidth, this.controlSignalSize],
+            constructorParamaters: [this.direction, this.bitWidth],
             nodes: {
-                //inp: this.inp.map(findNode),
                 inp1: findNode(this.inp1),
                 inp2: findNode(this.inp2),
                 output: findNode(this.output),
@@ -3067,24 +3063,16 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
         ctx.lineWidth = correctWidth(3);
         ctx.beginPath();
         moveTo(ctx, 30, 10, xx, yy, this.direction);
-        lineTo(ctx, 30, -20, xx, yy, this.direction);
-
-        lineTo(ctx, 10, -50, xx, yy, this.direction);
-
-        lineTo(ctx, -40, -50, xx, yy, this.direction);
-
-        lineTo(ctx, -40, -30, xx, yy, this.direction);
-
+        lineTo(ctx, 30, -10, xx, yy, this.direction);
+        lineTo(ctx, 10, -40, xx, yy, this.direction);
+        lineTo(ctx, -30, -40, xx, yy, this.direction);
+        lineTo(ctx, -30, -20, xx, yy, this.direction);
         lineTo(ctx, -20, -10, xx, yy, this.direction);
-
         lineTo(ctx, -20, 10, xx, yy, this.direction);
-
-        lineTo(ctx, -40, 30, xx, yy, this.direction);
-
-        lineTo(ctx, -40, 50, xx, yy, this.direction);
-        lineTo(ctx, 10, 50, xx, yy, this.direction);
-        lineTo(ctx, 30, 20, xx, yy, this.direction);
-        lineTo(ctx, 30, 0, xx, yy, this.direction);
+        lineTo(ctx, -30, 20, xx, yy, this.direction);
+        lineTo(ctx, -30, 40, xx, yy, this.direction);
+        lineTo(ctx, 10, 40, xx, yy, this.direction);
+        lineTo(ctx, 30, 10, xx, yy, this.direction);
         ctx.closePath();
         ctx.stroke();
 
@@ -3093,18 +3081,37 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
         ctx.fill();
         ctx.stroke();
 
+        ctx.beginPath();
+        ctx.fillStyle="Black";
+        ctx.textAlign="center"
+
+        fillText4(ctx, "B", -23, 30, xx, yy, this.direction,6);
+        fillText4(ctx, "A", -23, -30, xx, yy, this.direction,6);
+        fillText4(ctx, "CTR", -10, -30, xx, yy, this.direction,6);
+        fillText4(ctx, "Carry", -10, 30, xx, yy, this.direction,6);
+        fillText4(ctx, "Ans", 20, 0, xx, yy, this.direction,6);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.fillStyle="DarkGreen";
+        fillText4(ctx, message, 0, 0, xx, yy, this.direction,12);
+        ctx.fill();
+
       }
     this.resolve = function() {
-        if (this.isResolvable() == false) {
-            return;
-        }
         if(this.controlSignalInput.value == 0){
           this.output.value = ((this.inp1.value)&(this.inp2.value));
           this.scope.stack.push(this.output);
+          this.carryOut.value=0;
+          this.scope.stack.push(this.carryOut);
+          message="A&B";
         }
         else if (this.controlSignalInput.value == 1) {
           this.output.value = ((this.inp1.value)|(this.inp2.value));
+
           this.scope.stack.push(this.output);
+          this.carryOut.value=0;
+          this.scope.stack.push(this.carryOut);
+          message="A|B";
         }
         else if (this.controlSignalInput.value == 2) {
           var sum = this.inp1.value + this.inp2.value;
@@ -3112,24 +3119,42 @@ function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
           this.carryOut.value = +((sum >>> (this.bitWidth)) !== 0);
           this.scope.stack.push(this.carryOut);
           this.scope.stack.push(this.output);
+          message="A+B";
         }
         else if (this.controlSignalInput.value == 3) {
+          message="ALU";
           return;
         }
         else if(this.controlSignalInput.value == 4) {
-          this.output.value = ((this.inp1.value))&(~(this.inp2.value));
+           message="A&~B";
+          this.output.value = ((this.inp1.value)&this.flipBits(this.inp2.value));
           this.scope.stack.push(this.output);
+          this.carryOut.value=0;
+          this.scope.stack.push(this.carryOut);
         }
         else if(this.controlSignalInput.value == 5){
-          this.output.value = ((this.inp1.value)) | (~(this.inp2.value));
+            message="A|~B";
+          this.output.value = ((this.inp1.value) | this.flipBits(this.inp2.value));
           this.scope.stack.push(this.output);
+          this.carryOut.value=0;
+          this.scope.stack.push(this.carryOut);
+        }
+        else if(this.controlSignalInput.value == 6){
+            message="A-B";
+          this.output.value = ((this.inp1.value-this.inp2.value) << (32 - this.bitWidth)) >>> (32 - this.bitWidth);
+          this.scope.stack.push(this.output);
+          this.carryOut.value=0;
+          this.scope.stack.push(this.carryOut);
         }
         else if (this.controlSignalInput.value == 7) {
+          message="A<B";
           if(this.inp1.value < this.inp2.value)
             this.output.value = 1;
           else
             this.output.value = 0;
           this.scope.stack.push(this.output);
+          this.carryOut.value=0;
+          this.scope.stack.push(this.carryOut);
         }
 
     }

@@ -234,7 +234,7 @@ function resetup() {
     backgroundArea.setup();
     if(!embed)plotArea.setup();
     simulationArea.setup();
-    
+
     // update();
     dots();
 
@@ -777,7 +777,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
         if(!simulationArea.mouseDown){
             if(simulationArea.hover==this){
                 this.hover=this.isHover();
-                if(!this.hover)simulationAreas.hover=undefined;
+                if(!this.hover)simulationArea.hover=undefined;
             }
             else if(!simulationArea.hover){
                 this.hover=this.isHover();
