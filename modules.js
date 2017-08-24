@@ -214,7 +214,7 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
     }
 
     this.output1 = new Node(20 - xOff, 0, 1, this);
-    this.controlSignalInput = new Node(0, yOff * 10 * (this.inputSize / 2 - 1) + xOff + 10, 0, this, this.controlSignalSize);
+    this.controlSignalInput = new Node(0, yOff * 10 * (this.inputSize / 2 - 1) + xOff + 10, 0, this, this.controlSignalSize,"Control Signal");
 
     this.changeControlSignalSize = function(size) {
         if (size == undefined || size < 1 || size > 32) return;
@@ -299,6 +299,7 @@ function Multiplexer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, con
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         for (var i = 0; i < this.inputSize; i++) {
+            // fillText2(ctx, String(i), this.inp[i].x+7,  this.inp[i].y, xx, yy, "RIGHT")
             if(this.direction=="RIGHT") fillText(ctx, String(i), xx + this.inp[i].x + 7, yy + this.inp[i].y + 2, 10);
             else if(this.direction=="LEFT") fillText(ctx, String(i), xx + this.inp[i].x - 7, yy + this.inp[i].y + 2, 10);
             else if(this.direction=="UP") fillText(ctx, String(i), xx + this.inp[i].x, yy + this.inp[i].y - 4, 10);
@@ -914,7 +915,7 @@ function TriState(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
     this.inp1 = new Node(-10, 0, 0, this);
     this.output1 = new Node(20, 0, 1, this);
-    this.state = new Node(0, 0, 0, this, 1);
+    this.state = new Node(0, 0, 0, this, 1,"Enable");
     this.customSave = function() {
         var data = {
             constructorParamaters: [this.direction, this.bitWidth],
@@ -974,7 +975,7 @@ function Buffer(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     this.state = 0;
     this.preState = 0;
     this.inp1 = new Node(-10, 0, 0, this);
-    this.reset = new Node(0, 0, 0, this, 1);
+    this.reset = new Node(0, 0, 0, this, 1,"reset");
     this.output1 = new Node(20, 0, 1, this);
     this.customSave = function() {
         var data = {
@@ -1041,7 +1042,7 @@ function ControlledInverter(x, y, scope = globalScope, dir = "RIGHT", bitWidth =
 
     this.inp1 = new Node(-10, 0, 0, this);
     this.output1 = new Node(30, 0, 1, this);
-    this.state = new Node(0, 0, 0, this, 1);
+    this.state = new Node(0, 0, 0, this, 1,"Enable");
     this.customSave = function() {
         var data = {
             constructorParamaters: [this.direction, this.bitWidth],
@@ -1156,9 +1157,9 @@ function Rom(x, y, scope = globalScope, data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     this.rectangleObject=false;
     this.setDimensions(80, 50);
 
-    this.memAddr = new Node(-80, 0, 0, this, 4);
-    this.en = new Node(0, 50, 0, this, 1);
-    this.dataOut = new Node(80, 0, 1, this, 8);
+    this.memAddr = new Node(-80, 0, 0, this, 4,"Address");
+    this.en = new Node(0, 50, 0, this, 1,"Enable");
+    this.dataOut = new Node(80, 0, 1, this, 8,"DataOut");
     this.data = data || prompt("Enter data").split(' ').map(function(x) {
         return parseInt(x, 16);
     });
@@ -1555,7 +1556,7 @@ function Splitter(x, y, scope = globalScope, dir = "RIGHT", bitWidth = undefined
         ctx.stroke();
         ctx.beginPath();
         for (var i = this.splitCount - 1; i >= 0; i--) {
-            fillText2(ctx, bitCount + ":" + (bitCount + this.bitWidthSplit[this.splitCount - i - 1]), 10, -20 * i + 14 + this.yOffset, xx, yy, this.direction);
+            fillText2(ctx, bitCount + ":" + (bitCount + this.bitWidthSplit[this.splitCount - i - 1]), 12, -20 * i + this.yOffset+10, xx, yy, this.direction);
             bitCount += this.bitWidthSplit[this.splitCount - i - 1];
         }
         ctx.fill();
@@ -1852,9 +1853,9 @@ function BitSelector(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 2, sel
     this.setDimensions(20, 20);
     this.selectorBitWidth = selectorBitWidth || parseInt(prompt("Enter Selector bitWidth"), 10);
     this.rectangleObject = false;
-    this.inp1 = new Node(-20, 0, 0, this, this.bitWidth);
-    this.output1 = new Node(20, 0, 1, this, 1);
-    this.bitSelectorInp = new Node(0, 20, 0, this, this.selectorBitWidth);
+    this.inp1 = new Node(-20, 0, 0, this, this.bitWidth,"Input");
+    this.output1 = new Node(20, 0, 1, this, 1,"Output");
+    this.bitSelectorInp = new Node(0, 20, 0, this, this.selectorBitWidth,"Bit Selector");
 
 
     this.changeSelectorBitWidth = function(size) {
@@ -1948,12 +1949,13 @@ function ConstantVal(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, sta
         this.scope.stack.push(this.output1);
     }
     this.dblclick = function() {
-        this.state = prompt("Re enter the value");
-        console.log(this.state);
+        this.state = prompt("Re enter the value")||"0";
         this.newBitWidth(this.state.toString().length);
         console.log(this.state, this.bitWidth);
     }
     this.newBitWidth = function(bitWidth) {
+        if(bitWidth>this.bitWidth)this.state='0'.repeat(bitWidth - this.bitWidth)+this.state;
+        else if(bitWidth<this.bitWidth)this.state=this.state.slice(this.bitWidth-bitWidth);
         this.bitWidth = bitWidth; //||parseInt(prompt("Enter bitWidth"),10);
         this.output1.bitWidth = bitWidth;
         this.setDimensions(10 * this.bitWidth, 10);
@@ -2084,8 +2086,6 @@ function NorGate(x, y, scope = globalScope, dir = "RIGHT", inputs = 2, bitWidth 
         //for debugging
     }
 }
-
-
 
 function DigitalLed(x, y, scope = globalScope) {
     // Calling base class constructor
@@ -2389,7 +2389,7 @@ function Demultiplexer(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, co
         this.output1.push(a);
     }
 
-    this.controlSignalInput = new Node(0, yOff * 10 * (this.outputsize / 2 - 1) + xOff + 10, 0, this, this.controlSignalSize);
+    this.controlSignalInput = new Node(0, yOff * 10 * (this.outputsize / 2 - 1) + xOff + 10, 0, this, this.controlSignalSize,"Control Signal");
 
     this.customSave = function() {
         var data = {
@@ -2521,8 +2521,6 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
         var xx = this.x;
         var yy = this.y;
 
-        if(this.direction=="LEFT" || this.direction=="RIGHT") this.inp1.leftx=50-xSize;
-        this.inp1.refresh();
 
         rect2(ctx, -50+xSize, -20, 100-2*xSize, 40, xx, yy, "RIGHT");
         if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this)) ctx.fillStyle = "rgba(255, 255, 32,0.8)";
@@ -2568,6 +2566,9 @@ function Flag(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1, identifier
         } else {
             this.inp1.leftx = 20;
         }
+        // if(this.direction=="LEFT" || this.direction=="RIGHT") this.inp1.leftx=50-xSize;
+        //     this.inp1.refresh();
+
         this.inp1.refresh();
     }
 }
@@ -2653,7 +2654,6 @@ function MSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
     }
 
 }
-
 
 function LSB(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 1) {
 
@@ -3012,6 +3012,126 @@ function Tunnel(x, y, scope = globalScope, dir = "LEFT", bitWidth = 1, identifie
         else
             fillText(ctx, "x", xx - 23 + xRotate, yy + 8 + yRotate, 25);
         ctx.fill();
+    }
+
+}
+
+function ALU(x, y, scope = globalScope, dir = "RIGHT", bitWidth = 8) {
+    // console.log("HIT");
+    // console.log(x,y,scope,dir,bitWidth,controlSignalSize);
+    CircuitElement.call(this, x, y, scope, dir, bitWidth);
+
+    this.setDimensions(50,50);
+    this.rectangleObject = false;
+
+    //this.inp = [];
+    this.inp1 = new Node(-40, -30, 0, this, this.bitwidth, "A");
+    this.inp2 = new Node(-40, 30, 0, this, this.bitwidth, "B");
+
+    //this.inp.push(this.inp1);
+    //this.inp.push(this.inp2);
+    this.controlSignalInput = new Node(-10, -50, 0, this, 3, "Ctrl");
+    this.carryOut = new Node(-10, 50, 1, this, 1, "Cout");
+    this.output = new Node(30, 0, 1, this, this.bitwidth, "Out");
+    //this.overflow = new Node(0, -10, 1, this);
+
+
+    this.newBitWidth = function(bitWidth) {
+        this.bitWidth = bitWidth;
+        this.inp1.bitWidth = bitWidth;
+        this.inp2.bitWidth = bitWidth;
+        this.output.bitWidth = bitWidth;
+    }
+
+    this.customSave = function() {
+        var data = {
+            constructorParamaters: [this.direction, this.bitWidth, this.controlSignalSize],
+            nodes: {
+                //inp: this.inp.map(findNode),
+                inp1: findNode(this.inp1),
+                inp2: findNode(this.inp2),
+                output: findNode(this.output),
+                carryOut: findNode(this.carryOut),
+                controlSignalInput: findNode(this.controlSignalInput)
+            },
+        }
+        return data;
+    }
+
+    this.customDraw = function() {
+        ctx = simulationArea.context;
+        var xx = this.x;
+        var yy = this.y;
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "white";
+        ctx.lineWidth = correctWidth(3);
+        ctx.beginPath();
+        moveTo(ctx, 30, 10, xx, yy, this.direction);
+        lineTo(ctx, 30, -20, xx, yy, this.direction);
+
+        lineTo(ctx, 10, -50, xx, yy, this.direction);
+
+        lineTo(ctx, -40, -50, xx, yy, this.direction);
+
+        lineTo(ctx, -40, -30, xx, yy, this.direction);
+
+        lineTo(ctx, -20, -10, xx, yy, this.direction);
+
+        lineTo(ctx, -20, 10, xx, yy, this.direction);
+
+        lineTo(ctx, -40, 30, xx, yy, this.direction);
+
+        lineTo(ctx, -40, 50, xx, yy, this.direction);
+        lineTo(ctx, 10, 50, xx, yy, this.direction);
+        lineTo(ctx, 30, 20, xx, yy, this.direction);
+        lineTo(ctx, 30, 0, xx, yy, this.direction);
+        ctx.closePath();
+        ctx.stroke();
+
+        if ((this.hover && !simulationArea.shiftDown) || simulationArea.lastSelected == this || simulationArea.multipleObjectSelections.contains(this))
+            ctx.fillStyle = "rgba(255, 255, 32,0.8)";
+        ctx.fill();
+        ctx.stroke();
+
+      }
+    this.resolve = function() {
+        if (this.isResolvable() == false) {
+            return;
+        }
+        if(this.controlSignalInput.value == 0){
+          this.output.value = ((this.inp1.value)&(this.inp2.value));
+          this.scope.stack.push(this.output);
+        }
+        else if (this.controlSignalInput.value == 1) {
+          this.output.value = ((this.inp1.value)|(this.inp2.value));
+          this.scope.stack.push(this.output);
+        }
+        else if (this.controlSignalInput.value == 2) {
+          var sum = this.inp1.value + this.inp2.value;
+          this.output.value = ((sum) << (32 - this.bitWidth)) >>> (32 - this.bitWidth);
+          this.carryOut.value = +((sum >>> (this.bitWidth)) !== 0);
+          this.scope.stack.push(this.carryOut);
+          this.scope.stack.push(this.output);
+        }
+        else if (this.controlSignalInput.value == 3) {
+          return;
+        }
+        else if(this.controlSignalInput.value == 4) {
+          this.output.value = ((this.inp1.value))&(~(this.inp2.value));
+          this.scope.stack.push(this.output);
+        }
+        else if(this.controlSignalInput.value == 5){
+          this.output.value = ((this.inp1.value)) | (~(this.inp2.value));
+          this.scope.stack.push(this.output);
+        }
+        else if (this.controlSignalInput.value == 7) {
+          if(this.inp1.value < this.inp2.value)
+            this.output.value = 1;
+          else
+            this.output.value = 0;
+          this.scope.stack.push(this.output);
+        }
+
     }
 
 }

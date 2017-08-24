@@ -154,9 +154,11 @@ function updateSelectionsAndPane(scope = globalScope) {
         if (simulationArea.shiftDown) {
             objectSelection = true;
         } else {
-            findDimensions(scope);
-            miniMapArea.setup();
-            $('#miniMap').show();
+            if(!embed){
+                findDimensions(scope);
+                miniMapArea.setup();
+                $('#miniMap').show();
+            }
         }
     } else if (simulationArea.lastSelected == scope.root && simulationArea.mouseDown) {
         //pane canvas
@@ -166,7 +168,7 @@ function updateSelectionsAndPane(scope = globalScope) {
             globalScope.ox = Math.round(globalScope.ox);
             globalScope.oy = Math.round(globalScope.oy);
             gridUpdate = true;
-            miniMapArea.setup();
+            if(!embed)miniMapArea.setup();
         } else {
 
         }
@@ -224,23 +226,29 @@ function updateSelectionsAndPane(scope = globalScope) {
 
 
 function renderCanvas(scope) {
-    console.log(gridUpdate);
+    var ctx = simulationArea.context;
     simulationArea.clear();
     if (gridUpdate) {
         gridUpdate = false;
         dots();
     }
     // dots(); // draw dots
+    canvasMessageData=undefined;
     for (var i = 0; i < scope.objects.length; i++)
         for (var j = 0; j < scope[scope.objects[i]].length; j++)
             scope[scope.objects[i]][j].draw();
+    if(canvasMessageData){
+        canvasMessage(ctx,canvasMessageData.string,canvasMessageData.x,canvasMessageData.y)
+    }
     if (objectSelection) {
-        ctx = simulationArea.context;
+
         ctx.beginPath();
         ctx.lineWidth = 2;
         ctx.strokeStyle = "black"
+        ctx.fillStyle = "rgba(0,0,0,0.1)"
         rect2(ctx, simulationArea.mouseDownX, simulationArea.mouseDownY, simulationArea.mouseX - simulationArea.mouseDownX, simulationArea.mouseY - simulationArea.mouseDownY, 0, 0, "RIGHT");
         ctx.stroke();
+        ctx.fill();
     }
 }
 

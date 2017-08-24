@@ -68,7 +68,22 @@ $(document).ready(function() {
         $(iconList[i]).append('<img src="./img/'+iconList[i].id+'.svg"/>');
         $(iconList[i]).append('<p class="img__description">'+iconList[i].id+
         '</p>');
+        // $(iconList[i]).hover()
+
     }
+    $('.logixModules').hover(function(){
+        if(!help[this.id])return;
+        $("#Help").addClass("show");
+        $("#Help").empty();
+        console.log("SHOWING")
+        $("#Help").append(help[this.id]);
+    }); // code goes in document ready fn only
+    $('.logixModules').mouseleave(function(){
+        $("#Help").removeClass("show");
+
+    }); // code goes in document ready fn only
+
+
     // $('#saveAsImg').click(function(){
     //     saveAsImg();
     // });
@@ -78,6 +93,27 @@ $(document).ready(function() {
     // $('#moduleProperty').draggable();
 
 }); // accordion
+
+var help={
+    "Input":"Input ToolTip: Toggle the individual bits by clicking on them.",
+    "Button":"Button ToolTip: High(1) when pressed and Low(0) when released.",
+    "Power":"Power ToolTip: All bits are High(1).",
+    "Ground":"Ground ToolTip: All bits are Low(0).",
+    "ConstantVal":"Constant ToolTip: Bits are fixed. Double click element to change the bits.",
+    "Stepper":"Stepper ToolTip: Increase/Decrease value by selecting the stepper and using +/- keys.",
+    "Output":"Output ToolTip: Simple output element showing output in binary.",
+    "RGBLed":"RGB Led ToolTip: RGB Led inputs 8 bit values for the colors RED, GREEN and BLUE.",
+    "DigitalLed":"Digital Led ToolTip: Digital LED glows high when input is High(1).",
+    "VariableLed":"Variable Led ToolTip: Variable LED inputs an 8 bit value and glows with a proportional intensity.",
+    "HexDisplay":"Hex Display ToolTip: Inputs a 4 Bit Hex number and displays it.",
+    "SevenSegDisplay":"Seven Display ToolTip: Consists of 7+1 single bit inputs.",
+    "TTY":"TTY ToolTip: Console buffer",
+    "Keyboard":"Keyboard ToolTip: Select the Keyboard and type into the buffer.",
+    "Text":"Text ToolTip: Use this to document your circuit.",
+    "Flag":"FLag ToolTip: Use this for debugging and plotting.",
+    "Splitter":"Splitter ToolTip: Split multiBit Input into smaller bitwidths or vice versa.",
+
+}
 
 
 
@@ -136,6 +172,8 @@ function showProperties(obj){
 
         }
     }
+    $('#moduleProperty-toolTip').empty();
+    if(help[obj.objectType])$('#moduleProperty-toolTip').append(help[obj.objectType])
 
 
 
