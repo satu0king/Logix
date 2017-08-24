@@ -10,6 +10,38 @@
 
 }
 
+.option{
+    display:block;
+    background-color: black;
+    border: 1px solid #005cb3;
+    color:#0099ff;
+    padding: 5px;
+    width:200px;
+    margin:3px;
+
+}
+.inline{
+    width:auto;
+    padding-right: 20px;
+    display: inline-block;
+}
+.option:hover{
+    border-color: #0099ff;
+}
+input[type=radio]:checked ~ label{
+  color: #0DFF92;
+}
+.option input[type=radio]{
+   margin-right: 5px;
+  /*position: absolute;*/
+   visibility: hidden;
+}
+.option input[type=radio]:checked{
+
+   /*position: absolute;*/
+   visibility:visible;
+}
+
 .zoomButton:focus {outline:0;}
 .zoomButton {
     padding: 5px;

@@ -429,7 +429,7 @@ createOpenLocalPrompt = function() {
     $('#openProjectDialog').empty();
     var projectList=JSON.parse(localStorage.getItem("projectList"));
     for(id in projectList){
-        $('#openProjectDialog').append('<p>'+projectList[id]+'<input type="radio" name="projectId" value="'+id+'" />'+'</p>');
+        $('#openProjectDialog').append('<label class="option"><input type="radio" name="projectId" value="'+id+'" />'+projectList[id]+'</label>');
     }
 $('#openProjectDialog').dialog({
         width: "auto",
@@ -449,7 +449,7 @@ createSubCircuitPrompt = function(scope = globalScope) {
     $('#insertSubcircuitDialog').empty();
     for(id in scopeList){
         if(!scopeList[id].checkDependency(scope.id))
-            $('#insertSubcircuitDialog').append('<p>'+scopeList[id].name+'<input type="radio" name="subCircuitId" value="'+id+'" />'+'</p>');
+            $('#insertSubcircuitDialog').append('<label class="option"><input type="radio" name="subCircuitId" value="'+id+'" />'+scopeList[id].name+'</label>');
     }
 $('#insertSubcircuitDialog').dialog({
         width: "auto",
