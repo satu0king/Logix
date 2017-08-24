@@ -1,14 +1,20 @@
-function changeScale(delta,xx,yy) {
+function changeScale(delta,xx,yy,method=1) {
     // var xx, yy;
 
 
-    if(xx===undefined||yy===undefined){
+    if(xx===undefined||yy===undefined||xx=='zoomButton'||yy=='zoomButton'){
         if (simulationArea.lastSelected) { // selected object
             xx = simulationArea.lastSelected.x;
             yy = simulationArea.lastSelected.y;
         } else { //mouse location
-            xx = simulationArea.mouseX;
-            yy = simulationArea.mouseY;
+            if(method==1){
+                xx = simulationArea.mouseX;
+                yy = simulationArea.mouseY;
+            }
+            else if(method==2){
+                xx =(width/2 - globalScope.ox) / globalScope.scale
+                yy = (height/2 - globalScope.oy) / globalScope.scale
+            }
         }
     }
 
