@@ -101,6 +101,9 @@ function Wire(node1, node2, scope) {
         return updated;
     }
     this.draw = function() {
+
+// for calculating min-max Width,min-max Height
+      
         ctx = simulationArea.context;
 
         var color;

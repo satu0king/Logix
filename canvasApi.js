@@ -142,6 +142,23 @@ function arc(ctx, sx, sy, radius, start, stop, xx, yy, dir) { //ox-x of origin, 
     ctx.arc(Math.round(xx + globalScope.ox + Sx+correction)-correction, Math.round(yy + globalScope.oy + Sy+correction)-correction, Math.round(radius), newStart, newStop, counterClock);
 }
 
+function arc2(ctx, sx, sy, radius, start, stop, xx, yy, dir) { //ox-x of origin, xx- x of element , sx - shift in x from element
+
+    var correction=0.5*(ctx.lineWidth%2);
+    [Sx, Sy] = rotate(sx, sy, dir);
+    Sx = Sx * globalScope.scale;
+    Sy = Sy * globalScope.scale;
+    xx = xx * globalScope.scale;
+    yy = yy * globalScope.scale;
+    radius *= globalScope.scale;
+    [newStart, newStop, counterClock] = rotateAngle(start, stop, dir);
+    // //console.log(Sx,Sy);
+    var pi = 0;
+    if(counterClock)
+      pi = Math.PI;
+    ctx.arc(Math.round(xx + globalScope.ox + Sx +correction)-correction, Math.round(yy + globalScope.oy + Sy + correction)-correction, Math.round(radius), newStart + pi, newStop + pi);
+}
+
 function drawCircle2(ctx, sx, sy, radius, xx, yy, dir) { //ox-x of origin, xx- x of element , sx - shift in x from element
 
     [Sx, Sy] = rotate(sx, sy, dir);
@@ -304,7 +321,7 @@ function fillText2(ctx, str, x1, y1, xx, yy, dir) {
     ctx.translate( Math.round(xx + x1 + globalScope.ox), Math.round( yy + y1 + globalScope.oy));
     ctx.rotate(angle[dir]);
     ctx.textAlign = "center";
-    ctx.fillText(str, 0, 0);
+    ctx.fillText(str, 0, Math.round(4 * globalScope.scale)*(1-0*(+(dir=="DOWN"))));
     ctx.restore();
 
     // ctx.fillText(str, xx+x1+globalScope.ox,yy+ y1+globalScope.oy);
