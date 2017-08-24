@@ -539,25 +539,26 @@ function generateImage() {
 
 
       if (view == "full") {
-          var minX = 10000000;
-          var minY = 10000000;
-          var maxX = -10000000;
-          var maxY = -10000000;
-          for (var i = 0; i < scope.objects.length; i++)
-              for (var j = 0; j < scope[scope.objects[i]].length; j++) {
-                  if (scope[scope.objects[i]][j].objectType !== "Wire") {
-                      console.log("obj:",scope[scope.objects[i]][j])
-                      minX = Math.min(minX, scope[scope.objects[i]][j].absX());
-                      maxX = Math.max(maxX, scope[scope.objects[i]][j].absX());
-                      minY = Math.min(minY, scope[scope.objects[i]][j].absY());
-                      maxY = Math.max(maxY, scope[scope.objects[i]][j].absY());
-                  }
-              }
-          width = (maxX - minX + 400) * resolution;
-          height = (maxY - minY + 400) * resolution;
+          findDimensions();
+          var minX = simulationArea.minWidth;
+          var minY = simulationArea.minHeight;
+          var maxX = simulationArea.maxWidth;
+          var maxY = simulationArea.maxHeight;
+        //   for (var i = 0; i < scope.objects.length; i++)
+        //       for (var j = 0; j < scope[scope.objects[i]].length; j++) {
+        //           if (scope[scope.objects[i]][j].objectType !== "Wire") {
+        //               console.log("obj:",scope[scope.objects[i]][j])
+        //               minX = Math.min(minX, scope[scope.objects[i]][j].absX());
+        //               maxX = Math.max(maxX, scope[scope.objects[i]][j].absX());
+        //               minY = Math.min(minY, scope[scope.objects[i]][j].absY());
+        //               maxY = Math.max(maxY, scope[scope.objects[i]][j].absY());
+        //           }
+        //       }
+          width = (maxX - minX + 100) * resolution;
+          height = (maxY - minY + 100) * resolution;
 
-          globalScope.ox = (-minX + 200)*resolution;
-          globalScope.oy = (-minY + 200)*resolution;
+          globalScope.ox = (-minX + 50)*resolution;
+          globalScope.oy = (-minY + 50)*resolution;
       }
       else{
           width=(width*resolution)/backUpScale;

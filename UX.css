@@ -236,13 +236,12 @@ input, select {
 }
 
 
-
 th, td {
-
     padding-left: 15px;
     padding-right: 15px;
     text-align: left;
-    border:  1px solid #ddd;
+    border: 1px solid #0099ff;
+    color:white;
 }
 
 #booleanTable{
