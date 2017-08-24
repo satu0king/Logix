@@ -11,6 +11,7 @@ wireToBeChecked = 0; // when node disconnects from another node
 willBeUpdated = false;
 objectSelection = false;
 errorDetected = false;
+prevErrorMessage=undefined;
 // var backups = []
 
 updatePosition=true;
@@ -41,10 +42,13 @@ globalScope = undefined;
 function showError(error) {
     // //console.log("ERROR: " + error);
     errorDetected = true;
+    if(error==prevErrorMessage)return;
+    prevErrorMessage=error;
     var id = Math.floor(Math.random() * 10000);
-    $('#MessageDiv').append("<div class='errorMessage' id='" + id + "'> " + error + "</div>");
+    $('#MessageDiv').append("<div class='alert alert-danger' role='alert' id='" + id + "'> " + error + "</div>");
     setTimeout(function() {
-        $('#' + id).fadeOut()
+        prevErrorMessage=undefined;
+        $('#' + id).fadeOut();
     }, 1500);
     // //console.log("<div class='errorMessage'>"+error+"</div>");
 }
@@ -52,7 +56,7 @@ function showMessage(mes) {
     // //console.log("ERROR: " + error);
     errorDetected = true;
     var id = Math.floor(Math.random() * 10000);
-    $('#MessageDiv').append("<div class='normalMessage' id='" + id + "'> " + mes + "</div>");
+    $('#MessageDiv').append("<div class='alert alert-success' role='alert' id='" + id + "'> " + mes + "</div>");
     setTimeout(function() {
         $('#' + id).fadeOut()
     }, 2500);
