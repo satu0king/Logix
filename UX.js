@@ -111,6 +111,7 @@ var help={
     "Text":"Text ToolTip: Use this to document your circuit.",
     "Flag":"FLag ToolTip: Use this for debugging and plotting.",
     "Splitter":"Splitter ToolTip: Split multiBit Input into smaller bitwidths or vice versa.",
+    "ALU":"ALU ToolTip: 0: A&B, 1:A|B, 2:A+B, 4:A&~B, 5:A|~B, 6:A-B, 7:SLT ",
 
 }
 

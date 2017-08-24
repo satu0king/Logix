@@ -90,7 +90,7 @@ window.addEventListener('mousemove', function(e) {
             }
         } else {
             fn = function() {
-                simulationArea.lastSelected.update()
+                simulationArea.lastSelected.update();
             };
             // simulationArea.hover.update();
         }
