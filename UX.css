@@ -20,6 +20,20 @@
     margin:3px;
 
 }
+.projectName{
+    /*margin:3px;*/
+    color:#0099ff;
+    margin:0 auto;
+    text-align: center;
+    font-size: 1.4em;
+    position: absolute;
+    left: 50%;
+    display: block;
+    width: 500px;
+    text-align: center;
+    margin-left: -250px;
+
+}
 .inline{
     width:auto;
     padding-right: 20px;

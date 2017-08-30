@@ -1,6 +1,8 @@
 window.addEventListener('keyup', function(e) {
     // update();
     scheduleUpdate(1);
+    simulationArea.shiftDown=e.shiftKey;
+    simulationArea.controlDown=e.controlKey;
     if (e.keyCode == 16) {
         // simulationArea.lastSelected.delete(); // delete key
         simulationArea.shiftDown = false;
@@ -115,7 +117,7 @@ window.addEventListener('keydown', function(e) {
     errorDetected = false;
     updateSimulation = true;
     updatePosition = true;
-
+    simulationArea.shiftDown=e.shiftKey;
 
 
     // zoom in (+)
@@ -207,7 +209,7 @@ window.addEventListener('keydown', function(e) {
         if (simulationArea.lastSelected.bitWidth !== undefined)
             simulationArea.lastSelected.newBitWidth(parseInt(prompt("Enter new bitWidth"), 10));
     }
-    if (e.key == "T" || e.key == "t") {
+    if (simulationArea.controlDown&&(e.key == "T" || e.key == "t") ){
         simulationArea.changeClockTime(prompt("Enter Time:"));
     }
     if ((e.keyCode == 108 || e.keyCode == 76) && simulationArea.lastSelected != undefined) {

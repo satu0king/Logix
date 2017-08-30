@@ -76,11 +76,11 @@ function update(scope = globalScope) {
     }
 
     if (!embed && prevPropertyObj != simulationArea.lastSelected) {
-        if (simulationArea.lastSelected !== undefined && simulationArea.lastSelected.objectType !== "Wire" && simulationArea.lastSelected.objectType !== "CircuitElement") {
+        if (simulationArea.lastSelected&&simulationArea.lastSelected.objectType !== "Wire") {
             showProperties(simulationArea.lastSelected);
             //console.log("yo");
         } else {
-            hideProperties();
+            // hideProperties();
         }
     }
 

@@ -1,7 +1,6 @@
 function clockTick() {
     if (errorDetected) return;
     updateCanvas = true;
-
     globalScope.clockTick();
     play();
     scheduleUpdate(0,20);
