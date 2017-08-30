@@ -261,6 +261,8 @@ function generateSaveData(name) {
     projectName = data["name"];
     data["timePeriod"] = simulationArea.timePeriod;
     data["projectId"] = projectId;
+    data["authorName"] = authorName||prompt("Enter author name: ");
+    authorName = data["authorName"];
     data.scopes = []
     var dependencyList = {};
     var completed = {};
@@ -280,7 +282,7 @@ function generateSaveData(name) {
     }
     for (id in scopeList)
         saveScope(id);
-    console.log(data);
+    // console.log(data);
     // return;
 
     //covnvert to text
@@ -293,11 +295,12 @@ function save() {
     // var data = backUp();
 
     var data = generateSaveData();
-
+    // console.log(data.name);
     var http = new XMLHttpRequest();
     http.open("POST", "./index.php", true);
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    var params = "data=" + data; // send the data
+    var params = jQuery.param({data:data,projectName:projectName,authorName:authorName}) // send the data
+    console.log(params);
     http.send(params);
     http.onload = function() {
         window.location.hash = http.responseText; // assign hash key
@@ -311,6 +314,7 @@ function load(data) {
 
     projectId = data.projectId;
     projectName = data.name;
+    authorName = data.authorName;
     if (data.name == "Untitled")
         projectName = undefined;
     globalScope = undefined;

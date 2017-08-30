@@ -4,6 +4,9 @@ var height;
 
 uniqueIdCounter = 0;
 unit = 10;
+projectName = undefined;
+projectId=undefined;
+authorName=undefined;
 
 // updateSimulation = true;
 
@@ -152,7 +155,7 @@ function Scope(name = "localScope",id=undefined) {
 
 //fn to setup environment
 function setup() {
-    projectName = undefined;
+
     projectId = generateId();
     // globalScope = new Scope("globalScope"); //enabling scope
     // scopeList.push(globalScope);

@@ -7,10 +7,12 @@ function generateRandomString($length = 10) {
 }
 if(isset($_POST["data"])){
   $data=$_POST["data"];
+  $projectName=$_POST["projectName"];
+  $authorName=$_POST["authorName"];
   for($i=0;$i<=10;$i+=1){
     $hash=generateRandomString();
     // echo $data;
-    $query="INSERT INTO `logix`(`HASHKEY`, `DATA`) VALUES ('$hash','$data')";
+    $query="INSERT INTO `logix-alpha-release`(`HASHKEY`, `DATA`,`PROJECTNAME`,`AUTHOR`) VALUES ('$hash','$data','$projectName','$authorName')";
     $result = mysqli_query($myConnection,$query);
     if($result)break;
   }
@@ -18,7 +20,7 @@ if(isset($_POST["data"])){
   exit();
 }
 else if(isset($_POST["retrieve"])){
-  $query="SELECT * FROM `logix` WHERE HASHKEY='$_POST[retrieve]'";
+  $query="SELECT * FROM `logix-alpha-release` WHERE HASHKEY='$_POST[retrieve]'";
   $result = mysqli_query($myConnection,$query);
   $data=mysqli_fetch_assoc($result)["DATA"];
   if($data){
