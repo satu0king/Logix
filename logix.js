@@ -712,7 +712,7 @@ function CircuitElement(x, y, scope, dir, bitWidth) {
     this.direction = dir;
     this.directionFixed = false;
     this.labelDirectionFixed = false;
-    this.labelDirection = dir;
+    this.labelDirection = oppositeDirection[dir];
     this.orientationFixed = true; // should it be false?
     this.fixedBitWidth = false;
     this.flipBits=function(val){
