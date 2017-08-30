@@ -334,7 +334,7 @@ document.addEventListener('cut', function(e) {
     }
 
 
-    var textToPutOnClipboard = cut(simulationArea.copyList);
+    var textToPutOnClipboard = copy(simulationArea.copyList,true);
     if (isIe) {
         window.clipboardData.setData('Text', textToPutOnClipboard);
     } else {
