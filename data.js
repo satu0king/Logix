@@ -329,7 +329,7 @@ function load(data) {
 
 function rectifyObjectType(obj) {
 
-    console.log(obj);
+    // console.log(obj);
     // return obj;
     var rectify = {
         "FlipFlop": "DflipFlop",
@@ -341,7 +341,7 @@ function rectifyObjectType(obj) {
 
 function loadModule(data, scope) {
     // console.log(data);
-    console.log(data["objectType"])
+    // console.log(data["objectType"])
     obj = new window[rectifyObjectType(data["objectType"])](data["x"], data["y"], scope, ...data.customData["constructorParamaters"] || []);
     obj.label = data["label"];
     obj.labelDirection = data["labelDirection"] || oppositeDirection[fixDirection[obj.direction]];
