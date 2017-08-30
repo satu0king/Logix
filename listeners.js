@@ -207,7 +207,7 @@ window.addEventListener('keydown', function(e) {
         if (simulationArea.lastSelected.bitWidth !== undefined)
             simulationArea.lastSelected.newBitWidth(parseInt(prompt("Enter new bitWidth"), 10));
     }
-    if (e.key == "T" || e.key == "t") {
+    if (simulationArea.controlDown&&(e.key == "T" || e.key == "t") ){
         simulationArea.changeClockTime(prompt("Enter Time:"));
     }
     if ((e.keyCode == 108 || e.keyCode == 76) && simulationArea.lastSelected != undefined) {

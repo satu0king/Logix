@@ -302,6 +302,7 @@ var simulationArea = {
     shiftDown: false,
     controlDown: false,
     timePeriod: 500,
+
     clickCount: 0, //double click
     lock: "unlocked",
     timer: function() {
@@ -315,23 +316,26 @@ var simulationArea = {
         this.canvas.height = height;
         this.context = this.canvas.getContext("2d");
         // this.interval = setInterval(update, 100);
-        // this.ClockInterval = setInterval(clockTick, 500);
+        simulationArea.changeClockTime(simulationArea.timePeriod)
         this.mouseDown = false;
+
         // this.shiftDown=false;
 
 
     },
     changeClockTime(t) {
-        clearInterval(this.ClockInterval);
+        if(t<50)return;
+        clearInterval(simulationArea.ClockInterval);
         t = t || prompt("Enter Time Period:");
-        this.timePeriod = t;
-        this.ClockInterval = setInterval(clockTick, t);
+        simulationArea.timePeriod = t;
+        simulationArea.ClockInterval = setInterval(clockTick, t);
     },
     clear: function() {
         if (!this.context) return;
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }
+changeClockTime=simulationArea.changeClockTime
 //
 // function copyPaste(copyList) {
 //     if(copyList.length==0)return;

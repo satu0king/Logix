@@ -11,6 +11,7 @@ function newCircuit(name, id) {
         $('.circuits').click(function() {
             switchCircuit(this.id)
         });
+        showProperties(scope.root);
     }
 
     dots(true, false);
@@ -18,6 +19,14 @@ function newCircuit(name, id) {
     return scope;
 }
 
+function changeCircuitName(name,id=globalScope.id){
+    $('#'+id).html(name);
+    scopeList[id].name=name;
+}
+function setProjectName(name){
+    projectName=name;
+    $('#projectName').html(name);
+}
 function clearProject() {
     globalScope = undefined;
     scopeList = {};
@@ -172,6 +181,7 @@ function undo(scope = globalScope) {
     loadScope(tempScope, JSON.parse(scope.backups.pop()));
     tempScope.backups = scope.backups;
     tempScope.id = scope.id;
+    tempScope.name = scope.name;
     scopeList[scope.id] = tempScope;
     globalScope = tempScope;
     globalScope.ox = backupOx;
@@ -313,6 +323,8 @@ function load(data) {
     projectName = data.name;
     if (data.name == "Untitled")
         projectName = undefined;
+    else
+        setProjectName(data.name);
     globalScope = undefined;
     scopeList = {};
     if (!embed) $('.circuits').remove();
